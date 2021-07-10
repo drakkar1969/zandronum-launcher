@@ -94,7 +94,7 @@ class EventHandlers:
 		zandronum_launch = True
 
 # Set application name (match .desktop name)
-GLib.set_prgname("Zandronum")
+GLib.set_prgname("Zandronum-Launcher")
 
 # Create dialog with glade template
 builder = Gtk.Builder()

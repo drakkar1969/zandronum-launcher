@@ -60,7 +60,7 @@ class EventHandlers:
 		global zandronum_launch
 		global zandronum_params
 
-		# Get control values
+		# Get game combox selection
 		game_text = game_combo.get_active_text()
 		try:
 			game_file = list(found_iwads.keys())[list(found_iwads.values()).index(game_text)]
@@ -68,17 +68,18 @@ class EventHandlers:
 		except:
 			game_file = ""
 
+		# Get PWAD file
 		pwad_file = pwad_btn.get_filename()
-		if pwad_file is None:
-			pwad_file = ""
-		else:
+		if pwad_file is not None:
 			zandronum_params.extend(["-file", pwad_file])
 
+		# Get warp level
 		warp_level = warp_entry.get_text()
 		if warp_level != "":
 			zandronum_params.append("-warp")
 			zandronum_params.extend(list(warp_level.split(" ")))
 
+		# Get extra params
 		extra_params = params_entry.get_text()
 		if extra_params != "":
 			zandronum_params.extend(list(extra_params.split(" ")))
@@ -97,6 +98,7 @@ class EventHandlers:
 		# Close window
 		main_window.destroy()
 
+		# Set flag to launch Zandronum
 		zandronum_launch = True
 
 # Set application name (match .desktop name)

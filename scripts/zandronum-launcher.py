@@ -24,7 +24,7 @@ launcher_file = launcher_config.get("zandronum", "pwad", fallback="")
 launcher_warp = launcher_config.get("zandronum", "warp", fallback="")
 launcher_params = launcher_config.get("zandronum", "params", fallback="")
 
-# Global variables
+# Allowed IWAD filenames/descriptions
 doom_iwads = {
 	"doom.wad": "The Ultimate DOOM",
 	"doom2.wad": "DOOM 2: Hell on Earth",
@@ -35,8 +35,10 @@ doom_iwads = {
 }
 found_iwads = {}
 
+# PWAD file chooser filters
 pwad_filters = ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
 
+# Zandronum launch variables
 zandronum_launch = False
 zandronum_params = ["/usr/bin/zandronum"]
 

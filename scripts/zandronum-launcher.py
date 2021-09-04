@@ -5,6 +5,16 @@ import gi, os, sys, configparser, subprocess
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib
 
+# Get Zandronum config directory
+zandronum_config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
+
+# Get Zandronum IWAD/PWAD directories
+zandronum_config = configparser.ConfigParser(strict=False)
+zandronum_config.read("{:s}/zandronum.ini".format(zandronum_config_dir))
+
+zandronum_iwad_dir = zandronum_config.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(zandronum_config_dir))
+zandronum_pwad_dir = zandronum_config.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(zandronum_config_dir))
+
 # Global variables
 doom_iwads = {
 	"doom.wad": "The Ultimate DOOM",
@@ -21,18 +31,9 @@ pwad_filters = ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "
 zandronum_launch = False
 zandronum_params = ["/usr/bin/zandronum"]
 
-# Get default directories
-zandronum_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
-
-zandronum_config = configparser.ConfigParser(strict=False)
-zandronum_config.read("{:s}/zandronum.ini".format(zandronum_dir))
-
-iwad_dir = zandronum_config.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(zandronum_dir))
-pwad_dir = zandronum_config.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(zandronum_dir))
-
 # Read launcher config
 launcher_config = configparser.ConfigParser()
-launcher_config.read("{:s}/Launcher/launcher.conf".format(zandronum_dir))
+launcher_config.read("{:s}/Launcher/launcher.conf".format(zandronum_config_dir))
 
 init_iwad = launcher_config.get("zandronum", "iwad", fallback="")
 init_file = launcher_config.get("zandronum", "pwad", fallback="")
@@ -58,7 +59,7 @@ class EventHandlers:
 		game_text = game_combo.get_active_text()
 		try:
 			game_file = list(found_iwads.keys())[list(found_iwads.values()).index(game_text)]
-			zandronum_params.extend(["-iwad", iwad_dir + game_file])
+			zandronum_params.extend(["-iwad", zandronum_iwad_dir + game_file])
 		except:
 			game_file = ""
 
@@ -85,7 +86,7 @@ class EventHandlers:
 			"params": extra_params
 		}
 
-		with open("{:s}/Launcher/launcher.conf".format(zandronum_dir), 'w') as configfile:
+		with open("{:s}/Launcher/launcher.conf".format(zandronum_config_dir), 'w') as configfile:
 			launcher_config.write(configfile)
 
 		# Close window
@@ -109,7 +110,7 @@ main_window.connect("destroy", Gtk.main_quit)
 game_combo = builder.get_object("combo_game")
 game_index = 0
 
-iwads = os.listdir(iwad_dir)
+iwads = os.listdir(zandronum_iwad_dir)
 iwads.sort()
 
 for i in range(len(iwads)):
@@ -127,7 +128,7 @@ except:
 
 # Initialize PWAD file button
 pwad_btn = builder.get_object("btn_pwad")
-pwad_btn.set_current_folder(pwad_dir)
+pwad_btn.set_current_folder(zandronum_pwad_dir)
 pwad_btn.set_filename(init_file)
 
 file_filter = Gtk.FileFilter()

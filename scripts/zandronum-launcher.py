@@ -15,6 +15,15 @@ zandronum_config.read("{:s}/zandronum.ini".format(zandronum_config_dir))
 zandronum_iwad_dir = zandronum_config.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(zandronum_config_dir))
 zandronum_pwad_dir = zandronum_config.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(zandronum_config_dir))
 
+# Get launcher config
+launcher_config = configparser.ConfigParser()
+launcher_config.read("{:s}/Launcher/launcher.conf".format(zandronum_config_dir))
+
+launcher_iwad = launcher_config.get("zandronum", "iwad", fallback="")
+launcher_file = launcher_config.get("zandronum", "pwad", fallback="")
+launcher_warp = launcher_config.get("zandronum", "warp", fallback="")
+launcher_params = launcher_config.get("zandronum", "params", fallback="")
+
 # Global variables
 doom_iwads = {
 	"doom.wad": "The Ultimate DOOM",
@@ -30,15 +39,6 @@ pwad_filters = ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "
 
 zandronum_launch = False
 zandronum_params = ["/usr/bin/zandronum"]
-
-# Read launcher config
-launcher_config = configparser.ConfigParser()
-launcher_config.read("{:s}/Launcher/launcher.conf".format(zandronum_config_dir))
-
-init_iwad = launcher_config.get("zandronum", "iwad", fallback="")
-init_file = launcher_config.get("zandronum", "pwad", fallback="")
-init_warp = launcher_config.get("zandronum", "warp", fallback="")
-init_params = launcher_config.get("zandronum", "params", fallback="")
 
 # Event handlers
 class EventHandlers:
@@ -118,7 +118,7 @@ for i in range(len(iwads)):
 	if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
 		found_iwads[iwads[i]] = doom_iwads[iwad_lc]
 		game_combo.append_text(doom_iwads[iwad_lc])
-	if iwad_lc == init_iwad:
+	if iwad_lc == launcher_iwad:
 		game_index = i
 
 try:
@@ -129,7 +129,7 @@ except:
 # Initialize PWAD file button
 pwad_btn = builder.get_object("btn_pwad")
 pwad_btn.set_current_folder(zandronum_pwad_dir)
-pwad_btn.set_filename(init_file)
+pwad_btn.set_filename(launcher_file)
 
 file_filter = Gtk.FileFilter()
 file_filter.set_name("PWAD files")
@@ -141,10 +141,10 @@ pwad_btn.add_filter(file_filter)
 
 # Initialize entries
 warp_entry = builder.get_object("entry_warp")
-warp_entry.set_text(init_warp)
+warp_entry.set_text(launcher_warp)
 
 params_entry = builder.get_object("entry_params")
-params_entry.set_text(init_params)
+params_entry.set_text(launcher_params)
 
 # Show main window
 main_window.show_all()

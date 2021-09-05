@@ -70,7 +70,9 @@ class EventHandlers:
 
 		# Get PWAD file
 		pwad_file = pwad_btn.get_filename()
-		if pwad_file is not None:
+		if pwad_file is None:
+			pwad_file = ""
+		else:
 			zandronum_params.extend(["-file", pwad_file])
 
 		# Get warp level

@@ -100,6 +100,18 @@ def initialize_widgets():
 	params_entry.set_text(launcher_params["params"])
 
 #-------------------------------------------------------------------------
+# FUNCTION: reset_widgets
+#-------------------------------------------------------------------------
+def reset_widgets():
+	try:
+		game_combo.set_active(0)
+	except:
+		game_combo.set_active(-1)
+	pwad_btn.unselect_all()
+	warp_entry.set_text("")
+	params_entry.set_text("")
+
+#-------------------------------------------------------------------------
 # CLASS: EventHandlers
 #-------------------------------------------------------------------------
 class EventHandlers:
@@ -112,13 +124,7 @@ class EventHandlers:
 		pwad_btn.unselect_all()
 
 	def on_menu_reset_clicked(self, button):
-		try:
-			game_combo.set_active(0)
-		except:
-			game_combo.set_active(-1)
-		pwad_btn.set_filename("")
-		warp_entry.set_text("")
-		params_entry.set_text("")
+		reset_widgets()
 
 	def on_btn_launch_clicked(self, button):
 		global zandronum_launch

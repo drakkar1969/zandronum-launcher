@@ -108,7 +108,7 @@ class EventHandlers:
 		# Set flag to launch Zandronum
 		zandronum_launch = True
 
-def initialize_controls():
+def initialize_widgets():
 	# Game combobox
 	game_combo.remove_all()
 	found_iwads.clear()
@@ -151,7 +151,7 @@ builder.connect_signals(EventHandlers())
 main_window = builder.get_object("window_main")
 main_window.connect("destroy", Gtk.main_quit)
 
-# Get controls
+# Get widgets
 game_combo = builder.get_object("combo_game")
 pwad_btn = builder.get_object("btn_pwad")
 warp_entry = builder.get_object("entry_warp")
@@ -166,8 +166,8 @@ for filt in pwad_filters:
 
 pwad_btn.add_filter(file_filter)
 
-# Initialize controls
-initialize_controls()
+# Initialize widgets
+initialize_widgets()
 
 # Show main window
 main_window.show_all()

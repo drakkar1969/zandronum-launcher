@@ -166,6 +166,9 @@ class EventHandlers:
 		global zandronum_launch
 		global zandronum_params
 
+		# Initialize Zandronum launch params
+		zandronum_params = [launcher_params["zandronum"]["exec"]]
+
 		# Get game combox selection
 		game_text = game_combo.get_active_text()
 		try:
@@ -213,9 +216,8 @@ class EventHandlers:
 launcher_params = parse_launcher_conf(launcher_config_file)
 zandronum_dirs = parse_zandronum_ini(launcher_params["zandronum"]["ini"])
 
-# Set Zandronum launch variables
+# Set Zandronum launch variable
 zandronum_launch = False
-zandronum_params = [launcher_params["zandronum"]["exec"]]
 
 # Set application name (match .desktop name)
 GLib.set_prgname("Zandronum-Launcher")

@@ -17,7 +17,7 @@ zandronum_pwad_dir = zandronum_config.get("FileSearch.Directories", "Path", fall
 
 # Get launcher config
 launcher_config = configparser.ConfigParser()
-launcher_config.read("{:s}/Launcher/launcher.conf".format(zandronum_config_dir))
+launcher_config.read("{:s}/launcher.conf".format(zandronum_config_dir))
 
 launcher_iwad = launcher_config.get("zandronum", "iwad", fallback="")
 launcher_file = launcher_config.get("zandronum", "pwad", fallback="")
@@ -94,7 +94,7 @@ class EventHandlers:
 			"params": extra_params
 		}
 
-		with open("{:s}/Launcher/launcher.conf".format(zandronum_config_dir), 'w') as configfile:
+		with open("{:s}/launcher.conf".format(zandronum_config_dir), 'w') as configfile:
 			launcher_config.write(configfile)
 
 		# Close window

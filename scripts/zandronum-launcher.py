@@ -28,8 +28,7 @@ found_iwads = {}
 # File chooser filters
 file_filters = {
 	"pwad": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"],
-	"ini": ["*.ini", "*.INI"],
-	"all": ["*.*"]
+	"ini": ["*.ini", "*.INI"]
 }
 
 #-------------------------------------------------------------------------
@@ -69,6 +68,18 @@ def parse_zandronum_ini(ini_file):
 	dirs["pwad_dir"] = parser.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(config_dir))
 
 	return(dirs)
+
+#-------------------------------------------------------------------------
+# FUNCTION: set_file_filters
+#-------------------------------------------------------------------------
+def set_file_filters(widget, name, patterns):
+	file_filter = Gtk.FileFilter()
+	file_filter.set_name(name)
+
+	for filt in patterns:
+		file_filter.add_pattern(filt)
+
+	widget.add_filter(file_filter)
 
 #-------------------------------------------------------------------------
 # FUNCTION: initialize_widgets
@@ -243,29 +254,8 @@ prefs_inifile_btn = builder.get_object("btn_inifile")
 prefs_execfile_btn = builder.get_object("btn_execfile")
 
 # Set file chooser filters
-pwad_file_filter = Gtk.FileFilter()
-pwad_file_filter.set_name("PWAD files")
-
-for filt in file_filters["pwad"]:
-	pwad_file_filter.add_pattern(filt)
-
-pwad_btn.add_filter(pwad_file_filter)
-
-ini_file_filter = Gtk.FileFilter()
-ini_file_filter.set_name("INI files")
-
-for filt in file_filters["ini"]:
-	ini_file_filter.add_pattern(filt)
-
-prefs_inifile_btn.add_filter(ini_file_filter)
-
-exec_file_filter = Gtk.FileFilter()
-exec_file_filter.set_name("All files")
-
-for filt in file_filters["all"]:
-	exec_file_filter.add_pattern(filt)
-
-prefs_execfile_btn.add_filter(exec_file_filter)
+set_file_filters(widget=pwad_btn, name="PWAD files", patterns=file_filters["pwad"])
+set_file_filters(widget=prefs_inifile_btn, name="INI files", patterns=file_filters["ini"])
 
 # Initialize widgets
 initialize_widgets()

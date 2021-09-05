@@ -49,8 +49,6 @@ def parse_launcher_conf(config_file):
 
 	return(params)
 
-launcher_params = parse_launcher_conf(launcher_config_file)
-
 #-------------------------------------------------------------------------
 # FUNCTION: parse_zandronum_ini
 #-------------------------------------------------------------------------
@@ -64,12 +62,6 @@ def parse_zandronum_ini(ini_file):
 	dirs["pwad_dir"] = parser.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(config_dir))
 
 	return(dirs)
-
-zandronum_dirs = parse_zandronum_ini(launcher_params["zandronum_ini"])
-
-# Zandronum launch variables
-zandronum_launch = False
-zandronum_params = [launcher_params["zandronum_exec"]]
 
 #-------------------------------------------------------------------------
 # CLASS: EventHandlers
@@ -184,6 +176,14 @@ def initialize_widgets():
 #-------------------------------------------------------------------------
 # MAIN SCRIPT
 #-------------------------------------------------------------------------
+# Parse configuration files
+launcher_params = parse_launcher_conf(launcher_config_file)
+zandronum_dirs = parse_zandronum_ini(launcher_params["zandronum_ini"])
+
+# Set Zandronum launch variables
+zandronum_launch = False
+zandronum_params = [launcher_params["zandronum_exec"]]
+
 # Set application name (match .desktop name)
 GLib.set_prgname("Zandronum-Launcher")
 

@@ -30,13 +30,18 @@ def parse_launcher_conf(config_file):
 launcher_params = parse_launcher_conf(launcher_config_file)
 
 # Parse Zandronum ini file: get IWAD/PWAD directories
-zandronum_parser = configparser.ConfigParser(strict=False)
-zandronum_parser.read(launcher_params["zandronum_ini"])
+def parse_zandronum_ini(ini_file):
+	parser = configparser.ConfigParser(strict=False)
+	parser.read(ini_file)
 
-zandronum_dirs = {}
+	dirs = {}
 
-zandronum_dirs["iwad_dir"] = zandronum_parser.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(config_dir))
-zandronum_dirs["pwad_dir"] = zandronum_parser.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(config_dir))
+	dirs["iwad_dir"] = parser.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(config_dir))
+	dirs["pwad_dir"] = parser.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(config_dir))
+
+	return(dirs)
+
+zandronum_dirs = parse_zandronum_ini(launcher_params["zandronum_ini"])
 
 # Allowed IWAD filenames/descriptions
 doom_iwads = {
@@ -123,7 +128,7 @@ class EventHandlers:
 		main_window.destroy()
 
 		# Set flag to launch Zandronum
-		zandronum_launch = True
+		# zandronum_launch = True
 
 def initialize_widgets():
 	# Game combobox

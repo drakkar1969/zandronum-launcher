@@ -28,7 +28,8 @@ found_iwads = {}
 # File chooser filters
 file_filters = {
 	"pwad": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"],
-	"ini": ["*.ini", "*.INI"]
+	"ini": ["*.ini", "*.INI"],
+	"all": ["*.*"]
 }
 
 #-------------------------------------------------------------------------
@@ -132,6 +133,7 @@ class EventHandlers:
 		global zandronum_dirs
 
 		prefs_inifile_btn.set_filename(launcher_params["zandronum_ini"])
+		prefs_execfile_btn.set_filename(launcher_params["zandronum_exec"])
 
 		dlg_response = prefs_dialog.run()
 
@@ -147,6 +149,11 @@ class EventHandlers:
 
 				initialize_widgets()
 				reset_widgets()
+
+			zandronum_exec = prefs_execfile_btn.get_filename()
+
+			if (zandronum_exec is not None) and (zandronum_exec != launcher_params["zandronum_exec"]):
+				launcher_params["zandronum_exec"] = zandronum_exec
 
 		prefs_dialog.hide()
 
@@ -235,6 +242,7 @@ params_entry = builder.get_object("entry_params")
 # Get dialogs
 prefs_dialog = builder.get_object("dialog_prefs")
 prefs_inifile_btn = builder.get_object("btn_inifile")
+prefs_execfile_btn = builder.get_object("btn_execfile")
 
 # Set file chooser filters
 pwad_file_filter = Gtk.FileFilter()
@@ -252,6 +260,14 @@ for filt in file_filters["ini"]:
 	ini_file_filter.add_pattern(filt)
 
 prefs_inifile_btn.add_filter(ini_file_filter)
+
+exec_file_filter = Gtk.FileFilter()
+exec_file_filter.set_name("All files")
+
+for filt in file_filters["all"]:
+	exec_file_filter.add_pattern(filt)
+
+prefs_execfile_btn.add_filter(exec_file_filter)
 
 # Initialize widgets
 initialize_widgets()

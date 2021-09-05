@@ -359,7 +359,6 @@
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <signal name="clicked" handler="on_btn_launch_clicked" swapped="no"/>
-            <accelerator key="Return" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
             <style>
               <class name="suggested-action"/>
               <class name="default"/>

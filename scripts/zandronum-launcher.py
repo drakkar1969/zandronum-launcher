@@ -143,6 +143,9 @@ class EventHandlers:
 		# Close window if ESC key pressed
 		if event.keyval == Gdk.KEY_Escape:
 			main_window.destroy()
+		# Launch Zandronum if ENTER key pressed
+		if event.keyval == Gdk.KEY_Return or event.keyval == Gdk.KEY_KP_Enter:
+			self.on_btn_launch_clicked(None)
 
 	def on_menu_clearpwad_clicked(self, button):
 		pwad_btn.unselect_all()

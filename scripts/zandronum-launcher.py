@@ -108,6 +108,37 @@ class EventHandlers:
 		# Set flag to launch Zandronum
 		zandronum_launch = True
 
+def initialize_controls():
+	# Game combobox
+	game_combo.remove_all()
+	found_iwads.clear()
+
+	game_index = 0
+
+	iwads = os.listdir(zandronum_iwad_dir)
+	iwads.sort()
+
+	for i in range(len(iwads)):
+		iwad_lc = iwads[i].lower()
+		if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
+			found_iwads[iwads[i]] = doom_iwads[iwad_lc]
+			game_combo.append_text(doom_iwads[iwad_lc])
+		if iwad_lc == launcher_iwad:
+			game_index = i
+
+	try:
+		game_combo.set_active(game_index)
+	except:
+		game_combo.set_active(-1)
+
+	# PWAD file button
+	pwad_btn.set_current_folder(zandronum_pwad_dir)
+	pwad_btn.set_filename(launcher_file)
+
+	# Entries
+	warp_entry.set_text(launcher_warp)
+	params_entry.set_text(launcher_params)
+
 # Set application name (match .desktop name)
 GLib.set_prgname("Zandronum-Launcher")
 
@@ -120,31 +151,13 @@ builder.connect_signals(EventHandlers())
 main_window = builder.get_object("window_main")
 main_window.connect("destroy", Gtk.main_quit)
 
-# Populate game combobox
+# Get controls
 game_combo = builder.get_object("combo_game")
-game_index = 0
-
-iwads = os.listdir(zandronum_iwad_dir)
-iwads.sort()
-
-for i in range(len(iwads)):
-	iwad_lc = iwads[i].lower()
-	if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
-		found_iwads[iwads[i]] = doom_iwads[iwad_lc]
-		game_combo.append_text(doom_iwads[iwad_lc])
-	if iwad_lc == launcher_iwad:
-		game_index = i
-
-try:
-	game_combo.set_active(game_index)
-except:
-	game_combo.set_active(-1)
-
-# Initialize PWAD file button
 pwad_btn = builder.get_object("btn_pwad")
-pwad_btn.set_current_folder(zandronum_pwad_dir)
-pwad_btn.set_filename(launcher_file)
+warp_entry = builder.get_object("entry_warp")
+params_entry = builder.get_object("entry_params")
 
+# Set PWAD file chooser filters
 file_filter = Gtk.FileFilter()
 file_filter.set_name("PWAD files")
 
@@ -153,12 +166,8 @@ for filt in pwad_filters:
 
 pwad_btn.add_filter(file_filter)
 
-# Initialize entries
-warp_entry = builder.get_object("entry_warp")
-warp_entry.set_text(launcher_warp)
-
-params_entry = builder.get_object("entry_params")
-params_entry.set_text(launcher_params)
+# Initialize controls
+initialize_controls()
 
 # Show main window
 main_window.show_all()

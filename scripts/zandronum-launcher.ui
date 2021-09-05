@@ -88,7 +88,7 @@
             <property name="can-focus">False</property>
             <property name="margin-start">24</property>
             <property name="margin-end">24</property>
-            <property name="margin-top">16</property>
+            <property name="margin-top">24</property>
             <property name="orientation">vertical</property>
             <property name="spacing">2</property>
             <child>
@@ -96,11 +96,11 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
+                <property name="margin-bottom">10</property>
                 <property name="label" translatable="yes">Main Game</property>
-                <style>
-                  <class name="h4"/>
-                  <class name="heading"/>
-                </style>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -220,7 +220,8 @@
             <property name="can-focus">False</property>
             <property name="margin-start">24</property>
             <property name="margin-end">24</property>
-            <property name="margin-bottom">20</property>
+            <property name="margin-top">12</property>
+            <property name="margin-bottom">24</property>
             <property name="orientation">vertical</property>
             <property name="spacing">2</property>
             <child>
@@ -228,11 +229,11 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
+                <property name="margin-bottom">10</property>
                 <property name="label" translatable="yes">Additional Parameters</property>
-                <style>
-                  <class name="h4"/>
-                  <class name="heading"/>
-                </style>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -407,12 +408,13 @@
           <object class="GtkButtonBox">
             <property name="can-focus">False</property>
             <property name="margin-end">24</property>
-            <property name="margin-top">16</property>
-            <property name="margin-bottom">12</property>
+            <property name="margin-top">20</property>
+            <property name="margin-bottom">16</property>
+            <property name="homogeneous">True</property>
             <property name="layout-style">end</property>
             <child>
               <object class="GtkButton" id="button2">
-                <property name="label" translatable="yes">OK</property>
+                <property name="label" translatable="yes">Save</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -449,7 +451,7 @@
             <property name="can-focus">False</property>
             <property name="margin-start">24</property>
             <property name="margin-end">24</property>
-            <property name="margin-top">16</property>
+            <property name="margin-top">24</property>
             <property name="orientation">vertical</property>
             <property name="spacing">2</property>
             <child>
@@ -457,11 +459,11 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
+                <property name="margin-bottom">10</property>
                 <property name="label" translatable="yes">Zandronum Settings</property>
-                <style>
-                  <class name="h4"/>
-                  <class name="heading"/>
-                </style>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>

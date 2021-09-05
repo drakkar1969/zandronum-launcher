@@ -33,8 +33,10 @@ launcher_params = parse_launcher_conf(launcher_config_file)
 zandronum_parser = configparser.ConfigParser(strict=False)
 zandronum_parser.read(launcher_params["zandronum_ini"])
 
-zandronum_iwad_dir = zandronum_parser.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(config_dir))
-zandronum_pwad_dir = zandronum_parser.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(config_dir))
+zandronum_dirs = {}
+
+zandronum_dirs["iwad_dir"] = zandronum_parser.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(config_dir))
+zandronum_dirs["pwad_dir"] = zandronum_parser.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(config_dir))
 
 # Allowed IWAD filenames/descriptions
 doom_iwads = {
@@ -83,7 +85,7 @@ class EventHandlers:
 		game_text = game_combo.get_active_text()
 		try:
 			game_file = list(found_iwads.keys())[list(found_iwads.values()).index(game_text)]
-			zandronum_params.extend(["-iwad", zandronum_iwad_dir + game_file])
+			zandronum_params.extend(["-iwad", zandronum_dirs["iwad_dir"] + game_file])
 		except:
 			game_file = ""
 
@@ -130,7 +132,7 @@ def initialize_widgets():
 
 	game_index = 0
 
-	iwads = os.listdir(zandronum_iwad_dir)
+	iwads = os.listdir(zandronum_dirs["iwad_dir"])
 	iwads.sort()
 
 	for i in range(len(iwads)):
@@ -149,7 +151,7 @@ def initialize_widgets():
 	# PWAD file button
 	pwad_btn.unselect_all()
 
-	pwad_btn.set_current_folder(zandronum_pwad_dir)
+	pwad_btn.set_current_folder(zandronum_dirs["pwad_dir"])
 	pwad_btn.set_filename(launcher_params["file"])
 
 	# Entries

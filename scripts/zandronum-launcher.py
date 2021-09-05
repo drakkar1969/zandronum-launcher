@@ -3,7 +3,7 @@
 
 import gi, os, sys, configparser, subprocess
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 
 # Get Zandronum config directory
 zandronum_config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
@@ -44,6 +44,11 @@ zandronum_params = ["/usr/bin/zandronum"]
 
 # Event handlers
 class EventHandlers:
+	def on_window_main_key_press_event(self, widget, event):
+		# Close window if ESC key pressed
+		if event.keyval == Gdk.KEY_Escape:
+			main_window.destroy()
+
 	def on_menu_clearpwad_clicked(self, button):
 		pwad_btn.set_filename("")
 

@@ -49,6 +49,7 @@
     <property name="can-focus">False</property>
     <property name="resizable">False</property>
     <property name="default-width">550</property>
+    <signal name="key-press-event" handler="on_window_main_key_press_event" swapped="no"/>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>

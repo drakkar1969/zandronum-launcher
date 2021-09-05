@@ -27,7 +27,8 @@ found_iwads = {}
 
 # File chooser filters
 file_filters = {
-	"pwad": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
+	"pwad": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"],
+	"ini": ["*.ini", "*.INI"]
 }
 
 #-------------------------------------------------------------------------
@@ -235,14 +236,22 @@ params_entry = builder.get_object("entry_params")
 prefs_dialog = builder.get_object("dialog_prefs")
 prefs_inifile_btn = builder.get_object("btn_inifile")
 
-# Set PWAD file chooser filters
-file_filter = Gtk.FileFilter()
-file_filter.set_name("PWAD files")
+# Set file chooser filters
+pwad_file_filter = Gtk.FileFilter()
+pwad_file_filter.set_name("PWAD files")
 
 for filt in file_filters["pwad"]:
-	file_filter.add_pattern(filt)
+	pwad_file_filter.add_pattern(filt)
 
-pwad_btn.add_filter(file_filter)
+pwad_btn.add_filter(pwad_file_filter)
+
+ini_file_filter = Gtk.FileFilter()
+ini_file_filter.set_name("INI files")
+
+for filt in file_filters["ini"]:
+	ini_file_filter.add_pattern(filt)
+
+prefs_inifile_btn.add_filter(ini_file_filter)
 
 # Initialize widgets
 initialize_widgets()

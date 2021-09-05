@@ -9,22 +9,24 @@ from gi.repository import Gtk, GLib, Gdk
 config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
 
 # Parse launcher config file
-launcher_config = "{:s}/launcher.conf".format(config_dir)
+launcher_config_file = "{:s}/launcher.conf".format(config_dir)
 
 launcher_parser = configparser.ConfigParser()
-launcher_parser.read(launcher_config)
+launcher_parser.read(launcher_config_file)
 
-launcher_iwad = launcher_parser.get("launcher", "iwad", fallback="")
-launcher_file = launcher_parser.get("launcher", "pwad", fallback="")
-launcher_warp = launcher_parser.get("launcher", "warp", fallback="")
-launcher_params = launcher_parser.get("launcher", "params", fallback="")
+launcher_params = {}
 
-zandronum_ini = launcher_parser.get("zandronum", "inifile", fallback="{:s}/zandronum.ini".format(config_dir))
-zandronum_exec = launcher_parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
+launcher_params["iwad"] = launcher_parser.get("launcher", "iwad", fallback="")
+launcher_params["file"] = launcher_parser.get("launcher", "pwad", fallback="")
+launcher_params["warp"] = launcher_parser.get("launcher", "warp", fallback="")
+launcher_params["params"] = launcher_parser.get("launcher", "params", fallback="")
+
+launcher_params["zandronum_ini"] = launcher_parser.get("zandronum", "inifile", fallback="{:s}/zandronum.ini".format(config_dir))
+launcher_params["zandronum_exec"] = launcher_parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
 
 # Parse Zandronum ini file: get IWAD/PWAD directories
 zandronum_parser = configparser.ConfigParser(strict=False)
-zandronum_parser.read(zandronum_ini)
+zandronum_parser.read(launcher_params["zandronum_ini"])
 
 zandronum_iwad_dir = zandronum_parser.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(config_dir))
 zandronum_pwad_dir = zandronum_parser.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(config_dir))
@@ -47,7 +49,7 @@ file_filters = {
 
 # Zandronum launch variables
 zandronum_launch = False
-zandronum_params = [zandronum_exec]
+zandronum_params = [launcher_params["zandronum_exec"]]
 
 # Event handlers
 class EventHandlers:
@@ -106,7 +108,7 @@ class EventHandlers:
 			"params": extra_params
 		}
 
-		with open(launcher_config, 'w') as configfile:
+		with open(launcher_config_file, 'w') as configfile:
 			launcher_parser.write(configfile)
 
 		# Close window
@@ -130,7 +132,7 @@ def initialize_widgets():
 		if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
 			found_iwads[iwads[i]] = doom_iwads[iwad_lc]
 			game_combo.append_text(doom_iwads[iwad_lc])
-		if iwad_lc == launcher_iwad:
+		if iwad_lc == launcher_params["iwad"]:
 			game_index = i
 
 	try:
@@ -142,11 +144,11 @@ def initialize_widgets():
 	pwad_btn.unselect_all()
 
 	pwad_btn.set_current_folder(zandronum_pwad_dir)
-	pwad_btn.set_filename(launcher_file)
+	pwad_btn.set_filename(launcher_params["file"])
 
 	# Entries
-	warp_entry.set_text(launcher_warp)
-	params_entry.set_text(launcher_params)
+	warp_entry.set_text(launcher_params["warp"])
+	params_entry.set_text(launcher_params["params"])
 
 # Set application name (match .desktop name)
 GLib.set_prgname("Zandronum-Launcher")

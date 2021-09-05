@@ -41,7 +41,9 @@ doom_iwads = {
 found_iwads = {}
 
 # PWAD file chooser filters
-pwad_filters = ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
+file_filters = {
+	"pwad": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
+}
 
 # Zandronum launch variables
 zandronum_launch = False
@@ -168,7 +170,7 @@ params_entry = builder.get_object("entry_params")
 file_filter = Gtk.FileFilter()
 file_filter.set_name("PWAD files")
 
-for filt in pwad_filters:
+for filt in file_filters["pwad"]:
 	file_filter.add_pattern(filt)
 
 pwad_btn.add_filter(file_filter)

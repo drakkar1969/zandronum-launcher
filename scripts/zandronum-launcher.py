@@ -5,24 +5,29 @@ import gi, os, sys, configparser, subprocess
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib, Gdk
 
-# Get Zandronum config directory
-zandronum_config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
+# Get config dir
+config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
 
-# Get Zandronum IWAD/PWAD directories
-zandronum_config = configparser.ConfigParser(strict=False)
-zandronum_config.read("{:s}/zandronum.ini".format(zandronum_config_dir))
+# Parse launcher config file
+launcher_config = "{:s}/launcher.conf".format(config_dir)
 
-zandronum_iwad_dir = zandronum_config.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(zandronum_config_dir))
-zandronum_pwad_dir = zandronum_config.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(zandronum_config_dir))
+launcher_parser = configparser.ConfigParser()
+launcher_parser.read(launcher_config)
 
-# Get launcher config
-launcher_config = configparser.ConfigParser()
-launcher_config.read("{:s}/launcher.conf".format(zandronum_config_dir))
+launcher_iwad = launcher_parser.get("launcher", "iwad", fallback="")
+launcher_file = launcher_parser.get("launcher", "pwad", fallback="")
+launcher_warp = launcher_parser.get("launcher", "warp", fallback="")
+launcher_params = launcher_parser.get("launcher", "params", fallback="")
 
-launcher_iwad = launcher_config.get("zandronum", "iwad", fallback="")
-launcher_file = launcher_config.get("zandronum", "pwad", fallback="")
-launcher_warp = launcher_config.get("zandronum", "warp", fallback="")
-launcher_params = launcher_config.get("zandronum", "params", fallback="")
+zandronum_ini = launcher_parser.get("zandronum", "inifile", fallback="{:s}/zandronum.ini".format(config_dir))
+zandronum_exec = launcher_parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
+
+# Parse Zandronum ini file: get IWAD/PWAD directories
+zandronum_parser = configparser.ConfigParser(strict=False)
+zandronum_parser.read(zandronum_ini)
+
+zandronum_iwad_dir = zandronum_parser.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(config_dir))
+zandronum_pwad_dir = zandronum_parser.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(config_dir))
 
 # Allowed IWAD filenames/descriptions
 doom_iwads = {
@@ -40,7 +45,7 @@ pwad_filters = ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "
 
 # Zandronum launch variables
 zandronum_launch = False
-zandronum_params = ["/usr/bin/zandronum"]
+zandronum_params = [zandronum_exec]
 
 # Event handlers
 class EventHandlers:
@@ -92,15 +97,15 @@ class EventHandlers:
 			zandronum_params.extend(list(extra_params.split(" ")))
 
 		# Write config file
-		launcher_config["zandronum"] = {
+		launcher_parser["launcher"] = {
 			"iwad": game_file.lower(),
 			"pwad": pwad_file,
 			"warp": warp_level,
 			"params": extra_params
 		}
 
-		with open("{:s}/launcher.conf".format(zandronum_config_dir), 'w') as configfile:
-			launcher_config.write(configfile)
+		with open(launcher_config, 'w') as configfile:
+			launcher_parser.write(configfile)
 
 		# Close window
 		main_window.destroy()

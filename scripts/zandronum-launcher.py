@@ -6,7 +6,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib, Gdk
 
 #-------------------------------------------------------------------------
-# Global variables
+# GLOBAL VARIABLES
 #-------------------------------------------------------------------------
 # Config dir
 config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
@@ -71,7 +71,9 @@ zandronum_dirs = parse_zandronum_ini(launcher_params["zandronum_ini"])
 zandronum_launch = False
 zandronum_params = [launcher_params["zandronum_exec"]]
 
-# Event handlers
+#-------------------------------------------------------------------------
+# CLASS: EventHandlers
+#-------------------------------------------------------------------------
 class EventHandlers:
 	def on_window_main_key_press_event(self, widget, event):
 		# Close window if ESC key pressed
@@ -143,6 +145,9 @@ class EventHandlers:
 		# Set flag to launch Zandronum
 		# zandronum_launch = True
 
+#-------------------------------------------------------------------------
+# FUNCTION: initialize_widgets
+#-------------------------------------------------------------------------
 def initialize_widgets():
 	# Game combobox
 	game_combo.remove_all()
@@ -176,6 +181,9 @@ def initialize_widgets():
 	warp_entry.set_text(launcher_params["warp"])
 	params_entry.set_text(launcher_params["params"])
 
+#-------------------------------------------------------------------------
+# MAIN SCRIPT
+#-------------------------------------------------------------------------
 # Set application name (match .desktop name)
 GLib.set_prgname("Zandronum-Launcher")
 

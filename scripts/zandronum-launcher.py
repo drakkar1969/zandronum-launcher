@@ -14,6 +14,22 @@ config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
 # Launcher config file
 launcher_config_file = "{:s}/launcher.conf".format(config_dir)
 
+# Allowed IWAD filenames/descriptions
+doom_iwads = {
+	"doom.wad": "The Ultimate DOOM",
+	"doom2.wad": "DOOM 2: Hell on Earth",
+	"plutonia.wad": "Final Doom: Plutonia Experiment",
+	"tnt.wad": "Final Doom: TNT - Evilution",
+	"freedoom1.wad": "FreeDOOM: Phase 1",
+	"freedoom2.wad": "FreeDOOM: Phase 2"
+}
+found_iwads = {}
+
+# File chooser filters
+file_filters = {
+	"pwad": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
+}
+
 #-------------------------------------------------------------------------
 # FUNCTION: parse_launcher_conf
 #-------------------------------------------------------------------------
@@ -50,22 +66,6 @@ def parse_zandronum_ini(ini_file):
 	return(dirs)
 
 zandronum_dirs = parse_zandronum_ini(launcher_params["zandronum_ini"])
-
-# Allowed IWAD filenames/descriptions
-doom_iwads = {
-	"doom.wad": "The Ultimate DOOM",
-	"doom2.wad": "DOOM 2: Hell on Earth",
-	"plutonia.wad": "Final Doom: Plutonia Experiment",
-	"tnt.wad": "Final Doom: TNT - Evilution",
-	"freedoom1.wad": "FreeDOOM: Phase 1",
-	"freedoom2.wad": "FreeDOOM: Phase 2"
-}
-found_iwads = {}
-
-# PWAD file chooser filters
-file_filters = {
-	"pwad": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
-}
 
 # Zandronum launch variables
 zandronum_launch = False

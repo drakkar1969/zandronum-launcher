@@ -392,9 +392,10 @@
   </object>
   <object class="GtkDialog" id="dialog_prefs">
     <property name="can-focus">False</property>
+    <property name="title" translatable="yes">Zandronum DOOM Launcher</property>
     <property name="modal">True</property>
     <property name="window-position">center-always</property>
-    <property name="default-width">550</property>
+    <property name="default-width">450</property>
     <property name="type-hint">dialog</property>
     <property name="transient-for">window_main</property>
     <property name="attached-to">window_main</property>
@@ -473,7 +474,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Zandronum INI file</property>
+                            <property name="label" translatable="yes">INI file</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

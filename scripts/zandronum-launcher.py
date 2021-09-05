@@ -44,11 +44,11 @@ def parse_launcher_conf(config_file):
 	zparams = {}
 
 	lparams["iwad"] = parser.get("launcher", "iwad", fallback="")
-	lparams["file"] = parser.get("launcher", "pwad", fallback="")
+	lparams["file"] = parser.get("launcher", "file", fallback="")
 	lparams["warp"] = parser.get("launcher", "warp", fallback="")
 	lparams["params"] = parser.get("launcher", "params", fallback="")
 
-	zparams["ini"] = parser.get("zandronum", "inifile", fallback="{:s}/zandronum.ini".format(config_dir))
+	zparams["ini"] = parser.get("zandronum", "ini", fallback="{:s}/zandronum.ini".format(config_dir))
 	zparams["exec"] = parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
 
 	params["launcher"] = lparams
@@ -196,13 +196,13 @@ class EventHandlers:
 		parser = configparser.ConfigParser()
 		parser["launcher"] = {
 			"iwad": game_file.lower(),
-			"pwad": pwad_file,
+			"file": pwad_file,
 			"warp": warp_level,
 			"params": extra_params
 		}
 
 		parser["zandronum"] = {
-			"inifile": launcher_params["zandronum"]["ini"],
+			"ini": launcher_params["zandronum"]["ini"],
 			"exec": launcher_params["zandronum"]["exec"]
 		}
 

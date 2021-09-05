@@ -11,18 +11,23 @@ config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
 # Parse launcher config file
 launcher_config_file = "{:s}/launcher.conf".format(config_dir)
 
-launcher_parser = configparser.ConfigParser()
-launcher_parser.read(launcher_config_file)
+def parse_launcher_conf(config_file):
+	parser = configparser.ConfigParser()
+	parser.read(config_file)
 
-launcher_params = {}
+	params = {}
 
-launcher_params["iwad"] = launcher_parser.get("launcher", "iwad", fallback="")
-launcher_params["file"] = launcher_parser.get("launcher", "pwad", fallback="")
-launcher_params["warp"] = launcher_parser.get("launcher", "warp", fallback="")
-launcher_params["params"] = launcher_parser.get("launcher", "params", fallback="")
+	params["iwad"] = parser.get("launcher", "iwad", fallback="")
+	params["file"] = parser.get("launcher", "pwad", fallback="")
+	params["warp"] = parser.get("launcher", "warp", fallback="")
+	params["params"] = parser.get("launcher", "params", fallback="")
 
-launcher_params["zandronum_ini"] = launcher_parser.get("zandronum", "inifile", fallback="{:s}/zandronum.ini".format(config_dir))
-launcher_params["zandronum_exec"] = launcher_parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
+	params["zandronum_ini"] = parser.get("zandronum", "inifile", fallback="{:s}/zandronum.ini".format(config_dir))
+	params["zandronum_exec"] = parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
+
+	return(params)
+
+launcher_params = parse_launcher_conf(launcher_config_file)
 
 # Parse Zandronum ini file: get IWAD/PWAD directories
 zandronum_parser = configparser.ConfigParser(strict=False)
@@ -101,7 +106,8 @@ class EventHandlers:
 			zandronum_params.extend(list(extra_params.split(" ")))
 
 		# Write config file
-		launcher_parser["launcher"] = {
+		parser = configparser.ConfigParser()
+		parser["launcher"] = {
 			"iwad": game_file.lower(),
 			"pwad": pwad_file,
 			"warp": warp_level,
@@ -109,7 +115,7 @@ class EventHandlers:
 		}
 
 		with open(launcher_config_file, 'w') as configfile:
-			launcher_parser.write(configfile)
+			parser.write(configfile)
 
 		# Close window
 		main_window.destroy()

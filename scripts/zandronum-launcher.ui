@@ -427,7 +427,7 @@
             </child>
             <child>
               <object class="GtkButton" id="button1">
-                <property name="label" translatable="yes">Close</property>
+                <property name="label" translatable="yes">Cancel</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -583,7 +583,7 @@
     </child>
     <action-widgets>
       <action-widget response="-5">button2</action-widget>
-      <action-widget response="-7">button1</action-widget>
+      <action-widget response="-6">button1</action-widget>
     </action-widgets>
   </object>
 </interface>

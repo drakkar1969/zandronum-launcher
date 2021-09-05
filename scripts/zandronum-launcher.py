@@ -5,12 +5,18 @@ import gi, os, sys, configparser, subprocess
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib, Gdk
 
-# Get config dir
+#-------------------------------------------------------------------------
+# Global variables
+#-------------------------------------------------------------------------
+# Config dir
 config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
 
-# Parse launcher config file
+# Launcher config file
 launcher_config_file = "{:s}/launcher.conf".format(config_dir)
 
+#-------------------------------------------------------------------------
+# FUNCTION: parse_launcher_conf
+#-------------------------------------------------------------------------
 def parse_launcher_conf(config_file):
 	parser = configparser.ConfigParser()
 	parser.read(config_file)
@@ -29,7 +35,9 @@ def parse_launcher_conf(config_file):
 
 launcher_params = parse_launcher_conf(launcher_config_file)
 
-# Parse Zandronum ini file: get IWAD/PWAD directories
+#-------------------------------------------------------------------------
+# FUNCTION: parse_zandronum_ini
+#-------------------------------------------------------------------------
 def parse_zandronum_ini(ini_file):
 	parser = configparser.ConfigParser(strict=False)
 	parser.read(ini_file)

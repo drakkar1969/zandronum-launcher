@@ -88,7 +88,7 @@
             <property name="can-focus">False</property>
             <property name="margin-start">24</property>
             <property name="margin-end">24</property>
-            <property name="margin-top">20</property>
+            <property name="margin-top">16</property>
             <property name="orientation">vertical</property>
             <property name="spacing">2</property>
             <child>
@@ -395,7 +395,7 @@
     <property name="title" translatable="yes">Zandronum DOOM Launcher</property>
     <property name="modal">True</property>
     <property name="window-position">center-always</property>
-    <property name="default-width">450</property>
+    <property name="default-width">540</property>
     <property name="type-hint">dialog</property>
     <property name="transient-for">window_main</property>
     <property name="attached-to">window_main</property>
@@ -450,9 +450,26 @@
             <property name="can-focus">False</property>
             <property name="margin-start">24</property>
             <property name="margin-end">24</property>
-            <property name="margin-top">20</property>
+            <property name="margin-top">16</property>
             <property name="orientation">vertical</property>
             <property name="spacing">2</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Zandronum Settings</property>
+                <style>
+                  <class name="h4"/>
+                  <class name="heading"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkListBox">
                 <property name="visible">True</property>
@@ -474,7 +491,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">INI file</property>
+                            <property name="label" translatable="yes">Configuration file</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

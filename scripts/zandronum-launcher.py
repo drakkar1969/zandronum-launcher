@@ -50,7 +50,7 @@ class EventHandlers:
 			main_window.destroy()
 
 	def on_menu_clearpwad_clicked(self, button):
-		pwad_btn.set_filename("")
+		pwad_btn.unselect_all()
 
 	def on_menu_reset_clicked(self, button):
 		try:
@@ -132,6 +132,8 @@ def initialize_widgets():
 		game_combo.set_active(-1)
 
 	# PWAD file button
+	pwad_btn.unselect_all()
+
 	pwad_btn.set_current_folder(zandronum_pwad_dir)
 	pwad_btn.set_filename(launcher_file)
 

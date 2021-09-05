@@ -127,12 +127,25 @@ class EventHandlers:
 		reset_widgets()
 
 	def on_menu_inifile_clicked(self, button):
+		global launcher_params
+		global zandronum_dirs
+
 		prefs_inifile_btn.set_filename(launcher_params["zandronum_ini"])
 
 		dlg_response = prefs_dialog.run()
 
 		if(dlg_response == Gtk.ResponseType.OK):
-			print("YES")
+			zandronum_ini = prefs_inifile_btn.get_filename()
+
+			if (zandronum_ini is not None) and (zandronum_ini != launcher_params["zandronum_ini"]):
+				launcher_params["zandronum_ini"] = zandronum_ini
+
+				zandronum_dirs = parse_zandronum_ini(zandronum_ini)
+
+				print(zandronum_dirs)
+
+				initialize_widgets()
+				reset_widgets()
 
 		prefs_dialog.hide()
 

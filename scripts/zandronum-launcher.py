@@ -126,6 +126,16 @@ class EventHandlers:
 	def on_menu_reset_clicked(self, button):
 		reset_widgets()
 
+	def on_menu_inifile_clicked(self, button):
+		prefs_inifile_btn.set_filename(launcher_params["zandronum_ini"])
+
+		dlg_response = prefs_dialog.run()
+
+		if(dlg_response == Gtk.ResponseType.OK):
+			print("YES")
+
+		prefs_dialog.hide()
+
 	def on_btn_launch_clicked(self, button):
 		global zandronum_launch
 		global zandronum_params
@@ -208,6 +218,10 @@ pwad_btn = builder.get_object("btn_pwad")
 warp_entry = builder.get_object("entry_warp")
 params_entry = builder.get_object("entry_params")
 
+# Get dialogs
+prefs_dialog = builder.get_object("dialog_prefs")
+prefs_inifile_btn = builder.get_object("btn_inifile")
+
 # Set PWAD file chooser filters
 file_filter = Gtk.FileFilter()
 file_filter.set_name("PWAD files")
@@ -223,6 +237,9 @@ initialize_widgets()
 # Show main window
 main_window.show_all()
 Gtk.main()
+
+# Destroy dialogs
+prefs_dialog.destroy()
 
 # Launch Zandronum
 if zandronum_launch == True:

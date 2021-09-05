@@ -64,6 +64,42 @@ def parse_zandronum_ini(ini_file):
 	return(dirs)
 
 #-------------------------------------------------------------------------
+# FUNCTION: initialize_widgets
+#-------------------------------------------------------------------------
+def initialize_widgets():
+	# Game combobox
+	game_combo.remove_all()
+	found_iwads.clear()
+
+	game_index = 0
+
+	iwads = os.listdir(zandronum_dirs["iwad_dir"])
+	iwads.sort()
+
+	for i in range(len(iwads)):
+		iwad_lc = iwads[i].lower()
+		if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
+			found_iwads[iwads[i]] = doom_iwads[iwad_lc]
+			game_combo.append_text(doom_iwads[iwad_lc])
+		if iwad_lc == launcher_params["iwad"]:
+			game_index = i
+
+	try:
+		game_combo.set_active(game_index)
+	except:
+		game_combo.set_active(-1)
+
+	# PWAD file button
+	pwad_btn.unselect_all()
+
+	pwad_btn.set_current_folder(zandronum_dirs["pwad_dir"])
+	pwad_btn.set_filename(launcher_params["file"])
+
+	# Entries
+	warp_entry.set_text(launcher_params["warp"])
+	params_entry.set_text(launcher_params["params"])
+
+#-------------------------------------------------------------------------
 # CLASS: EventHandlers
 #-------------------------------------------------------------------------
 class EventHandlers:
@@ -135,43 +171,7 @@ class EventHandlers:
 		main_window.destroy()
 
 		# Set flag to launch Zandronum
-		# zandronum_launch = True
-
-#-------------------------------------------------------------------------
-# FUNCTION: initialize_widgets
-#-------------------------------------------------------------------------
-def initialize_widgets():
-	# Game combobox
-	game_combo.remove_all()
-	found_iwads.clear()
-
-	game_index = 0
-
-	iwads = os.listdir(zandronum_dirs["iwad_dir"])
-	iwads.sort()
-
-	for i in range(len(iwads)):
-		iwad_lc = iwads[i].lower()
-		if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
-			found_iwads[iwads[i]] = doom_iwads[iwad_lc]
-			game_combo.append_text(doom_iwads[iwad_lc])
-		if iwad_lc == launcher_params["iwad"]:
-			game_index = i
-
-	try:
-		game_combo.set_active(game_index)
-	except:
-		game_combo.set_active(-1)
-
-	# PWAD file button
-	pwad_btn.unselect_all()
-
-	pwad_btn.set_current_folder(zandronum_dirs["pwad_dir"])
-	pwad_btn.set_filename(launcher_params["file"])
-
-	# Entries
-	warp_entry.set_text(launcher_params["warp"])
-	params_entry.set_text(launcher_params["params"])
+		zandronum_launch = True
 
 #-------------------------------------------------------------------------
 # MAIN SCRIPT

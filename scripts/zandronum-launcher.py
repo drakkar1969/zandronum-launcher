@@ -27,8 +27,14 @@ found_iwads = {}
 
 # File chooser filters
 file_filters = {
-	"pwad": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"],
-	"ini": ["*.ini", "*.INI"]
+	"pwad": {
+		"name": "PWAD files",
+		"patterns": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
+	},
+	"ini": {
+		"name": "INI files",
+		"patterns": ["*.ini", "*.INI"]
+	}
 }
 
 #-------------------------------------------------------------------------
@@ -254,8 +260,8 @@ prefs_inifile_btn = builder.get_object("btn_inifile")
 prefs_execfile_btn = builder.get_object("btn_execfile")
 
 # Set file chooser filters
-set_file_filters(widget=pwad_btn, name="PWAD files", patterns=file_filters["pwad"])
-set_file_filters(widget=prefs_inifile_btn, name="INI files", patterns=file_filters["ini"])
+set_file_filters(widget=pwad_btn, name=file_filters["pwad"]["name"], patterns=file_filters["pwad"]["patterns"])
+set_file_filters(widget=prefs_inifile_btn, name=file_filters["ini"]["name"], patterns=file_filters["ini"]["patterns"])
 
 # Initialize widgets
 initialize_widgets()

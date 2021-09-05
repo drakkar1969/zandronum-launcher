@@ -192,22 +192,13 @@ class EventHandlers:
 		if extra_params != "":
 			zandronum_params.extend(list(extra_params.split(" ")))
 
-		# Write config file
-		parser = configparser.ConfigParser()
-		parser["launcher"] = {
+		# Update launcher params
+		launcher_params["launcher"] = {
 			"iwad": game_file.lower(),
 			"file": pwad_file,
 			"warp": warp_level,
 			"params": extra_params
 		}
-
-		parser["zandronum"] = {
-			"ini": launcher_params["zandronum"]["ini"],
-			"exec": launcher_params["zandronum"]["exec"]
-		}
-
-		with open(launcher_config_file, 'w') as configfile:
-			parser.write(configfile)
 
 		# Close window
 		main_window.destroy()
@@ -283,6 +274,14 @@ Gtk.main()
 
 # Destroy dialogs
 prefs_dialog.destroy()
+
+# Save preferences
+parser = configparser.ConfigParser()
+parser["launcher"] = launcher_params["launcher"]
+parser["zandronum"] = launcher_params["zandronum"]
+
+with open(launcher_config_file, 'w') as configfile:
+	parser.write(configfile)
 
 # Launch Zandronum
 if zandronum_launch == True:

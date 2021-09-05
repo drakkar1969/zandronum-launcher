@@ -78,11 +78,11 @@ def parse_zandronum_ini(ini_file):
 #-------------------------------------------------------------------------
 # FUNCTION: set_file_filters
 #-------------------------------------------------------------------------
-def set_file_filters(widget, name, patterns):
+def set_file_filters(widget, filters):
 	file_filter = Gtk.FileFilter()
-	file_filter.set_name(name)
+	file_filter.set_name(filters["name"])
 
-	for filt in patterns:
+	for filt in filters["patterns"]:
 		file_filter.add_pattern(filt)
 
 	widget.add_filter(file_filter)
@@ -260,8 +260,8 @@ prefs_inifile_btn = builder.get_object("btn_inifile")
 prefs_execfile_btn = builder.get_object("btn_execfile")
 
 # Set file chooser filters
-set_file_filters(widget=pwad_btn, name=file_filters["pwad"]["name"], patterns=file_filters["pwad"]["patterns"])
-set_file_filters(widget=prefs_inifile_btn, name=file_filters["ini"]["name"], patterns=file_filters["ini"]["patterns"])
+set_file_filters(widget=pwad_btn, filters=file_filters["pwad"])
+set_file_filters(widget=prefs_inifile_btn, filters=file_filters["ini"])
 
 # Initialize widgets
 initialize_widgets()

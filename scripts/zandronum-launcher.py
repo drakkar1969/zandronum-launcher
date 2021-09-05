@@ -121,6 +121,11 @@ class EventHandlers:
 			"params": extra_params
 		}
 
+		parser["zandronum"] = {
+			"inifile": launcher_params["zandronum_ini"],
+			"exec": launcher_params["zandronum_exec"]
+		}
+
 		with open(launcher_config_file, 'w') as configfile:
 			parser.write(configfile)
 

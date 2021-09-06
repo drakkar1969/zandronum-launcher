@@ -278,8 +278,7 @@ prefs_dialog.destroy()
 
 # Save preferences
 parser = configparser.ConfigParser()
-parser["launcher"] = launcher_params["launcher"]
-parser["zandronum"] = launcher_params["zandronum"]
+parser.read_dict(launcher_params)
 
 with open(launcher_config_file, 'w') as configfile:
 	parser.write(configfile)

@@ -97,21 +97,25 @@ def initialize_widgets():
 
 	game_index = 0
 
-	iwads = os.listdir(zandronum_dirs["iwad_dir"])
-	iwads.sort()
+	if os.path.exists(zandronum_dirs["iwad_dir"]):
+		iwads = os.listdir(zandronum_dirs["iwad_dir"])
+		iwads.sort()
 
-	for i in range(len(iwads)):
-		iwad_lc = iwads[i].lower()
-		if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
-			found_iwads[iwads[i]] = doom_iwads[iwad_lc]
-			game_combo.append_text(doom_iwads[iwad_lc])
-		if iwad_lc == launcher_params["launcher"]["iwad"]:
-			game_index = i
+		for i in range(len(iwads)):
+			iwad_lc = iwads[i].lower()
+			if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
+				found_iwads[iwads[i]] = doom_iwads[iwad_lc]
+				game_combo.append_text(doom_iwads[iwad_lc])
+			if iwad_lc == launcher_params["launcher"]["iwad"]:
+				game_index = i
 
 	try:
 		game_combo.set_active(game_index)
 	except:
 		game_combo.set_active(-1)
+
+	# Launch button
+	launch_btn.set_sensitive(True if len(found_iwads) > 0 else False)
 
 	# PWAD file button
 	pwad_btn.unselect_all()
@@ -256,6 +260,7 @@ game_combo = builder.get_object("combo_game")
 pwad_btn = builder.get_object("btn_pwad")
 warp_entry = builder.get_object("entry_warp")
 params_entry = builder.get_object("entry_params")
+launch_btn = builder.get_object("btn_launch")
 
 # Get dialogs
 prefs_dialog = builder.get_object("dialog_prefs")

@@ -138,7 +138,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBoxText" id="combo_game">
+                          <object class="GtkComboBox" id="combo_game">
                             <property name="width-request">300</property>
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>

@@ -93,7 +93,7 @@ def set_file_filters(widget, filters):
 #-------------------------------------------------------------------------
 def initialize_widgets():
 	# Game combobox
-	game_combo.remove_all()
+	game_store.clear()
 	found_iwads.clear()
 
 	game_index = 0
@@ -107,7 +107,7 @@ def initialize_widgets():
 
 			if iwad_lc in doom_iwads:
 				found_iwads[iwads[i]] = doom_iwads[iwad_lc]
-				game_combo.append_text(doom_iwads[iwad_lc])
+				game_store.append([doom_iwads[iwad_lc]])
 
 			if iwad_lc == main_params["launcher"]["iwad"]:
 				game_index = i
@@ -195,9 +195,9 @@ class EventHandlers:
 		zandronum_params = [main_params["zandronum"]["exec"]]
 
 		# Get game combox selection
-		game_text = game_combo.get_active_text()
+		game_item = game_combo.get_active_iter()
 		try:
-			game_file = list(found_iwads.keys())[list(found_iwads.values()).index(game_text)]
+			game_file = list(found_iwads.keys())[list(found_iwads.values()).index(game_store[game_item][0])]
 			zandronum_params.extend(["-iwad", zandronum_dirs["iwad_dir"] + game_file])
 		except:
 			game_file = ""
@@ -267,6 +267,15 @@ launch_btn = builder.get_object("btn_launch")
 prefs_dialog = builder.get_object("dialog_prefs")
 prefs_inifile_btn = builder.get_object("btn_inifile")
 prefs_execfile_btn = builder.get_object("btn_execfile")
+
+# Prepare game combo
+game_store = Gtk.ListStore(str)
+game_combo.set_model(game_store)
+
+iwad_renderer = Gtk.CellRendererText()
+
+game_combo.pack_start(iwad_renderer, True)
+game_combo.add_attribute(iwad_renderer, "text", 0)
 
 # Set file chooser filters
 set_file_filters(widget=pwad_btn, filters=file_filters["pwad"])

@@ -492,7 +492,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Executable path</property>
+                            <property name="label" translatable="yes">Executable Path</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -535,7 +535,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Configuration file</property>
+                            <property name="label" translatable="yes">Configuration File</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

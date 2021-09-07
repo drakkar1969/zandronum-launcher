@@ -28,11 +28,11 @@ found_iwads = {}
 # File chooser filters
 file_filters = {
 	"pwad": {
-		"name": "PWAD files",
+		"name": "PWAD files (*.wad, *.pk3, *.pk7, *.zip, *.7z)",
 		"patterns": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
 	},
 	"ini": {
-		"name": "INI files",
+		"name": "INI files (*.ini)",
 		"patterns": ["*.ini", "*.INI"]
 	}
 }

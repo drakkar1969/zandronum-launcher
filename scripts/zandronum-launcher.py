@@ -237,6 +237,10 @@ class EventHandlers:
 #-------------------------------------------------------------------------
 # MAIN SCRIPT
 #-------------------------------------------------------------------------
+# Create config dir if does not exist
+if os.path.exists(config_dir) == False:
+	os.makedirs(config_dir, exist_ok=True)
+
 # Parse configuration files
 main_params = parse_launcher_conf(launcher_config_file)
 zandronum_dirs = parse_zandronum_ini(main_params["zandronum"]["ini"])

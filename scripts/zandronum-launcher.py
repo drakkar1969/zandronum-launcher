@@ -174,8 +174,6 @@ class EventHandlers:
 
 				zandronum_dirs = parse_zandronum_ini(zandronum_ini)
 
-				print(zandronum_dirs)
-
 				initialize_widgets()
 				reset_widgets()
 

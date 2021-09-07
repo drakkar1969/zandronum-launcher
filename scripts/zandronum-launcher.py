@@ -106,7 +106,7 @@ def initialize_widgets():
 			if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
 				found_iwads[iwads[i]] = doom_iwads[iwad_lc]
 				game_combo.append_text(doom_iwads[iwad_lc])
-			if iwad_lc == launcher_params["launcher"]["iwad"]:
+			if iwad_lc == main_params["launcher"]["iwad"]:
 				game_index = i
 
 	try:
@@ -121,11 +121,11 @@ def initialize_widgets():
 	pwad_btn.unselect_all()
 
 	pwad_btn.set_current_folder(zandronum_dirs["pwad_dir"])
-	pwad_btn.set_filename(launcher_params["launcher"]["file"])
+	pwad_btn.set_filename(main_params["launcher"]["file"])
 
 	# Entries
-	warp_entry.set_text(launcher_params["launcher"]["warp"])
-	params_entry.set_text(launcher_params["launcher"]["params"])
+	warp_entry.set_text(main_params["launcher"]["warp"])
+	params_entry.set_text(main_params["launcher"]["params"])
 
 #-------------------------------------------------------------------------
 # FUNCTION: reset_widgets
@@ -158,19 +158,19 @@ class EventHandlers:
 		reset_widgets()
 
 	def on_menu_inifile_clicked(self, button):
-		global launcher_params
+		global main_params
 		global zandronum_dirs
 
-		prefs_inifile_btn.set_filename(launcher_params["zandronum"]["ini"])
-		prefs_execfile_btn.set_filename(launcher_params["zandronum"]["exec"])
+		prefs_inifile_btn.set_filename(main_params["zandronum"]["ini"])
+		prefs_execfile_btn.set_filename(main_params["zandronum"]["exec"])
 
 		dlg_response = prefs_dialog.run()
 
 		if(dlg_response == Gtk.ResponseType.OK):
 			zandronum_ini = prefs_inifile_btn.get_filename()
 
-			if (zandronum_ini is not None) and (zandronum_ini != launcher_params["zandronum"]["ini"]):
-				launcher_params["zandronum"]["ini"] = zandronum_ini
+			if (zandronum_ini is not None) and (zandronum_ini != main_params["zandronum"]["ini"]):
+				main_params["zandronum"]["ini"] = zandronum_ini
 
 				zandronum_dirs = parse_zandronum_ini(zandronum_ini)
 
@@ -181,8 +181,8 @@ class EventHandlers:
 
 			zandronum_exec = prefs_execfile_btn.get_filename()
 
-			if (zandronum_exec is not None) and (zandronum_exec != launcher_params["zandronum"]["exec"]):
-				launcher_params["zandronum"]["exec"] = zandronum_exec
+			if (zandronum_exec is not None) and (zandronum_exec != main_params["zandronum"]["exec"]):
+				main_params["zandronum"]["exec"] = zandronum_exec
 
 		prefs_dialog.hide()
 
@@ -191,7 +191,7 @@ class EventHandlers:
 		global zandronum_params
 
 		# Initialize Zandronum launch params
-		zandronum_params = [launcher_params["zandronum"]["exec"]]
+		zandronum_params = [main_params["zandronum"]["exec"]]
 
 		# Get game combox selection
 		game_text = game_combo.get_active_text()
@@ -220,7 +220,7 @@ class EventHandlers:
 			zandronum_params.extend(list(extra_params.split(" ")))
 
 		# Update launcher params
-		launcher_params["launcher"] = {
+		main_params["launcher"] = {
 			"iwad": game_file.lower(),
 			"file": pwad_file,
 			"warp": warp_level,
@@ -237,8 +237,8 @@ class EventHandlers:
 # MAIN SCRIPT
 #-------------------------------------------------------------------------
 # Parse configuration files
-launcher_params = parse_launcher_conf(launcher_config_file)
-zandronum_dirs = parse_zandronum_ini(launcher_params["zandronum"]["ini"])
+main_params = parse_launcher_conf(launcher_config_file)
+zandronum_dirs = parse_zandronum_ini(main_params["zandronum"]["ini"])
 
 # Set Zandronum launch variable
 zandronum_launch = False
@@ -283,7 +283,7 @@ prefs_dialog.destroy()
 
 # Save preferences
 parser = configparser.ConfigParser()
-parser.read_dict(launcher_params)
+parser.read_dict(main_params)
 
 with open(launcher_config_file, 'w') as configfile:
 	parser.write(configfile)

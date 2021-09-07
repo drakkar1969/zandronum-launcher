@@ -151,7 +151,7 @@ class EventHandlers:
 		if event.keyval == Gdk.KEY_Escape:
 			main_window.destroy()
 		# Launch Zandronum if ENTER key pressed
-		if event.keyval == Gdk.KEY_Return or event.keyval == Gdk.KEY_KP_Enter:
+		if (event.keyval == Gdk.KEY_Return or event.keyval == Gdk.KEY_KP_Enter) and event.state == 0:
 			self.on_btn_launch_clicked(None)
 
 	def on_menu_clearpwad_clicked(self, button):

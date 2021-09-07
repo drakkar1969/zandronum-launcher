@@ -272,10 +272,10 @@ prefs_execfile_btn = builder.get_object("btn_execfile")
 game_store = Gtk.ListStore(str)
 game_combo.set_model(game_store)
 
-iwad_renderer = Gtk.CellRendererText()
+game_renderer = Gtk.CellRendererText()
 
-game_combo.pack_start(iwad_renderer, True)
-game_combo.add_attribute(iwad_renderer, "text", 0)
+game_combo.pack_start(game_renderer, True)
+game_combo.add_attribute(game_renderer, "text", 0)
 
 # Set file chooser filters
 set_file_filters(widget=pwad_btn, filters=file_filters["pwad"])

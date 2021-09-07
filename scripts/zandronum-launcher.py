@@ -147,10 +147,11 @@ def reset_widgets():
 #-------------------------------------------------------------------------
 class EventHandlers:
 	def on_window_main_key_press_event(self, widget, event):
-		# Close window if ESC key pressed
-		if event.keyval == Gdk.KEY_Escape:
+		# Close window if ESC key pressed (and no modifiers)
+		if event.keyval == Gdk.KEY_Escape and event.state == 0:
 			main_window.destroy()
-		# Launch Zandronum if ENTER key pressed
+
+		# Launch Zandronum if ENTER key pressed (and no modifiers)
 		if (event.keyval == Gdk.KEY_Return or event.keyval == Gdk.KEY_KP_Enter) and event.state == 0:
 			self.on_btn_launch_clicked(None)
 

@@ -18,8 +18,8 @@ launcher_config_file = "{:s}/launcher.conf".format(config_dir)
 doom_iwads = {
 	"doom.wad": "The Ultimate Doom",
 	"doom2.wad": "Doom II: Hell on Earth",
-	"plutonia.wad": "Final Doom: Plutonia Experiment",
-	"tnt.wad": "Final Doom: TNT - Evilution",
+	"plutonia.wad": "Final Doom - The Plutonia Experiment",
+	"tnt.wad": "Final Doom - TNT: Evilution",
 	"freedoom1.wad": "Freedoom Phase 1",
 	"freedoom2.wad": "Freedoom Phase 2",
 	"freedm.wad": "Freedoom Deathmatch"

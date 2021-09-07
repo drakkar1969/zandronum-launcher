@@ -95,7 +95,7 @@ def initialize_widgets():
 	game_combo.remove_all()
 	found_iwads.clear()
 
-	game_index = 0
+	game_index = -1
 
 	if os.path.exists(zandronum_dirs["iwad_dir"]):
 		iwads = os.listdir(zandronum_dirs["iwad_dir"])
@@ -103,9 +103,11 @@ def initialize_widgets():
 
 		for i in range(len(iwads)):
 			iwad_lc = iwads[i].lower()
-			if iwad_lc.endswith(".wad") and iwad_lc in doom_iwads:
+
+			if iwad_lc in doom_iwads:
 				found_iwads[iwads[i]] = doom_iwads[iwad_lc]
 				game_combo.append_text(doom_iwads[iwad_lc])
+
 			if iwad_lc == main_params["launcher"]["iwad"]:
 				game_index = i
 

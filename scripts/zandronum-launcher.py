@@ -96,7 +96,7 @@ def initialize_widgets():
 	game_combo.remove_all()
 	found_iwads.clear()
 
-	game_index = -1
+	game_index = 0
 
 	if os.path.exists(zandronum_dirs["iwad_dir"]):
 		iwads = os.listdir(zandronum_dirs["iwad_dir"])

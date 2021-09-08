@@ -24,7 +24,6 @@ doom_iwads = {
 	"freedoom2.wad": "Freedoom Phase 2",
 	"freedm.wad": "Freedoom Deathmatch"
 }
-found_iwads = {}
 
 # File chooser filters
 file_filters = {
@@ -94,7 +93,6 @@ def set_file_filters(widget, filters):
 def initialize_widgets():
 	# Game combobox
 	game_store.clear()
-	found_iwads.clear()
 
 	game_index = 0
 
@@ -106,8 +104,7 @@ def initialize_widgets():
 			iwad_lc = iwads[i].lower()
 
 			if iwad_lc in doom_iwads:
-				found_iwads[iwads[i]] = doom_iwads[iwad_lc]
-				game_store.append([doom_iwads[iwad_lc]])
+				game_store.append([doom_iwads[iwad_lc], iwads[i]])
 
 			if iwad_lc == main_params["launcher"]["iwad"]:
 				game_index = i
@@ -118,7 +115,7 @@ def initialize_widgets():
 		game_combo.set_active(-1)
 
 	# Launch button
-	launch_btn.set_sensitive(True if len(found_iwads) > 0 else False)
+	launch_btn.set_sensitive(True if len(game_store) > 0 else False)
 
 	# PWAD file button
 	pwad_btn.unselect_all()
@@ -198,7 +195,7 @@ class EventHandlers:
 		# Get game combox selection
 		game_item = game_combo.get_active_iter()
 		try:
-			game_file = list(found_iwads.keys())[list(found_iwads.values()).index(game_store[game_item][0])]
+			game_file = game_store[game_item][1]
 			zandronum_params.extend(["-iwad", zandronum_dirs["iwad_dir"] + game_file])
 		except:
 			game_file = ""
@@ -274,7 +271,7 @@ prefs_inifile_btn = builder.get_object("btn_inifile")
 prefs_execfile_btn = builder.get_object("btn_execfile")
 
 # Prepare game combo
-game_store = Gtk.ListStore(str)
+game_store = Gtk.ListStore(str, str)
 game_combo.set_model(game_store)
 
 game_renderer = Gtk.CellRendererText()

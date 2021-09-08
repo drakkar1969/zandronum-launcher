@@ -2,6 +2,11 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkImage" id="image_clear_wad">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">edit-clear-symbolic</property>
+  </object>
   <object class="GtkPopover" id="menu_popover">
     <property name="can-focus">False</property>
     <property name="constrain-to">none</property>
@@ -14,20 +19,6 @@
         <property name="margin-top">14</property>
         <property name="margin-bottom">14</property>
         <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkModelButton" id="menu_clearpwad">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="text" translatable="yes">Clear PWAD File</property>
-            <signal name="clicked" handler="on_menu_clearpwad_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkModelButton" id="menu_reset">
             <property name="visible">True</property>
@@ -179,12 +170,39 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkFileChooserButton" id="btn_pwad">
+                          <object class="GtkBox">
                             <property name="width-request">300</property>
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="create-folders">False</property>
-                            <property name="title" translatable="yes">Select PWAD File</property>
+                            <child>
+                              <object class="GtkFileChooserButton" id="btn_pwad">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="create-folders">False</property>
+                                <property name="title" translatable="yes">Select PWAD File</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="btn_clear_pwad">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">True</property>
+                                <property name="margin-start">4</property>
+                                <property name="image">image_clear_wad</property>
+                                <property name="always-show-image">True</property>
+                                <signal name="clicked" handler="on_btn_clear_pwad_clicked" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>

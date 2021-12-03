@@ -199,7 +199,7 @@ class EventHandlers:
 		game_item = game_combo.get_active_iter()
 		try:
 			game_file = game_store[game_item][1]
-			zandronum_params.extend(["-iwad", zandronum_dirs["iwad_dir"] + game_file])
+			zandronum_params.extend(["-iwad", os.path.join(zandronum_dirs["iwad_dir"], game_file)])
 		except:
 			game_file = ""
 

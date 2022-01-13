@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import gi, os, sys, configparser, subprocess, shlex
+import gi, os, sys, configparser, subprocess, shlex, shutil
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib, Gdk
 
@@ -202,11 +202,26 @@ class EventHandlers:
 #-------------------------------------------------------------------------
 # MAIN SCRIPT
 #-------------------------------------------------------------------------
-print(launcher_config_file)
-
-# Create config dir if does not exist
+# Create config dirs if do not exist
 if os.path.exists(config_dir) == False:
 	os.makedirs(config_dir, exist_ok=True)
+
+save_dir = os.path.join(config_dir, "Savegames")
+
+if os.path.exists(save_dir) == False:
+	os.makedirs(save_dir, exist_ok=True)
+
+screen_dir = os.path.join(config_dir, "Screenshots")
+
+if os.path.exists(screen_dir) == False:
+	os.makedirs(screen_dir, exist_ok=True)
+
+# Copy Zandronum INI if does not exist
+zandronum_ini_dest = os.path.join(config_dir, "zandronum.ini")
+zandronum_ini_src = os.path.join(app_dir, "config/zandronum.ini")
+
+if os.path.exists(zandronum_ini_dest) == False:
+	shutil.copyfile(zandronum_ini_src, zandronum_ini_dest)
 
 # Parse configuration file
 main_params = parse_launcher_conf(launcher_config_file)

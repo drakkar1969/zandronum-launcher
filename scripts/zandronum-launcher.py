@@ -44,20 +44,15 @@ def parse_launcher_conf(config_file):
 	parser = configparser.ConfigParser()
 	parser.read(config_file)
 
-	params = {}
-	lparams = {}
-	zparams = {}
+	params = { "launcher": {}, "zandronum": {} }
 
-	lparams["iwad"] = parser.get("launcher", "iwad", fallback="")
-	lparams["file"] = parser.get("launcher", "file", fallback="")
-	lparams["warp"] = parser.get("launcher", "warp", fallback="")
-	lparams["params"] = parser.get("launcher", "params", fallback="")
+	params["launcher"]["iwad"] = parser.get("launcher", "iwad", fallback="")
+	params["launcher"]["file"] = parser.get("launcher", "file", fallback="")
+	params["launcher"]["warp"] = parser.get("launcher", "warp", fallback="")
+	params["launcher"]["params"] = parser.get("launcher", "params", fallback="")
 
-	zparams["ini"] = parser.get("zandronum", "ini", fallback="{:s}/zandronum.ini".format(config_dir))
-	zparams["exec"] = parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
-
-	params["launcher"] = lparams
-	params["zandronum"] = zparams
+	params["zandronum"]["ini"] = parser.get("zandronum", "ini", fallback="{:s}/zandronum.ini".format(config_dir))
+	params["zandronum"]["exec"] = parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
 
 	return(params)
 

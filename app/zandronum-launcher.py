@@ -19,12 +19,12 @@ launcher_config_file = os.path.join(config_dir, "launcher.conf")
 
 # IWAD filenames/descriptions/mod files
 doom_iwads = {
-	"doom.wad": {"name": "The Ultimate Doom", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "jfo-udoom.pk3"]},
-	"doom2.wad": {"name": "Doom II: Hell on Earth", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "jfo-doom2.pk3"]},
-	"plutonia.wad": {"name": "Final Doom - The Plutonia Experiment", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-plut.pk3", "jfo-plut.pk3"]},
-	"tnt.wad": {"name": "Final Doom - TNT: Evilution", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-tnt.pk3", "jfo-tnt.pk3"]},
-	"freedoom1.wad": {"name": "Freedoom Phase 1", "mods": []},
-	"freedoom2.wad": {"name": "Freedoom Phase 2", "mods": []}
+	"doom.wad": {"name": "The Ultimate Doom", "patch": "", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "jfo-udoom.pk3"]},
+	"doom2.wad": {"name": "Doom II: Hell on Earth", "patch": "", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "jfo-doom2.pk3"]},
+	"plutonia.wad": {"name": "Final Doom - The Plutonia Experiment", "patch": "", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-plut.pk3", "jfo-plut.pk3"]},
+	"tnt.wad": {"name": "Final Doom - TNT: Evilution", "patch": "tnt31-patch.wad", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-tnt.pk3", "jfo-tnt.pk3"]},
+	"freedoom1.wad": {"name": "Freedoom Phase 1", "patch": "", "mods": []},
+	"freedoom2.wad": {"name": "Freedoom Phase 2", "patch": "", "mods": []}
 }
 
 # File chooser filters
@@ -172,6 +172,11 @@ class EventHandlers:
 		try:
 			game_file = game_store[game_item][1]
 			zandronum_params += ' -iwad "{:s}/iwads/{:s}"'.format(app_dir, game_file)
+
+			# Load patch
+			patch_file = doom_iwads[game_file]["patch"]
+			if patch_file != "":
+				zandronum_params += ' -file "{:s}/iwads/{:s}"'.format(app_dir, patch_file)
 
 			# Load mods
 			if main_params["zandronum"]["mods"] == True:

@@ -66,7 +66,6 @@ def parse_zandronum_ini(ini_file):
 	dirs = {}
 
 	dirs["iwad_dir"] = parser.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(config_dir))
-	dirs["pwad_dir"] = parser.get("FileSearch.Directories", "Path", fallback="{:s}/WADs".format(config_dir))
 
 	return(dirs)
 
@@ -115,7 +114,7 @@ def initialize_widgets():
 	# PWAD file button
 	pwad_btn.unselect_all()
 
-	pwad_btn.set_current_folder(zandronum_dirs["pwad_dir"])
+	pwad_btn.set_current_folder(config_dir)
 	pwad_btn.set_filename(main_params["launcher"]["file"])
 
 	# Entries

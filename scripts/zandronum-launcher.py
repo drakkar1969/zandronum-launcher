@@ -32,10 +32,6 @@ file_filters = {
 	"pwad": {
 		"name": "PWAD files (*.wad, *.pk3, *.pk7, *.zip, *.7z)",
 		"patterns": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
-	},
-	"ini": {
-		"name": "INI files (*.ini)",
-		"patterns": ["*.ini", "*.INI"]
 	}
 }
 
@@ -53,23 +49,9 @@ def parse_launcher_conf(config_file):
 	params["launcher"]["warp"] = parser.get("launcher", "warp", fallback="")
 	params["launcher"]["params"] = parser.get("launcher", "params", fallback="")
 
-	params["zandronum"]["ini"] = parser.get("zandronum", "ini", fallback="{:s}/zandronum.ini".format(config_dir))
 	params["zandronum"]["exec"] = parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
 
 	return(params)
-
-#-------------------------------------------------------------------------
-# FUNCTION: parse_zandronum_ini
-#-------------------------------------------------------------------------
-def parse_zandronum_ini(ini_file):
-	parser = configparser.ConfigParser(strict=False)
-	parser.read(ini_file)
-
-	dirs = {}
-
-	dirs["iwad_dir"] = parser.get("IWADSearch.Directories", "Path", fallback="{:s}/IWADs".format(config_dir))
-
-	return(dirs)
 
 #-------------------------------------------------------------------------
 # FUNCTION: set_file_filters
@@ -158,26 +140,15 @@ class EventHandlers:
 	def on_menu_reset_clicked(self, button):
 		reset_widgets()
 
-	def on_menu_inifile_clicked(self, button):
+	def on_menu_settings_clicked(self, button):
 		global main_params
 		global zandronum_dirs
 
-		prefs_inifile_btn.set_filename(main_params["zandronum"]["ini"])
 		prefs_execfile_btn.set_filename(main_params["zandronum"]["exec"])
 
 		dlg_response = prefs_dialog.run()
 
 		if(dlg_response == Gtk.ResponseType.OK):
-			zandronum_ini = prefs_inifile_btn.get_filename()
-
-			if (zandronum_ini is not None) and (zandronum_ini != main_params["zandronum"]["ini"]):
-				main_params["zandronum"]["ini"] = zandronum_ini
-
-				zandronum_dirs = parse_zandronum_ini(zandronum_ini)
-
-				initialize_widgets()
-				reset_widgets()
-
 			zandronum_exec = prefs_execfile_btn.get_filename()
 
 			if (zandronum_exec is not None) and (zandronum_exec != main_params["zandronum"]["exec"]):
@@ -235,9 +206,8 @@ class EventHandlers:
 if os.path.exists(config_dir) == False:
 	os.makedirs(config_dir, exist_ok=True)
 
-# Parse configuration files
+# Parse configuration file
 main_params = parse_launcher_conf(launcher_config_file)
-zandronum_dirs = parse_zandronum_ini(main_params["zandronum"]["ini"])
 
 # Set application name (match .desktop name)
 GLib.set_prgname("Zandronum-Launcher")
@@ -260,7 +230,6 @@ launch_btn = builder.get_object("btn_launch")
 
 # Get dialogs
 prefs_dialog = builder.get_object("dialog_prefs")
-prefs_inifile_btn = builder.get_object("btn_inifile")
 prefs_execfile_btn = builder.get_object("btn_execfile")
 
 # Prepare game combo
@@ -274,7 +243,6 @@ game_combo.add_attribute(game_renderer, "text", 0)
 
 # Set file chooser filters
 set_file_filters(widget=pwad_btn, filters=file_filters["pwad"])
-set_file_filters(widget=prefs_inifile_btn, filters=file_filters["ini"])
 
 # Initialize widgets
 initialize_widgets()

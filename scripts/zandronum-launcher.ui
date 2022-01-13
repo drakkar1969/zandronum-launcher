@@ -24,7 +24,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="text" translatable="yes">Reset All Values to Defaults</property>
+            <property name="text" translatable="yes">Reset to Defaults</property>
             <signal name="clicked" handler="on_menu_reset_clicked" swapped="no"/>
           </object>
           <packing>
@@ -510,7 +510,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Executable Path</property>
+                            <property name="label" translatable="yes">Application Path</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

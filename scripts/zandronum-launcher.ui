@@ -410,7 +410,7 @@
   </object>
   <object class="GtkDialog" id="dialog_prefs">
     <property name="can-focus">False</property>
-    <property name="title" translatable="yes">Zandronum DOOM Launcher</property>
+    <property name="title" translatable="yes">Zandronum Settings</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window-position">center-always</property>
@@ -525,6 +525,46 @@
                             <property name="can-focus">False</property>
                             <property name="create-folders">False</property>
                             <property name="title" translatable="yes">Select INI File</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack-type">end</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBoxRow">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin-start">14</property>
+                        <property name="margin-end">14</property>
+                        <property name="margin-top">14</property>
+                        <property name="margin-bottom">14</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Enable Hi-Res Graphics</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSwitch" id="switch_mods">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

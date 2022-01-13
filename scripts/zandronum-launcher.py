@@ -53,6 +53,7 @@ def parse_launcher_conf(config_file):
 	params["launcher"]["params"] = parser.get("launcher", "params", fallback="")
 
 	params["zandronum"]["exec"] = parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
+	params["zandronum"]["mods"] = parser.getboolean("zandronum", "mods", fallback=True)
 
 	return(params)
 
@@ -148,6 +149,7 @@ class EventHandlers:
 		global zandronum_dirs
 
 		prefs_execfile_btn.set_filename(main_params["zandronum"]["exec"])
+		prefs_mods_switch.set_active(main_params["zandronum"]["mods"])
 
 		dlg_response = prefs_dialog.run()
 
@@ -156,6 +158,8 @@ class EventHandlers:
 
 			if (zandronum_exec is not None) and (zandronum_exec != main_params["zandronum"]["exec"]):
 				main_params["zandronum"]["exec"] = zandronum_exec
+
+			main_params["zandronum"]["mods"] = prefs_mods_switch.get_active()
 
 		prefs_dialog.hide()
 
@@ -170,10 +174,11 @@ class EventHandlers:
 			zandronum_params += ' -iwad "{:s}/iwads/{:s}"'.format(app_dir, game_file)
 
 			# Load mods
-			game_mods = common_mods + doom_iwads[game_file]["mods"]
-			
-			for mod_file in game_mods:
-				zandronum_params += ' -file "{:s}/mods/{:s}"'.format(app_dir, mod_file)
+			if main_params["zandronum"]["mods"] == True:
+				game_mods = common_mods + doom_iwads[game_file]["mods"]
+				
+				for mod_file in game_mods:
+					zandronum_params += ' -file "{:s}/mods/{:s}"'.format(app_dir, mod_file)
 		except:
 			game_file = ""
 
@@ -257,6 +262,7 @@ launch_btn = builder.get_object("btn_launch")
 # Get dialogs
 prefs_dialog = builder.get_object("dialog_prefs")
 prefs_execfile_btn = builder.get_object("btn_execfile")
+prefs_mods_switch = builder.get_object("switch_mods")
 
 # Prepare game combo
 game_store = Gtk.ListStore(str, str)

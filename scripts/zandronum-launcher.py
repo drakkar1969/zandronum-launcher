@@ -74,7 +74,7 @@ def initialize_widgets():
 
 	game_index = 0
 
-	iwads = os.listdir("{:s}/IWADs".format(app_dir))
+	iwads = os.listdir("{:s}/iwads".format(app_dir))
 	iwads.sort()
 
 	for i in range(len(iwads)):
@@ -164,7 +164,7 @@ class EventHandlers:
 		game_item = game_combo.get_active_iter()
 		try:
 			game_file = game_store[game_item][1]
-			zandronum_params += ' -iwad "{:s}/IWADs/{:s}"'.format(app_dir, game_file)
+			zandronum_params += ' -iwad "{:s}/iwads/{:s}"'.format(app_dir, game_file)
 		except:
 			game_file = ""
 

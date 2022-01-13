@@ -88,7 +88,7 @@
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
                 <property name="margin-bottom">10</property>
-                <property name="label" translatable="yes">Main Game</property>
+                <property name="label" translatable="yes">Game Settings</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
@@ -120,7 +120,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Game IWAD</property>
+                            <property name="label" translatable="yes">Game</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -161,7 +161,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Optional PWAD File</property>
+                            <property name="label" translatable="yes">Optional WAD File</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

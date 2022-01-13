@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import gi, os, sys, configparser, subprocess
+import gi, os, sys, configparser, subprocess, shlex
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib, Gdk
 
@@ -193,17 +193,14 @@ class EventHandlers:
 		prefs_dialog.hide()
 
 	def on_btn_launch_clicked(self, button):
-		global zandronum_launch
-		global zandronum_params
-
-		# Initialize Zandronum launch params
-		zandronum_params = [main_params["zandronum"]["exec"]]
+		# Initialize launch params with Zandronum executable
+		zandronum_params = main_params["zandronum"]["exec"]
 
 		# Get game combox selection
 		game_item = game_combo.get_active_iter()
 		try:
 			game_file = game_store[game_item][1]
-			zandronum_params.extend(["-iwad", os.path.join(zandronum_dirs["iwad_dir"], game_file)])
+			zandronum_params += ' -iwad "{:s}"'.format(os.path.join(zandronum_dirs["iwad_dir"], game_file))
 		except:
 			game_file = ""
 
@@ -212,18 +209,17 @@ class EventHandlers:
 		if pwad_file is None:
 			pwad_file = ""
 		else:
-			zandronum_params.extend(["-file", pwad_file])
+			zandronum_params += ' -file "{:s}"'.format(pwad_file)
 
 		# Get warp level
 		warp_level = warp_entry.get_text()
 		if warp_level != "":
-			zandronum_params.append("-warp")
-			zandronum_params.extend(list(warp_level.split(" ")))
+			zandronum_params += ' -warp {:s}'.format(warp_level)
 
 		# Get extra params
 		extra_params = params_entry.get_text()
 		if extra_params != "":
-			zandronum_params.extend(list(extra_params.split(" ")))
+			zandronum_params += ' {:s}'.format(extra_params)
 
 		# Update launcher params
 		main_params["launcher"] = {
@@ -236,8 +232,8 @@ class EventHandlers:
 		# Close window
 		main_window.destroy()
 
-		# Set flag to launch Zandronum
-		zandronum_launch = True
+		# Launch Zandronum
+		subprocess.Popen(shlex.split(zandronum_params))
 
 #-------------------------------------------------------------------------
 # MAIN SCRIPT
@@ -249,9 +245,6 @@ if os.path.exists(config_dir) == False:
 # Parse configuration files
 main_params = parse_launcher_conf(launcher_config_file)
 zandronum_dirs = parse_zandronum_ini(main_params["zandronum"]["ini"])
-
-# Set Zandronum launch variable
-zandronum_launch = False
 
 # Set application name (match .desktop name)
 GLib.set_prgname("Zandronum-Launcher")
@@ -306,7 +299,3 @@ parser.read_dict(main_params)
 
 with open(launcher_config_file, 'w') as configfile:
 	parser.write(configfile)
-
-# Launch Zandronum
-if zandronum_launch == True:
-	zandronum_output = subprocess.run(zandronum_params)

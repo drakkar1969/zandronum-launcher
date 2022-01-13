@@ -17,15 +17,12 @@ config_dir = os.path.join(os.getenv('HOME'), ".config/zandronum")
 # Launcher config file
 launcher_config_file = os.path.join(config_dir, "launcher.conf")
 
-# Mod files common to all IWADs
-common_mods = ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3"]
-
 # IWAD filenames/descriptions/mod files
 doom_iwads = {
-	"doom.wad": {"name": "The Ultimate Doom", "mods": ["jfo-udoom.pk3"]},
-	"doom2.wad": {"name": "Doom II: Hell on Earth", "mods": ["zdoom-doom2.pk3", "jfo-doom2.pk3"]},
-	"plutonia.wad": {"name": "Final Doom - The Plutonia Experiment", "mods": ["zdoom-doom2.pk3", "zdoom-plut.pk3", "jfo-plut.pk3"]},
-	"tnt.wad": {"name": "Final Doom - TNT: Evilution", "mods": ["zdoom-doom2.pk3", "zdoom-tnt.pk3", "jfo-tnt.pk3"]},
+	"doom.wad": {"name": "The Ultimate Doom", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "jfo-udoom.pk3"]},
+	"doom2.wad": {"name": "Doom II: Hell on Earth", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "jfo-doom2.pk3"]},
+	"plutonia.wad": {"name": "Final Doom - The Plutonia Experiment", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-plut.pk3", "jfo-plut.pk3"]},
+	"tnt.wad": {"name": "Final Doom - TNT: Evilution", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-tnt.pk3", "jfo-tnt.pk3"]},
 	"freedoom1.wad": {"name": "Freedoom Phase 1", "mods": []},
 	"freedoom2.wad": {"name": "Freedoom Phase 2", "mods": []}
 }
@@ -178,7 +175,7 @@ class EventHandlers:
 
 			# Load mods
 			if main_params["zandronum"]["mods"] == True:
-				game_mods = common_mods + doom_iwads[game_file]["mods"]
+				game_mods = doom_iwads[game_file]["mods"]
 				
 				for mod_file in game_mods:
 					zandronum_params += ' -file "{:s}/mods/{:s}"'.format(app_dir, mod_file)

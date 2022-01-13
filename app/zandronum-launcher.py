@@ -123,8 +123,11 @@ def reset_widgets():
 #-------------------------------------------------------------------------
 class EventHandlers:
 	def on_window_main_key_press_event(self, widget, event):
-		# Check that CTRL, SHIFT or ALT not pressed
-		mod_state = (event.state & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.MOD1_MASK))
+		# Check modifiers
+		ctrl = (event.state & Gdk.ModifierType.CONTROL_MASK)
+		shift = (event.state & Gdk.ModifierType.SHIFT_MASK)
+		alt = (event.state & Gdk.ModifierType.MOD1_MASK)
+		mod_state = (ctrl | shift | alt)
 
 		# Close window if ESC key pressed (and no modifiers)
 		if event.keyval == Gdk.KEY_Escape and mod_state == 0:
@@ -132,10 +135,10 @@ class EventHandlers:
 
 		# Launch Zandronum if ENTER key pressed (and no modifiers)
 		if (event.keyval == Gdk.KEY_Return or event.keyval == Gdk.KEY_KP_Enter) and mod_state == 0:
-			self.on_btn_launch_clicked(None)
+			self.on_btn_launch_clicked(launch_btn)
 
 		# Close window if Ctrl + Q pressed
-		if Gdk.keyval_name(event.keyval) == 'q' and (event.state & Gdk.ModifierType.CONTROL_MASK):
+		if Gdk.keyval_name(event.keyval) == 'q' and ctrl and alt == 0 and shift == 0:
 			main_window.destroy()
 
 	def on_btn_clear_pwad_clicked(self, button):

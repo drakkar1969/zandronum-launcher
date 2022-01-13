@@ -8,6 +8,9 @@ from gi.repository import Gtk, GLib, Gdk
 #-------------------------------------------------------------------------
 # GLOBAL VARIABLES
 #-------------------------------------------------------------------------
+# App dir
+app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
+
 # Config dir
 config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
 
@@ -21,8 +24,7 @@ doom_iwads = {
 	"plutonia.wad": "Final Doom - The Plutonia Experiment",
 	"tnt.wad": "Final Doom - TNT: Evilution",
 	"freedoom1.wad": "Freedoom Phase 1",
-	"freedoom2.wad": "Freedoom Phase 2",
-	"freedm.wad": "Freedoom Deathmatch"
+	"freedoom2.wad": "Freedoom Phase 2"
 }
 
 # File chooser filters
@@ -90,18 +92,15 @@ def initialize_widgets():
 
 	game_index = 0
 
-	if os.path.exists(zandronum_dirs["iwad_dir"]):
-		iwads = os.listdir(zandronum_dirs["iwad_dir"])
-		iwads.sort()
+	iwads = os.listdir("{:s}/IWADs".format(app_dir))
+	iwads.sort()
 
-		for i in range(len(iwads)):
-			iwad_lc = iwads[i].lower()
+	for i in range(len(iwads)):
+		if iwads[i] in doom_iwads:
+			game_store.append([doom_iwads[iwads[i]], iwads[i]])
 
-			if iwad_lc in doom_iwads:
-				game_store.append([doom_iwads[iwad_lc], iwads[i]])
-
-			if iwad_lc == main_params["launcher"]["iwad"]:
-				game_index = i
+		if iwads[i] == main_params["launcher"]["iwad"]:
+			game_index = i
 
 	try:
 		game_combo.set_active(game_index)
@@ -194,7 +193,7 @@ class EventHandlers:
 		game_item = game_combo.get_active_iter()
 		try:
 			game_file = game_store[game_item][1]
-			zandronum_params += ' -iwad "{:s}"'.format(os.path.join(zandronum_dirs["iwad_dir"], game_file))
+			zandronum_params += ' -iwad "{:s}/IWADs/{:s}"'.format(app_dir, game_file)
 		except:
 			game_file = ""
 
@@ -245,7 +244,7 @@ GLib.set_prgname("Zandronum-Launcher")
 
 # Create dialog with glade template
 builder = Gtk.Builder()
-builder.add_from_file("{:s}/zandronum-launcher.ui".format(os.path.abspath(os.path.dirname(sys.argv[0]))))
+builder.add_from_file("{:s}/zandronum-launcher.ui".format(app_dir))
 builder.connect_signals(EventHandlers())
 
 # Get main window

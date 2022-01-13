@@ -12,10 +12,10 @@ from gi.repository import Gtk, GLib, Gdk
 app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 # Config dir
-config_dir = "{:s}/.config/zandronum".format(os.getenv('HOME'))
+config_dir = os.path.join(os.getenv('HOME'), ".config/zandronum")
 
 # Launcher config file
-launcher_config_file = "{:s}/launcher.conf".format(config_dir)
+launcher_config_file = os.path.join(config_dir, "launcher.conf")
 
 # Allowed IWAD filenames/descriptions
 doom_iwads = {
@@ -74,7 +74,7 @@ def initialize_widgets():
 
 	game_index = 0
 
-	iwads = os.listdir("{:s}/iwads".format(app_dir))
+	iwads = os.listdir(os.path.join(app_dir, "iwads"))
 	iwads.sort()
 
 	for i in range(len(iwads)):
@@ -202,6 +202,8 @@ class EventHandlers:
 #-------------------------------------------------------------------------
 # MAIN SCRIPT
 #-------------------------------------------------------------------------
+print(launcher_config_file)
+
 # Create config dir if does not exist
 if os.path.exists(config_dir) == False:
 	os.makedirs(config_dir, exist_ok=True)
@@ -214,7 +216,7 @@ GLib.set_prgname("Zandronum-Launcher")
 
 # Create dialog with glade template
 builder = Gtk.Builder()
-builder.add_from_file("{:s}/zandronum-launcher.ui".format(app_dir))
+builder.add_from_file(os.path.join(app_dir, "zandronum-launcher.ui"))
 builder.connect_signals(EventHandlers())
 
 # Get main window

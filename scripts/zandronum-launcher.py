@@ -187,7 +187,7 @@ class EventHandlers:
 
 		# Update launcher params
 		main_params["launcher"] = {
-			"iwad": game_file.lower(),
+			"iwad": game_file,
 			"file": pwad_file,
 			"warp": warp_level,
 			"params": extra_params

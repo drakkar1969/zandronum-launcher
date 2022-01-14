@@ -42,17 +42,17 @@ def parse_launcher_conf(config_file):
 	parser = configparser.ConfigParser()
 	parser.read(config_file)
 
-	params = { "launcher": {}, "zandronum": {} }
+	config = { "launcher": {}, "zandronum": {} }
 
-	params["launcher"]["iwad"] = parser.get("launcher", "iwad", fallback="")
-	params["launcher"]["file"] = parser.get("launcher", "file", fallback="")
-	params["launcher"]["warp"] = parser.get("launcher", "warp", fallback="")
-	params["launcher"]["params"] = parser.get("launcher", "params", fallback="")
+	config["launcher"]["iwad"] = parser.get("launcher", "iwad", fallback="")
+	config["launcher"]["file"] = parser.get("launcher", "file", fallback="")
+	config["launcher"]["warp"] = parser.get("launcher", "warp", fallback="")
+	config["launcher"]["params"] = parser.get("launcher", "params", fallback="")
 
-	params["zandronum"]["exec"] = parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
-	params["zandronum"]["mods"] = parser.getboolean("zandronum", "mods", fallback=True)
+	config["zandronum"]["exec"] = parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
+	config["zandronum"]["mods"] = parser.getboolean("zandronum", "mods", fallback=True)
 
-	return(params)
+	return(config)
 
 #-------------------------------------------------------------------------
 # FUNCTION: set_file_filters
@@ -82,7 +82,7 @@ def initialize_widgets():
 		if iwads[i] in doom_iwads:
 			game_store.append([doom_iwads[iwads[i]]["name"], iwads[i]])
 
-		if iwads[i] == main_params["launcher"]["iwad"]:
+		if iwads[i] == main_config["launcher"]["iwad"]:
 			game_index = i
 
 	try:
@@ -97,11 +97,11 @@ def initialize_widgets():
 	pwad_btn.unselect_all()
 
 	pwad_btn.set_current_folder(config_dir)
-	pwad_btn.set_filename(main_params["launcher"]["file"])
+	pwad_btn.set_filename(main_config["launcher"]["file"])
 
 	# Entries
-	warp_entry.set_text(main_params["launcher"]["warp"])
-	params_entry.set_text(main_params["launcher"]["params"])
+	warp_entry.set_text(main_config["launcher"]["warp"])
+	params_entry.set_text(main_config["launcher"]["params"])
 
 #-------------------------------------------------------------------------
 # FUNCTION: reset_widgets
@@ -134,7 +134,7 @@ class EventHandlers:
 		if (event.keyval == Gdk.KEY_Return or event.keyval == Gdk.KEY_KP_Enter) and mod_state == 0:
 			self.on_btn_launch_clicked(launch_btn)
 
-		# Close window if Ctrl + Q pressed
+		# Close window if Ctrl + q pressed
 		if Gdk.keyval_name(event.keyval) == 'q' and ctrl and alt == 0 and shift == 0:
 			main_window.destroy()
 
@@ -145,45 +145,45 @@ class EventHandlers:
 		reset_widgets()
 
 	def on_menu_settings_clicked(self, button):
-		global main_params
+		global main_config
 		global zandronum_dirs
 
-		prefs_execfile_btn.set_filename(main_params["zandronum"]["exec"])
-		prefs_mods_switch.set_active(main_params["zandronum"]["mods"])
+		prefs_execfile_btn.set_filename(main_config["zandronum"]["exec"])
+		prefs_mods_switch.set_active(main_config["zandronum"]["mods"])
 
 		dlg_response = prefs_dialog.run()
 
 		if(dlg_response == Gtk.ResponseType.OK):
 			zandronum_exec = prefs_execfile_btn.get_filename()
 
-			if (zandronum_exec is not None) and (zandronum_exec != main_params["zandronum"]["exec"]):
-				main_params["zandronum"]["exec"] = zandronum_exec
+			if (zandronum_exec is not None):
+				main_config["zandronum"]["exec"] = zandronum_exec
 
-			main_params["zandronum"]["mods"] = prefs_mods_switch.get_active()
+			main_config["zandronum"]["mods"] = prefs_mods_switch.get_active()
 
 		prefs_dialog.hide()
 
 	def on_btn_launch_clicked(self, button):
-		# Initialize launch params with Zandronum executable
-		zandronum_params = main_params["zandronum"]["exec"]
+		# Initialize Zandronum command line with executable
+		cmdline = main_config["zandronum"]["exec"]
 
 		# Get game combox selection
 		game_item = game_combo.get_active_iter()
 		try:
 			game_file = game_store[game_item][1]
-			zandronum_params += ' -iwad "{:s}/iwads/{:s}"'.format(app_dir, game_file)
+			cmdline += ' -iwad "{:s}/iwads/{:s}"'.format(app_dir, game_file)
 
 			# Load patch
 			patch_file = doom_iwads[game_file]["patch"]
 			if patch_file != "":
-				zandronum_params += ' -file "{:s}/iwads/{:s}"'.format(app_dir, patch_file)
+				cmdline += ' -file "{:s}/iwads/{:s}"'.format(app_dir, patch_file)
 
 			# Load mods
-			if main_params["zandronum"]["mods"] == True:
+			if main_config["zandronum"]["mods"] == True:
 				game_mods = doom_iwads[game_file]["mods"]
 				
 				for mod_file in game_mods:
-					zandronum_params += ' -file "{:s}/mods/{:s}"'.format(app_dir, mod_file)
+					cmdline += ' -file "{:s}/mods/{:s}"'.format(app_dir, mod_file)
 		except:
 			game_file = ""
 
@@ -192,20 +192,20 @@ class EventHandlers:
 		if pwad_file is None:
 			pwad_file = ""
 		else:
-			zandronum_params += ' -file "{:s}"'.format(pwad_file)
+			cmdline += ' -file "{:s}"'.format(pwad_file)
 
 		# Get warp level
 		warp_level = warp_entry.get_text()
 		if warp_level != "":
-			zandronum_params += ' -warp {:s}'.format(warp_level)
+			cmdline += ' -warp {:s}'.format(warp_level)
 
 		# Get extra params
 		extra_params = params_entry.get_text()
 		if extra_params != "":
-			zandronum_params += ' {:s}'.format(extra_params)
+			cmdline += ' {:s}'.format(extra_params)
 
 		# Update launcher params
-		main_params["launcher"] = {
+		main_config["launcher"] = {
 			"iwad": game_file,
 			"file": pwad_file,
 			"warp": warp_level,
@@ -216,7 +216,7 @@ class EventHandlers:
 		main_window.destroy()
 
 		# Launch Zandronum
-		subprocess.Popen(shlex.split(zandronum_params))
+		subprocess.Popen(shlex.split(cmdline))
 
 #-------------------------------------------------------------------------
 # MAIN SCRIPT
@@ -243,7 +243,7 @@ if os.path.exists(zandronum_ini_dest) == False:
 	shutil.copyfile(zandronum_ini_src, zandronum_ini_dest)
 
 # Parse configuration file
-main_params = parse_launcher_conf(launcher_config_file)
+main_config = parse_launcher_conf(launcher_config_file)
 
 # Set application name (match .desktop name)
 GLib.set_prgname("Zandronum-Launcher")
@@ -293,7 +293,7 @@ prefs_dialog.destroy()
 
 # Save preferences
 parser = configparser.ConfigParser()
-parser.read_dict(main_params)
+parser.read_dict(main_config)
 
 with open(launcher_config_file, 'w') as configfile:
 	parser.write(configfile)

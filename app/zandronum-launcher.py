@@ -17,6 +17,9 @@ config_dir = os.path.join(os.getenv('HOME'), ".config/zandronum")
 # Launcher config file
 launcher_config_file = os.path.join(config_dir, "launcher.conf")
 
+# Zandronum INI file
+zandronum_ini_file = os.path.join(config_dir, "zandronum.ini")
+
 # IWAD filenames/descriptions/mod files
 doom_iwads = {
 	"doom.wad": {"name": "The Ultimate Doom", "patch": "", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "jfo-udoom.pk3"]},
@@ -221,26 +224,15 @@ class EventHandlers:
 #-------------------------------------------------------------------------
 # MAIN SCRIPT
 #-------------------------------------------------------------------------
-# Create config dirs if do not exist
+# Create config dir if it does not exist
 if os.path.exists(config_dir) == False:
 	os.makedirs(config_dir, exist_ok=True)
 
-save_dir = os.path.join(config_dir, "Savegames")
+# Copy Zandronum INI if it does not exist
+if os.path.exists(zandronum_ini_file) == False:
+	zandronum_ini_src = os.path.join(app_dir, "config/zandronum.ini")
 
-if os.path.exists(save_dir) == False:
-	os.makedirs(save_dir, exist_ok=True)
-
-screen_dir = os.path.join(config_dir, "Screenshots")
-
-if os.path.exists(screen_dir) == False:
-	os.makedirs(screen_dir, exist_ok=True)
-
-# Copy Zandronum INI if does not exist
-zandronum_ini_dest = os.path.join(config_dir, "zandronum.ini")
-zandronum_ini_src = os.path.join(app_dir, "config/zandronum.ini")
-
-if os.path.exists(zandronum_ini_dest) == False:
-	shutil.copyfile(zandronum_ini_src, zandronum_ini_dest)
+	shutil.copyfile(zandronum_ini_src, zandronum_ini_file)
 
 # Parse configuration file
 main_config = parse_launcher_conf(launcher_config_file)

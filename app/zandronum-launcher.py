@@ -1,24 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import gi, os, sys, configparser, subprocess, shlex, shutil
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GLib, Gdk
-
-#-------------------------------------------------------------------------
-# GLOBAL VARIABLES
-#-------------------------------------------------------------------------
-# App dir
-app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
-
-# Config dir
-config_dir = os.path.join(os.getenv('HOME'), ".config/zandronum")
-
-# Launcher config file
-launcher_config_file = os.path.join(config_dir, "launcher.conf")
-
-# Zandronum INI file
-zandronum_ini_file = os.path.join(config_dir, "zandronum.ini")
+import gi, sys, os, configparser, subprocess, shlex
+gi.require_version('Gtk', '4.0')
+gi.require_version('Adw', '1')
+from gi.repository import Gtk, Adw, Gio, GObject, Gdk
 
 # IWAD filenames/descriptions/mod files
 doom_iwads = {
@@ -30,262 +15,486 @@ doom_iwads = {
 	"freedoom2.wad": {"name": "Freedoom Phase 2", "patch": "", "mods": []}
 }
 
-# File chooser filters
-file_filters = {
-	"pwad": {
-		"name": "PWAD files (*.wad, *.pk3, *.pk7, *.zip, *.7z)",
-		"patterns": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
-	}
-}
+class FileDialogButton(Gtk.Button):
+	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
+	dlg_parent = GObject.Property(type=Gtk.Widget, default=None, flags=GObject.ParamFlags.READWRITE)
+	folder_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
+	btn_icon = GObject.Property(type=str, default="", flags=GObject.ParamFlags.READWRITE)
 
-#-------------------------------------------------------------------------
-# FUNCTION: parse_launcher_conf
-#-------------------------------------------------------------------------
-def parse_launcher_conf(config_file):
-	parser = configparser.ConfigParser()
-	parser.read(config_file)
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
 
-	config = { "launcher": {}, "zandronum": {} }
+		# Initialize class variables
+		self.selected_file = ""
+		self.default_folder = ""
 
-	config["launcher"]["iwad"] = parser.get("launcher", "iwad", fallback="")
-	config["launcher"]["file"] = parser.get("launcher", "file", fallback="")
-	config["launcher"]["warp"] = parser.get("launcher", "warp", fallback="")
-	config["launcher"]["params"] = parser.get("launcher", "params", fallback="")
+		# Add button widgets
+		self.image = Gtk.Image()
+		if self.btn_icon == "":
+			self.btn_icon = "folder-symbolic" if self.folder_select == True else "document-open-symbolic"
+		self.image.set_from_icon_name(self.btn_icon)
 
-	config["zandronum"]["exec"] = parser.get("zandronum", "exec", fallback="/usr/bin/zandronum")
-	config["zandronum"]["mods"] = parser.getboolean("zandronum", "mods", fallback=True)
+		self.label = Gtk.Label(label="")
 
-	return(config)
+		self.box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+		self.box.set_spacing(12)
+		self.box.append(self.image)
+		self.box.append(self.label)
 
-#-------------------------------------------------------------------------
-# FUNCTION: set_file_filters
-#-------------------------------------------------------------------------
-def set_file_filters(widget, filters):
-	file_filter = Gtk.FileFilter()
-	file_filter.set_name(filters["name"])
+		self.set_child(self.box)
 
-	for filt in filters["patterns"]:
-		file_filter.add_pattern(filt)
+		# Create dialog
+		self.dialog = Gtk.FileChooserNative.new(title=self.dlg_title, parent=self.dlg_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
+		self.dialog.set_select_multiple(False)
+		self.dialog.set_modal(True)
+		self.dialog.connect("response", self.on_dialog_response)
 
-	widget.add_filter(file_filter)
+		# Set handler for button click
+		self.connect("clicked", self.on_clicked)
 
-#-------------------------------------------------------------------------
-# FUNCTION: initialize_widgets
-#-------------------------------------------------------------------------
-def initialize_widgets():
-	# Game combobox
-	game_store.clear()
-
-	game_index = 0
-
-	iwads = os.listdir(os.path.join(app_dir, "iwads"))
-	iwads.sort()
-
-	for i in range(len(iwads)):
-		if iwads[i] in doom_iwads:
-			game_store.append([doom_iwads[iwads[i]]["name"], iwads[i]])
-
-		if iwads[i] == main_config["launcher"]["iwad"]:
-			game_index = i
-
-	try:
-		game_combo.set_active(game_index)
-	except:
-		game_combo.set_active(-1)
-
-	# Launch button
-	launch_btn.set_sensitive(True if len(game_store) > 0 else False)
-
-	# PWAD file button
-	pwad_btn.unselect_all()
-
-	pwad_btn.set_current_folder(config_dir)
-	pwad_btn.set_filename(main_config["launcher"]["file"])
-
-	# Entries
-	warp_entry.set_text(main_config["launcher"]["warp"])
-	params_entry.set_text(main_config["launcher"]["params"])
-
-#-------------------------------------------------------------------------
-# FUNCTION: reset_widgets
-#-------------------------------------------------------------------------
-def reset_widgets():
-	try:
-		game_combo.set_active(0)
-	except:
-		game_combo.set_active(-1)
-	pwad_btn.unselect_all()
-	warp_entry.set_text("")
-	params_entry.set_text("")
-
-#-------------------------------------------------------------------------
-# CLASS: EventHandlers
-#-------------------------------------------------------------------------
-class EventHandlers:
-	def on_window_main_key_press_event(self, widget, event):
-		# Check modifiers
-		ctrl = (event.state & Gdk.ModifierType.CONTROL_MASK)
-		shift = (event.state & Gdk.ModifierType.SHIFT_MASK)
-		alt = (event.state & Gdk.ModifierType.MOD1_MASK)
-		mod_state = (ctrl | shift | alt)
-
-		# Close window if ESC key pressed (and no modifiers)
-		if event.keyval == Gdk.KEY_Escape and mod_state == 0:
-			main_window.destroy()
-
-		# Launch Zandronum if ENTER key pressed (and no modifiers)
-		if (event.keyval == Gdk.KEY_Return or event.keyval == Gdk.KEY_KP_Enter) and mod_state == 0:
-			self.on_btn_launch_clicked(launch_btn)
-
-		# Close window if Ctrl + q pressed
-		if Gdk.keyval_name(event.keyval) == 'q' and ctrl and alt == 0 and shift == 0:
-			main_window.destroy()
-
-	def on_btn_clear_pwad_clicked(self, button):
-		pwad_btn.unselect_all()
-
-	def on_menu_reset_clicked(self, button):
-		reset_widgets()
-
-	def on_menu_settings_clicked(self, button):
-		global main_config
-		global zandronum_dirs
-
-		prefs_execfile_btn.set_filename(main_config["zandronum"]["exec"])
-		prefs_mods_switch.set_active(main_config["zandronum"]["mods"])
-
-		dlg_response = prefs_dialog.run()
-
-		if(dlg_response == Gtk.ResponseType.OK):
-			zandronum_exec = prefs_execfile_btn.get_filename()
-
-			if (zandronum_exec is not None):
-				main_config["zandronum"]["exec"] = zandronum_exec
-
-			main_config["zandronum"]["mods"] = prefs_mods_switch.get_active()
-
-		prefs_dialog.hide()
-
-	def on_btn_launch_clicked(self, button):
-		# Initialize Zandronum command line with executable
-		cmdline = main_config["zandronum"]["exec"]
-
-		# Get game combox selection
-		game_item = game_combo.get_active_iter()
-		try:
-			game_file = game_store[game_item][1]
-			cmdline += ' -iwad "{:s}/iwads/{:s}"'.format(app_dir, game_file)
-
-			# Load patch
-			patch_file = doom_iwads[game_file]["patch"]
-			if patch_file != "":
-				cmdline += ' -file "{:s}/iwads/{:s}"'.format(app_dir, patch_file)
-
-			# Load mods
-			if main_config["zandronum"]["mods"] == True:
-				game_mods = doom_iwads[game_file]["mods"]
-				
-				for mod_file in game_mods:
-					cmdline += ' -file "{:s}/mods/{:s}"'.format(app_dir, mod_file)
-		except:
-			game_file = ""
-
-		# Get PWAD file
-		pwad_file = pwad_btn.get_filename()
-		if pwad_file is None:
-			pwad_file = ""
+	def set_label(self):
+		if os.path.exists(self.selected_file):
+			self.label.set_text(os.path.basename(self.selected_file.rstrip(os.sep)))
 		else:
-			cmdline += ' -file "{:s}"'.format(pwad_file)
+			self.label.set_text("(None)")
 
-		# Get warp level
-		warp_level = warp_entry.get_text()
-		if warp_level != "":
-			cmdline += ' -warp {:s}'.format(warp_level)
+	def set_file_filter(self, file_filter):
+		if file_filter is not None:
+			ffilter = Gtk.FileFilter()
+			ffilter.set_name(file_filter["name"])
+			for pattern in file_filter["patterns"]:
+				ffilter.add_pattern(pattern)
+			self.dialog.add_filter(ffilter)
 
-		# Get extra params
-		extra_params = params_entry.get_text()
-		if extra_params != "":
-			cmdline += ' {:s}'.format(extra_params)
+	def set_selected_file(self, sel_file):
+		self.selected_file = sel_file
+		self.set_label()
 
-		# Update launcher params
-		main_config["launcher"] = {
-			"iwad": game_file,
-			"file": pwad_file,
-			"warp": warp_level,
-			"params": extra_params
+	def get_selected_file(self):
+		if os.path.exists(self.selected_file): return(self.selected_file)
+		else: return("")
+
+	def set_default_folder(self, def_folder):
+		self.default_folder = def_folder
+		self.set_label()
+
+	def on_clicked(self, button):
+		if os.path.exists(self.selected_file):
+			self.dialog.set_file(Gio.File.new_for_path(self.selected_file))
+		else:
+			if os.path.exists(self.default_folder):
+				self.dialog.set_current_folder(Gio.File.new_for_path(self.default_folder))
+
+		self.dialog.show()
+
+	def on_dialog_response(self, dialog, response):
+		if response == Gtk.ResponseType.ACCEPT:
+			self.selected_file = dialog.get_file().get_path()
+			self.set_label()
+
+class PreferencesDialog(Gtk.Dialog):
+	dlg_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+		self.set_default_size(560, -1)
+		self.set_title("Zandronum Settings")
+		self.set_transient_for(self.dlg_parent)
+		self.set_destroy_with_parent(True)
+		self.set_modal(True)
+
+		# Executable button
+		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, btn_icon="application-x-executable-symbolic")
+
+		self.exec_listrow = Adw.ActionRow(title="Application Path", activatable=True, selectable=True)
+		self.exec_listrow.add_suffix(self.exec_btn)
+		self.exec_listrow.set_activatable_widget(self.exec_btn)
+
+		# IWAD dir button
+		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Directory", dlg_parent=self, folder_select=True)
+
+		self.iwaddir_listrow = Adw.ActionRow(title="IWAD Directory", activatable=True, selectable=True)
+		self.iwaddir_listrow.add_suffix(self.iwaddir_btn)
+		self.iwaddir_listrow.set_activatable_widget(self.iwaddir_btn)
+
+		# Mods switch
+		self.mods_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
+
+		self.mods_listrow = Adw.ActionRow(title="Enable Hi-Res Graphics", activatable=True, selectable=True)
+		self.mods_listrow.add_suffix(self.mods_switch)
+		self.mods_listrow.set_activatable_widget(self.mods_switch)
+
+		# Preferences group
+		self.zd_prefs = Adw.PreferencesGroup()
+		self.zd_prefs.add(self.exec_listrow)
+		self.zd_prefs.add(self.iwaddir_listrow)
+		self.zd_prefs.add(self.mods_listrow)
+
+		# Dialog content box
+		self.dlg_box = self.get_content_area()
+		self.dlg_box.set_margin_top(30)
+		self.dlg_box.set_margin_bottom(36)
+		self.dlg_box.set_margin_start(36)
+		self.dlg_box.set_margin_end(36)
+
+		self.dlg_box.append(self.zd_prefs)
+
+class MainWindow(Gtk.ApplicationWindow):
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+		self.set_default_size(620, -1)
+		self.set_title("Zandronum Launcher")
+
+		# Actions
+		self.action_menu_reset = Gio.SimpleAction.new("menu_reset", None)
+		self.action_menu_reset.connect("activate", self.on_menu_reset_clicked)
+		self.add_action(self.action_menu_reset)
+
+		self.action_menu_prefs = Gio.SimpleAction.new("menu_prefs", None)
+		self.action_menu_prefs.connect("activate", self.on_menu_prefs_clicked)
+		self.add_action(self.action_menu_prefs)
+		app.set_accels_for_action("win.menu_prefs", ["<primary>comma"])
+
+		self.action_key_quit = Gio.SimpleAction.new("key_quit", None)
+		self.action_key_quit.connect("activate", self.on_keypress_quit)
+		self.add_action(self.action_key_quit)
+		app.set_accels_for_action("win.key_quit", ["q", "<primary>q"])
+
+		self.action_key_launch = Gio.SimpleAction.new("key_launch", None)
+		self.action_key_launch.connect("activate", self.on_keypress_launch)
+		self.add_action(self.action_key_launch)
+		app.set_accels_for_action("win.key_launch", ["<primary>Return", "<primary>KP_Enter"])
+
+		# Header menu
+		reset_menu = Gio.Menu.new()
+		reset_menu.append("Reset to Defaults", "win.menu_reset")
+		prefs_menu = Gio.Menu.new()
+		prefs_menu.append("Zandronum Settings...", "win.menu_prefs")
+
+		header_menu = Gio.Menu.new()
+		header_menu.append_section(None, reset_menu)
+		header_menu.append_section(None, prefs_menu)
+
+		self.header_popover = Gtk.PopoverMenu()
+		self.header_popover.set_menu_model(header_menu)
+
+		# Header
+		self.header = Gtk.HeaderBar()
+		self.set_titlebar(self.header)
+
+		self.launch_btn = Gtk.Button(label="Launch")
+		self.launch_btn.add_css_class("suggested-action")
+		self.launch_btn.add_css_class("default")
+		self.launch_btn.connect("clicked", self.on_launch_btn_clicked)
+
+		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic")
+		self.menu_btn.set_popover(self.header_popover)
+
+		self.header.pack_start(self.launch_btn)
+		self.header.pack_end(self.menu_btn)
+
+		# IWAD (game) combo
+		self.iwad_combo = Gtk.ComboBox(valign=Gtk.Align.CENTER, width_request=350)
+
+		self.iwad_store = Gtk.ListStore(str, str)
+		self.iwad_combo.set_model(self.iwad_store)
+
+		iwad_renderer = Gtk.CellRendererText()
+
+		self.iwad_combo.pack_start(iwad_renderer, True)
+		self.iwad_combo.add_attribute(iwad_renderer, "text", 0)
+
+		self.populate_iwad_combo()
+
+		self.iwad_listrow = Adw.ActionRow(title="Game", activatable=True, selectable=True)
+		self.iwad_listrow.add_suffix(self.iwad_combo)
+		self.iwad_listrow.set_activatable_widget(self.iwad_combo)
+
+		# PWAD file/clear buttons
+		pwad_filter = {
+			"name": "WAD files (*.wad, *.pk3, *.pk7, *.zip, *.7z)",
+			"patterns": ["*.wad", "*.WAD", "*.pk3", "*.PK3", "*.pk7", "*.PK7", "*.zip", "*.ZIP", "*.7z", "*.7Z"]
 		}
 
-		# Close window
-		main_window.destroy()
+		self.pwadfile_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=304, dlg_title="Select WAD File", dlg_parent=self)
+		self.pwadfile_btn.set_file_filter(pwad_filter)
+		self.pwadfile_btn.set_default_folder(app.config_dir)
+		self.pwadfile_btn.set_selected_file(app.main_config["launcher"]["file"])
+
+		self.pwadclear_btn = Gtk.Button(icon_name="edit-clear-symbolic", valign=Gtk.Align.CENTER)
+		self.pwadclear_btn.connect("clicked", self.on_pwadclear_btn_clicked)
+
+		self.pwad_listrow = Adw.ActionRow(title="Optional WAD File", activatable=True, selectable=True)
+		self.pwad_listrow.add_suffix(self.pwadfile_btn)
+		self.pwad_listrow.add_suffix(self.pwadclear_btn)
+		self.pwad_listrow.set_activatable_widget(self.pwadfile_btn)
+
+		# Game preferences group
+		self.game_prefs = Adw.PreferencesGroup(title="Game Settings")
+		self.game_prefs.add(self.iwad_listrow)
+		self.game_prefs.add(self.pwad_listrow)
+
+		# Warp entru
+		self.warp_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
+		self.warp_entry.set_text(app.main_config["launcher"]["warp"])
+
+		self.warp_listrow = Adw.ActionRow(title="Warp to Level", activatable=True, selectable=True)
+		self.warp_listrow.add_suffix(self.warp_entry)
+		self.warp_listrow.set_activatable_widget(self.warp_entry)
+
+		# Custom params entry
+		self.params_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
+		self.params_entry.set_text(app.main_config["launcher"]["params"])
+
+		self.params_listrow = Adw.ActionRow(title="Custom Parameters", activatable=True, selectable=True)
+		self.params_listrow.add_suffix(self.params_entry)
+		self.params_listrow.set_activatable_widget(self.params_entry)
+
+		# Additional preferences group
+		self.add_prefs = Adw.PreferencesGroup(title="Additional Parameters")
+		self.add_prefs.add(self.warp_listrow)
+		self.add_prefs.add(self.params_listrow)
+
+		# Window box
+		self.win_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+		self.win_box.set_spacing(24)
+		self.win_box.set_margin_top(30)
+		self.win_box.set_margin_bottom(36)
+		self.win_box.set_margin_start(36)
+		self.win_box.set_margin_end(36)
+
+		self.win_box.append(self.game_prefs)
+		self.win_box.append(self.add_prefs)
+		
+		self.set_child(self.win_box)
+
+	def populate_iwad_combo(self):
+		self.iwad_store.clear()
+
+		iwad_index = 0
+
+		iwads = os.listdir(app.main_config["zandronum"]["iwad_dir"])
+		iwads.sort()
+
+		for i in range(len(iwads)):
+			iwad_lc = iwads[i].lower()
+
+			if iwad_lc in doom_iwads:
+				iwad_iter = self.iwad_store.append()
+				self.iwad_store.set_value(iwad_iter, 0, doom_iwads[iwad_lc]["name"])
+				self.iwad_store.set_value(iwad_iter, 1, iwad_lc)
+				
+			if iwad_lc == app.main_config["launcher"]["iwad"]:
+				iwad_index = i
+
+		try:
+			self.iwad_combo.set_active(iwad_index)
+		except:
+			self.iwad_combo.set_active(-1)
+
+		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
+		self.action_key_launch.set_enabled(True if len(self.iwad_store) > 0 else False)
+
+	def on_keypress_quit(self, action, param):
+		self.destroy()
+
+	def on_keypress_launch(self, action, param):
+		app.launch_flag = True
+
+		self.destroy()
+
+	def on_pwadclear_btn_clicked(self, button):
+		self.pwadfile_btn.set_selected_file("")
+
+	def on_launch_btn_clicked(self, button):
+		app.launch_flag = True
+
+		self.destroy()
+
+	def on_menu_reset_clicked(self, action, param):
+		try:
+			self.iwad_combo.set_active(0)
+		except:
+			self.iwad_combo.set_active(-1)
+		self.pwadfile_btn.set_selected_file("")
+		self.warp_entry.set_text("")
+		self.params_entry.set_text("")
+
+	def on_menu_prefs_clicked(self, action, param):
+		prefs_dialog = PreferencesDialog(dlg_parent=self)
+
+		prefs_dialog.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
+		prefs_dialog.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
+		prefs_dialog.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
+
+		prefs_dialog.connect("response", self.on_preferences_dialog_response)
+
+		prefs_dialog.show()
+
+	def on_preferences_dialog_response(self, dialog, response):
+		dialog.hide()
+
+		exec_file = dialog.exec_btn.get_selected_file()
+
+		if exec_file != "":
+			app.main_config["zandronum"]["exec_file"] = exec_file
+
+		iwad_dir = dialog.iwaddir_btn.get_selected_file()
+
+		if iwad_dir != "" and iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
+			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
+			self.populate_iwad_combo()
+
+		app.main_config["zandronum"]["use_mods"] = dialog.mods_switch.get_active()
+
+	def get_iwad_combo(self):
+		iwad_item = self.iwad_combo.get_active_iter()
+
+		try:
+			iwad_filename = self.iwad_store[iwad_item][1]
+		except:
+			iwad_filename = ""
+
+		return(iwad_filename)
+
+	def get_pwadfile_btn(self):
+		return(self.pwadfile_btn.get_selected_file())
+
+	def get_warp_entry(self):
+		return(self.warp_entry.get_text())
+
+	def get_params_entry(self):
+		return(self.params_entry.get_text())
+
+class LauncherApp(Adw.Application):
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
+		self.connect('activate', self.on_activate)
+
+		# Launch Zandronum flag
+		self.launch_flag = False
+
+		# App dirs
+		self.app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
+		self.patch_dir = os.path.join(self.app_dir, "patches")
+		self.mod_dir = os.path.join(self.app_dir, "mods")
+
+		# Config dir
+		self.config_dir = os.path.join(os.getenv('HOME'), ".config/zandronum")
+
+		if os.path.exists(self.config_dir) == False:
+			os.makedirs(self.config_dir, exist_ok=True)
+
+		# Parse configuration file
+		self.launcher_config_file = os.path.join(self.config_dir, "launcher.conf")
+
+		parser = configparser.ConfigParser()
+		parser.read(self.launcher_config_file)
+
+		default_exec_file = "/usr/bin/zandronum"
+		default_iwad_dir = os.path.join(self.app_dir, "iwads")
+
+		self.main_config = { "launcher": {}, "zandronum": {} }
+
+		self.main_config["launcher"]["iwad"] = parser.get("launcher", "iwad", fallback="")
+		self.main_config["launcher"]["file"] = parser.get("launcher", "file", fallback="")
+		self.main_config["launcher"]["warp"] = parser.get("launcher", "warp", fallback="")
+		self.main_config["launcher"]["params"] = parser.get("launcher", "params", fallback="")
+
+		self.main_config["zandronum"]["exec_file"] = parser.get("zandronum", "exec_file", fallback=default_exec_file)
+		self.main_config["zandronum"]["iwad_dir"] = parser.get("zandronum", "iwad_dir", fallback=default_iwad_dir)
+		try:
+			self.main_config["zandronum"]["use_mods"] = parser.getboolean("zandronum", "use_mods", fallback=True)
+		except:
+			self.main_config["zandronum"]["use_mods"] = True
+
+		if self.main_config["zandronum"]["exec_file"] == "" or os.path.exists(self.main_config["zandronum"]["exec_file"]) == False:
+			self.main_config["zandronum"]["exec_file"] = default_exec_file
+
+		if self.main_config["zandronum"]["iwad_dir"] == "" or os.path.exists(self.main_config["zandronum"]["iwad_dir"]) == False:
+			self.main_config["zandronum"]["iwad_dir"] = default_iwad_dir
+
+	def on_activate(self, app):
+		self.main_window = MainWindow(application=app)
+		self.main_window.present()
+
+	def write_launcher_config(self):
+		# Read control values into config
+		self.main_config["launcher"]["iwad"] = self.main_window.get_iwad_combo()
+		self.main_config["launcher"]["file"] = self.main_window.get_pwadfile_btn()
+		self.main_config["launcher"]["warp"] = self.main_window.get_warp_entry()
+		self.main_config["launcher"]["params"] = self.main_window.get_params_entry()
+
+		# Save config
+		parser = configparser.ConfigParser()
+		parser.read_dict(self.main_config)
+
+		with open(self.launcher_config_file, 'w') as configfile:
+			parser.write(configfile)
+
+	def launch_zandronum(self):
+		# Initialize Zandronum command line with executable
+		cmdline = self.main_config["zandronum"]["exec_file"]
+
+		# Get IWAD na,e
+		iwad_name = self.main_config["launcher"]["iwad"]
+
+		# Add IWAD file if present
+		if iwad_name != "":
+			iwad_file = os.path.join(self.main_config["zandronum"]["iwad_dir"], iwad_name)
+
+			if os.path.exists(iwad_file):
+				cmdline += ' -iwad "{:s}"'.format(iwad_file)
+
+				# Add patch file if present
+				patch_name = doom_iwads[iwad_name]["patch"]
+				if patch_name != "":
+					patch_file = os.path.join(self.patch_dir, patch_name)
+
+					if os.path.exists(patch_file):
+						cmdline += ' -file "{:s}"'.format(patch_file)
+
+				# Add mod files if use hi-res graphics option is true
+				if self.main_config["zandronum"]["use_mods"] == True:
+					mod_list = doom_iwads[iwad_name]["mods"]
+
+					for mod_name in mod_list:
+						if mod_name != "":
+							mod_file = os.path.join(self.mod_dir, mod_name)
+
+							if os.path.exists(mod_file):
+								cmdline += ' -file "{:s}"'.format(mod_file)
+
+				# Add PWAD file if present
+				pwad_file = self.main_config["launcher"]["file"]
+				if os.path.exists(pwad_file) != "": cmdline += ' -file "{:s}"'.format(pwad_file)
+
+				# Add warp level if present
+				warp_level = self.main_config["launcher"]["warp"]
+				if warp_level != "": cmdline += ' -warp {:s}'.format(warp_level)
+
+				# Add extra params if present
+				extra_params = self.main_config["launcher"]["params"]
+				if extra_params != "": cmdline += ' {:s}'.format(extra_params)
+			else:
+				print("Zandronum-Launcher: ERROR: IWAD file not found")
+				return
+		else:
+			print("Zandronum-Launcher: ERROR: No IWAD file specified")
+			return
 
 		# Launch Zandronum
 		subprocess.Popen(shlex.split(cmdline))
 
-#-------------------------------------------------------------------------
-# MAIN SCRIPT
-#-------------------------------------------------------------------------
-# Create config dir if it does not exist
-if os.path.exists(config_dir) == False:
-	os.makedirs(config_dir, exist_ok=True)
+# Main app
+app = LauncherApp(application_id="com.github.drakkar.zandronumlauncher")
+app.run(sys.argv)
 
-# Copy Zandronum INI if it does not exist
-if os.path.exists(zandronum_ini_file) == False:
-	zandronum_ini_src = os.path.join(app_dir, "config/zandronum.ini")
+app.write_launcher_config()
 
-	shutil.copyfile(zandronum_ini_src, zandronum_ini_file)
+if app.launch_flag == True:
+	app.launch_zandronum()
 
-# Parse configuration file
-main_config = parse_launcher_conf(launcher_config_file)
-
-# Set application name (match .desktop name)
-GLib.set_prgname("Zandronum-Launcher")
-
-# Create dialog with glade template
-builder = Gtk.Builder()
-builder.add_from_file(os.path.join(app_dir, "zandronum-launcher.ui"))
-builder.connect_signals(EventHandlers())
-
-# Get main window
-main_window = builder.get_object("window_main")
-main_window.connect("destroy", Gtk.main_quit)
-
-# Get widgets
-game_combo = builder.get_object("combo_game")
-pwad_btn = builder.get_object("btn_pwad")
-warp_entry = builder.get_object("entry_warp")
-params_entry = builder.get_object("entry_params")
-launch_btn = builder.get_object("btn_launch")
-
-# Get dialogs
-prefs_dialog = builder.get_object("dialog_prefs")
-prefs_execfile_btn = builder.get_object("btn_execfile")
-prefs_mods_switch = builder.get_object("switch_mods")
-
-# Prepare game combo
-game_store = Gtk.ListStore(str, str)
-game_combo.set_model(game_store)
-
-game_renderer = Gtk.CellRendererText()
-
-game_combo.pack_start(game_renderer, True)
-game_combo.add_attribute(game_renderer, "text", 0)
-
-# Set file chooser filters
-set_file_filters(widget=pwad_btn, filters=file_filters["pwad"])
-
-# Initialize widgets
-initialize_widgets()
-
-# Show main window
-main_window.show_all()
-Gtk.main()
-
-# Destroy dialogs
-prefs_dialog.destroy()
-
-# Save preferences
-parser = configparser.ConfigParser()
-parser.read_dict(main_config)
-
-with open(launcher_config_file, 'w') as configfile:
-	parser.write(configfile)
+app.main_window.destroy()

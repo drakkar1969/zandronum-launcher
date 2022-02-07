@@ -108,23 +108,26 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		# Executable button
 		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, btn_icon="application-x-executable-symbolic")
 
-		self.exec_listrow = Adw.ActionRow(title="Application Path", activatable=True, selectable=True)
+		self.exec_listrow = Adw.ActionRow(title="Application _Path", activatable=True, selectable=True)
 		self.exec_listrow.add_suffix(self.exec_btn)
 		self.exec_listrow.set_activatable_widget(self.exec_btn)
+		self.exec_listrow.set_use_underline(True)
 
 		# IWAD dir button
 		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Directory", dlg_parent=self, folder_select=True)
 
-		self.iwaddir_listrow = Adw.ActionRow(title="IWAD Directory", activatable=True, selectable=True)
+		self.iwaddir_listrow = Adw.ActionRow(title="IWAD _Directory", activatable=True, selectable=True)
 		self.iwaddir_listrow.add_suffix(self.iwaddir_btn)
 		self.iwaddir_listrow.set_activatable_widget(self.iwaddir_btn)
+		self.iwaddir_listrow.set_use_underline(True)
 
 		# Mods switch
 		self.mods_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
 
-		self.mods_listrow = Adw.ActionRow(title="Enable Hi-Res Graphics", activatable=True, selectable=True)
+		self.mods_listrow = Adw.ActionRow(title="Enable Hi-Res _Graphics", activatable=True, selectable=True)
 		self.mods_listrow.add_suffix(self.mods_switch)
 		self.mods_listrow.set_activatable_widget(self.mods_switch)
+		self.mods_listrow.set_use_underline(True)
 
 		# Preferences group
 		self.prefs_group = Adw.PreferencesGroup()
@@ -206,9 +209,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
 		self.populate_iwad_combo()
 
-		self.iwad_listrow = Adw.ActionRow(title="Game", activatable=True, selectable=True)
+		self.iwad_listrow = Adw.ActionRow(title="_Game", activatable=True, selectable=True)
 		self.iwad_listrow.add_suffix(self.iwad_combo)
 		self.iwad_listrow.set_activatable_widget(self.iwad_combo)
+		self.iwad_listrow.set_use_underline(True)
 
 		# PWAD file/clear buttons
 		pwad_filter = {
@@ -224,10 +228,11 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.pwadclear_btn = Gtk.Button(icon_name="edit-clear-symbolic", valign=Gtk.Align.CENTER)
 		self.pwadclear_btn.connect("clicked", self.on_pwadclear_btn_clicked)
 
-		self.pwad_listrow = Adw.ActionRow(title="Optional WAD File", activatable=True, selectable=True)
+		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", activatable=True, selectable=True)
 		self.pwad_listrow.add_suffix(self.pwadfile_btn)
 		self.pwad_listrow.add_suffix(self.pwadclear_btn)
 		self.pwad_listrow.set_activatable_widget(self.pwadfile_btn)
+		self.pwad_listrow.set_use_underline(True)
 
 		# Game preferences group
 		self.game_group = Adw.PreferencesGroup(title="Game Preferences")
@@ -238,17 +243,19 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.warp_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
 		self.warp_entry.set_text(app.main_config["launcher"]["warp"])
 
-		self.warp_listrow = Adw.ActionRow(title="Warp to Level", activatable=True, selectable=True)
+		self.warp_listrow = Adw.ActionRow(title="_Warp to Level", activatable=True, selectable=True)
 		self.warp_listrow.add_suffix(self.warp_entry)
 		self.warp_listrow.set_activatable_widget(self.warp_entry)
+		self.warp_listrow.set_use_underline(True)
 
 		# Custom params entry
 		self.params_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
 
-		self.params_listrow = Adw.ActionRow(title="Custom Parameters", activatable=True, selectable=True)
+		self.params_listrow = Adw.ActionRow(title="_Custom Parameters", activatable=True, selectable=True)
 		self.params_listrow.add_suffix(self.params_entry)
 		self.params_listrow.set_activatable_widget(self.params_entry)
+		self.params_listrow.set_use_underline(True)
 
 		# Additional preferences group
 		self.add_group = Adw.PreferencesGroup(title="Additional Parameters")

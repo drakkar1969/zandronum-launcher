@@ -103,6 +103,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.set_transient_for(self.win_parent)
 		self.set_destroy_with_parent(True)
 		self.set_modal(True)
+		self.set_search_enabled(False)
 
 		# Executable button
 		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, btn_icon="application-x-executable-symbolic")

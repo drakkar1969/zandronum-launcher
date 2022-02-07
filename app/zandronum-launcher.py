@@ -99,7 +99,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		super().__init__(*args, **kwargs)
 
 		self.set_default_size(560, -1)
-		self.set_title("Zandronum Settings")
+		self.set_title("Zandronum Preferences")
 		self.set_transient_for(self.win_parent)
 		self.set_destroy_with_parent(True)
 		self.set_modal(True)
@@ -169,7 +169,7 @@ class MainWindow(Gtk.ApplicationWindow):
 		reset_menu = Gio.Menu.new()
 		reset_menu.append("Reset to Defaults", "win.menu_reset")
 		prefs_menu = Gio.Menu.new()
-		prefs_menu.append("Zandronum Settings...", "win.menu_prefs")
+		prefs_menu.append("Zandronum Preferences...", "win.menu_prefs")
 
 		header_menu = Gio.Menu.new()
 		header_menu.append_section(None, reset_menu)
@@ -230,7 +230,7 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.pwad_listrow.set_activatable_widget(self.pwadfile_btn)
 
 		# Game preferences group
-		self.game_group = Adw.PreferencesGroup(title="Game Settings")
+		self.game_group = Adw.PreferencesGroup(title="Game Preferences")
 		self.game_group.add(self.iwad_listrow)
 		self.game_group.add(self.pwad_listrow)
 

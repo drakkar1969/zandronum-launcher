@@ -334,11 +334,11 @@ class MainWindow(Gtk.ApplicationWindow):
 		prefs_window.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
 		prefs_window.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
 
-		prefs_window.connect("close-request", self.on_preferences_dialog_close)
+		prefs_window.connect("close-request", self.on_preferences_window_close)
 
 		prefs_window.show()
 
-	def on_preferences_dialog_close(self, window):
+	def on_preferences_window_close(self, window):
 		exec_file = window.exec_btn.get_selected_file()
 
 		if exec_file != "":

@@ -92,15 +92,15 @@ class FileDialogButton(Gtk.Button):
 			self.selected_file = dialog.get_file().get_path()
 			self.set_label()
 
-class PreferencesDialog(Gtk.Dialog):
-	dlg_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)
+class PreferencesWindow(Adw.PreferencesWindow):
+	win_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
 		self.set_default_size(560, -1)
 		self.set_title("Zandronum Settings")
-		self.set_transient_for(self.dlg_parent)
+		self.set_transient_for(self.win_parent)
 		self.set_destroy_with_parent(True)
 		self.set_modal(True)
 
@@ -126,19 +126,16 @@ class PreferencesDialog(Gtk.Dialog):
 		self.mods_listrow.set_activatable_widget(self.mods_switch)
 
 		# Preferences group
-		self.zd_prefs = Adw.PreferencesGroup()
-		self.zd_prefs.add(self.exec_listrow)
-		self.zd_prefs.add(self.iwaddir_listrow)
-		self.zd_prefs.add(self.mods_listrow)
+		self.prefs_group = Adw.PreferencesGroup()
+		self.prefs_group.add(self.exec_listrow)
+		self.prefs_group.add(self.iwaddir_listrow)
+		self.prefs_group.add(self.mods_listrow)
 
-		# Dialog content box
-		self.dlg_box = self.get_content_area()
-		self.dlg_box.set_margin_top(30)
-		self.dlg_box.set_margin_bottom(36)
-		self.dlg_box.set_margin_start(36)
-		self.dlg_box.set_margin_end(36)
+		# Preferences page
+		self.page = Adw.PreferencesPage()
+		self.page.add(self.prefs_group)
 
-		self.dlg_box.append(self.zd_prefs)
+		self.add(self.page)
 
 class MainWindow(Gtk.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
@@ -232,9 +229,9 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.pwad_listrow.set_activatable_widget(self.pwadfile_btn)
 
 		# Game preferences group
-		self.game_prefs = Adw.PreferencesGroup(title="Game Settings")
-		self.game_prefs.add(self.iwad_listrow)
-		self.game_prefs.add(self.pwad_listrow)
+		self.game_group = Adw.PreferencesGroup(title="Game Settings")
+		self.game_group.add(self.iwad_listrow)
+		self.game_group.add(self.pwad_listrow)
 
 		# Warp entru
 		self.warp_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
@@ -253,9 +250,9 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.params_listrow.set_activatable_widget(self.params_entry)
 
 		# Additional preferences group
-		self.add_prefs = Adw.PreferencesGroup(title="Additional Parameters")
-		self.add_prefs.add(self.warp_listrow)
-		self.add_prefs.add(self.params_listrow)
+		self.add_group = Adw.PreferencesGroup(title="Additional Parameters")
+		self.add_group.add(self.warp_listrow)
+		self.add_group.add(self.params_listrow)
 
 		# Window box
 		self.win_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -265,8 +262,8 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.win_box.set_margin_start(36)
 		self.win_box.set_margin_end(36)
 
-		self.win_box.append(self.game_prefs)
-		self.win_box.append(self.add_prefs)
+		self.win_box.append(self.game_group)
+		self.win_box.append(self.add_group)
 		
 		self.set_child(self.win_box)
 
@@ -323,31 +320,29 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.params_entry.set_text("")
 
 	def on_menu_prefs_clicked(self, action, param):
-		prefs_dialog = PreferencesDialog(dlg_parent=self)
+		prefs_window = PreferencesWindow(win_parent=self)
 
-		prefs_dialog.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
-		prefs_dialog.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
-		prefs_dialog.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
+		prefs_window.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
+		prefs_window.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
+		prefs_window.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
 
-		prefs_dialog.connect("response", self.on_preferences_dialog_response)
+		prefs_window.connect("close-request", self.on_preferences_dialog_close)
 
-		prefs_dialog.show()
+		prefs_window.show()
 
-	def on_preferences_dialog_response(self, dialog, response):
-		dialog.hide()
-
-		exec_file = dialog.exec_btn.get_selected_file()
+	def on_preferences_dialog_close(self, window):
+		exec_file = window.exec_btn.get_selected_file()
 
 		if exec_file != "":
 			app.main_config["zandronum"]["exec_file"] = exec_file
 
-		iwad_dir = dialog.iwaddir_btn.get_selected_file()
+		iwad_dir = window.iwaddir_btn.get_selected_file()
 
 		if iwad_dir != "" and iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
 			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
 			self.populate_iwad_combo()
 
-		app.main_config["zandronum"]["use_mods"] = dialog.mods_switch.get_active()
+		app.main_config["zandronum"]["use_mods"] = window.mods_switch.get_active()
 
 	def get_iwad_combo(self):
 		iwad_item = self.iwad_combo.get_active_iter()

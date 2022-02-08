@@ -224,33 +224,28 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_listrow.set_activatable_widget(self.pwadfile_btn)
 		self.pwad_listrow.set_use_underline(True)
 
-		# Game preferences group
-		self.game_group = Adw.PreferencesGroup(title="Game Preferences")
-		self.game_group.add(self.iwad_listrow)
-		self.game_group.add(self.pwad_listrow)
-
-		# Warp entry
-		self.warp_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
-		self.warp_entry.set_text(app.main_config["launcher"]["warp"])
-
-		self.warp_listrow = Adw.ActionRow(title="_Warp to Level", activatable=True, selectable=True)
-		self.warp_listrow.add_suffix(self.warp_entry)
-		self.warp_listrow.set_activatable_widget(self.warp_entry)
-		self.warp_listrow.set_use_underline(True)
-
 		# Custom params entry
 		self.params_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
 
-		self.params_listrow = Adw.ActionRow(title="_Custom Parameters", activatable=True, selectable=True)
+		self.params_listrow = Adw.ActionRow(title="_Custom Switches", activatable=True, selectable=True)
 		self.params_listrow.add_suffix(self.params_entry)
 		self.params_listrow.set_activatable_widget(self.params_entry)
 		self.params_listrow.set_use_underline(True)
 
-		# Additional preferences group
-		self.add_group = Adw.PreferencesGroup(title="Additional Parameters")
-		self.add_group.add(self.warp_listrow)
-		self.add_group.add(self.params_listrow)
+		# Additional expander row
+		self.add_expandrow = Adw.ExpanderRow(title="_Additional Parameters", activatable=True, selectable=True)
+		self.add_expandrow.add_row(self.params_listrow)
+		self.add_expandrow.set_show_enable_switch(True)
+		self.add_expandrow.set_enable_expansion(app.main_config["launcher"]["params_on"])
+		self.add_expandrow.set_expanded(app.main_config["launcher"]["params_on"])
+		self.add_expandrow.set_use_underline(True)
+
+		# Preferences group
+		self.prefs_group = Adw.PreferencesGroup(title="Launch Parameters")
+		self.prefs_group.add(self.iwad_listrow)
+		self.prefs_group.add(self.pwad_listrow)
+		self.prefs_group.add(self.add_expandrow)
 
 		# Preferences box
 		self.prefs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -259,8 +254,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.prefs_box.set_margin_bottom(36)
 		self.prefs_box.set_margin_start(36)
 		self.prefs_box.set_margin_end(36)
-		self.prefs_box.append(self.game_group)
-		self.prefs_box.append(self.add_group)
+		self.prefs_box.append(self.prefs_group)
 
 		# Window box
 		self.win_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -320,8 +314,8 @@ class MainWindow(Adw.ApplicationWindow):
 		except:
 			self.iwad_combo.set_active(-1)
 		self.pwadfile_btn.set_selected_file("")
-		self.warp_entry.set_text("")
 		self.params_entry.set_text("")
+		self.add_expandrow.set_enable_expansion(False)
 
 	def on_menu_prefs_clicked(self, action, param):
 		prefs_window = PreferencesWindow(win_parent=self)
@@ -361,11 +355,11 @@ class MainWindow(Adw.ApplicationWindow):
 	def get_pwadfile_btn(self):
 		return(self.pwadfile_btn.get_selected_file())
 
-	def get_warp_entry(self):
-		return(self.warp_entry.get_text())
-
 	def get_params_entry(self):
 		return(self.params_entry.get_text())
+
+	def get_params_on_switch(self):
+		return(self.add_expandrow.get_enable_expansion())
 
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):
@@ -407,8 +401,11 @@ class LauncherApp(Adw.Application):
 
 		self.main_config["launcher"]["iwad"] = parser.get("launcher", "iwad", fallback="")
 		self.main_config["launcher"]["file"] = parser.get("launcher", "file", fallback="")
-		self.main_config["launcher"]["warp"] = parser.get("launcher", "warp", fallback="")
 		self.main_config["launcher"]["params"] = parser.get("launcher", "params", fallback="")
+		try:
+			self.main_config["launcher"]["params_on"] = parser.getboolean("launcher", "params_on", fallback=False)
+		except:
+			self.main_config["launcher"]["params_on"] = False
 
 		self.main_config["zandronum"]["exec_file"] = parser.get("zandronum", "exec_file", fallback=default_exec_file)
 		self.main_config["zandronum"]["iwad_dir"] = parser.get("zandronum", "iwad_dir", fallback=default_iwad_dir)
@@ -431,8 +428,8 @@ class LauncherApp(Adw.Application):
 		# Read control values into config
 		self.main_config["launcher"]["iwad"] = self.main_window.get_iwad_combo()
 		self.main_config["launcher"]["file"] = self.main_window.get_pwadfile_btn()
-		self.main_config["launcher"]["warp"] = self.main_window.get_warp_entry()
 		self.main_config["launcher"]["params"] = self.main_window.get_params_entry()
+		self.main_config["launcher"]["params_on"] = self.main_window.get_params_on_switch()
 
 		# Save config
 		parser = configparser.ConfigParser()
@@ -476,15 +473,12 @@ class LauncherApp(Adw.Application):
 
 				# Add PWAD file if present
 				pwad_file = self.main_config["launcher"]["file"]
-				if os.path.exists(pwad_file) != "": cmdline += ' -file "{:s}"'.format(pwad_file)
+				if os.path.exists(pwad_file): cmdline += ' -file "{:s}"'.format(pwad_file)
 
-				# Add warp level if present
-				warp_level = self.main_config["launcher"]["warp"]
-				if warp_level != "": cmdline += ' -warp {:s}'.format(warp_level)
-
-				# Add extra params if present
-				extra_params = self.main_config["launcher"]["params"]
-				if extra_params != "": cmdline += ' {:s}'.format(extra_params)
+				# Add extra params if present and enabled
+				if self.main_config["launcher"]["params_on"] == True:
+					extra_params = self.main_config["launcher"]["params"]
+					if extra_params != "": cmdline += ' {:s}'.format(extra_params)
 			else:
 				print("Zandronum-Launcher: ERROR: IWAD file not found")
 				return

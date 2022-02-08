@@ -32,6 +32,8 @@ class FileDialogButton(Gtk.Button):
 
 		# Add button widget
 		self.content = Adw.ButtonContent(label="", icon_name=self.btn_icon, halign=Gtk.Align.START)
+		image = self.content.get_first_child()
+		if image is not None: image.set_margin_end(6)
 		self.set_child(self.content)
 
 		# Create dialog

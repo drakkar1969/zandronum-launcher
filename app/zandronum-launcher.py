@@ -25,8 +25,8 @@ class FileDialogButton(Gtk.Button):
 		super().__init__(*args, **kwargs)
 
 		# Initialize class variables
-		self.selected_file = ""
-		self.default_folder = ""
+		self.selected_file = None
+		self.default_folder = None
 		if self.btn_icon == "":
 			self.btn_icon = "folder-symbolic" if self.folder_select == True else "document-open-symbolic"
 
@@ -46,10 +46,7 @@ class FileDialogButton(Gtk.Button):
 		self.connect("clicked", self.on_clicked)
 
 	def set_label(self):
-		if self.selected_file != "":
-			self.content.set_label(os.path.basename(self.selected_file.rstrip(os.sep)))
-		else:
-			self.content.set_label("(None)")
+		self.content.set_label(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
 
 	def set_file_filter(self, file_filter):
 		if file_filter is not None:
@@ -60,28 +57,29 @@ class FileDialogButton(Gtk.Button):
 			self.dialog.add_filter(ffilter)
 
 	def set_selected_file(self, sel_file):
-		self.selected_file = sel_file
+		self.selected_file = Gio.File.new_for_path(sel_file) if sel_file != "" else None
 		self.set_label()
 
 	def get_selected_file(self):
-		return(self.selected_file)
+		return(self.selected_file.get_path() if self.selected_file is not None else "")
 
 	def set_default_folder(self, def_folder):
-		self.default_folder = def_folder
+		self.default_folder = Gio.File.new_for_path(def_folder) if def_folder != "" else None
 		self.set_label()
 
 	def on_clicked(self, button):
-		if self.selected_file != "":
-			self.dialog.set_file(Gio.File.new_for_path(self.selected_file))
+		if self.selected_file is not None:
+			self.dialog.set_file(self.selected_file)
 		else:
-			if self.default_folder != "":
-				self.dialog.set_current_folder(Gio.File.new_for_path(self.default_folder))
+			if self.default_folder is not None:
+				self.dialog.set_current_folder(self.default_folder)
 
 		self.dialog.show()
 
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
-			self.set_selected_file(dialog.get_file().get_path())
+			self.selected_file = dialog.get_file()
+			self.set_label()
 
 class PreferencesWindow(Adw.PreferencesWindow):
 	win_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)

@@ -141,7 +141,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		self.add(self.page)
 
-class MainWindow(Gtk.ApplicationWindow):
+class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
@@ -182,8 +182,7 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.header_popover.set_menu_model(header_menu)
 
 		# Header
-		self.header = Gtk.HeaderBar()
-		self.set_titlebar(self.header)
+		self.header_bar = Adw.HeaderBar()
 
 		self.launch_btn = Gtk.Button(label="Launch")
 		self.launch_btn.add_css_class("suggested-action")
@@ -193,8 +192,8 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic")
 		self.menu_btn.set_popover(self.header_popover)
 
-		self.header.pack_start(self.launch_btn)
-		self.header.pack_end(self.menu_btn)
+		self.header_bar.pack_start(self.launch_btn)
+		self.header_bar.pack_end(self.menu_btn)
 
 		# IWAD (game) combo
 		self.iwad_combo = Gtk.ComboBox(valign=Gtk.Align.CENTER, width_request=350)
@@ -262,18 +261,24 @@ class MainWindow(Gtk.ApplicationWindow):
 		self.add_group.add(self.warp_listrow)
 		self.add_group.add(self.params_listrow)
 
+		# Preferences box
+		self.prefs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+		self.prefs_box.set_spacing(30)
+		self.prefs_box.set_margin_top(24)
+		self.prefs_box.set_margin_bottom(36)
+		self.prefs_box.set_margin_start(36)
+		self.prefs_box.set_margin_end(36)
+		self.prefs_box.append(self.game_group)
+		self.prefs_box.append(self.add_group)
+
 		# Window box
 		self.win_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-		self.win_box.set_spacing(24)
-		self.win_box.set_margin_top(30)
-		self.win_box.set_margin_bottom(36)
-		self.win_box.set_margin_start(36)
-		self.win_box.set_margin_end(36)
 
-		self.win_box.append(self.game_group)
-		self.win_box.append(self.add_group)
+		self.win_box.append(self.header_bar)
+		self.win_box.append(self.prefs_box)
 		
-		self.set_child(self.win_box)
+		# self.set_child(self.win_box)
+		self.set_content(self.win_box)
 
 	def populate_iwad_combo(self):
 		self.iwad_store.clear()

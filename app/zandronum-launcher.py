@@ -136,6 +136,7 @@ class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
+		self.set_default_size(620, -1)
 		self.set_title("Zandronum Launcher")
 
 		# Actions

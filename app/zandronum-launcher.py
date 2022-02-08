@@ -342,7 +342,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		app.main_config["zandronum"]["use_mods"] = window.mods_switch.get_active()
 
-	def get_iwad_combo(self):
+	def get_iwad_combo_selection(self):
 		iwad_item = self.iwad_combo.get_active_iter()
 
 		try:
@@ -351,15 +351,6 @@ class MainWindow(Adw.ApplicationWindow):
 			iwad_filename = ""
 
 		return(iwad_filename)
-
-	def get_pwadfile_btn(self):
-		return(self.pwadfile_btn.get_selected_file())
-
-	def get_params_entry(self):
-		return(self.params_entry.get_text())
-
-	def get_params_on_switch(self):
-		return(self.add_expandrow.get_enable_expansion())
 
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):
@@ -426,10 +417,10 @@ class LauncherApp(Adw.Application):
 
 	def write_launcher_config(self):
 		# Read control values into config
-		self.main_config["launcher"]["iwad"] = self.main_window.get_iwad_combo()
-		self.main_config["launcher"]["file"] = self.main_window.get_pwadfile_btn()
-		self.main_config["launcher"]["params"] = self.main_window.get_params_entry()
-		self.main_config["launcher"]["params_on"] = self.main_window.get_params_on_switch()
+		self.main_config["launcher"]["iwad"] = self.main_window.get_iwad_combo_selection()
+		self.main_config["launcher"]["file"] = self.main_window.pwadfile_btn.get_selected_file()
+		self.main_config["launcher"]["params"] = self.main_window.params_entry.get_text()
+		self.main_config["launcher"]["params_on"] = self.main_window.add_expandrow.get_enable_expansion()
 
 		# Save config
 		parser = configparser.ConfigParser()

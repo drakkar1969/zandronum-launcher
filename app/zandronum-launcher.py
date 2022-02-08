@@ -98,7 +98,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		self.set_default_size(560, -1)
+		self.set_default_size(520, -1)
 		self.set_title("Zandronum Preferences")
 		self.set_transient_for(self.win_parent)
 		self.set_destroy_with_parent(True)
@@ -145,7 +145,6 @@ class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		self.set_default_size(620, -1)
 		self.set_title("Zandronum Launcher")
 
 		# Actions

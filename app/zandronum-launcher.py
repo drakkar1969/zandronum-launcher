@@ -121,7 +121,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.mods_listrow.set_use_underline(True)
 
 		# Preferences group
-		self.prefs_group = Adw.PreferencesGroup()
+		self.prefs_group = Adw.PreferencesGroup(title="Preferences")
 		self.prefs_group.add(self.exec_listrow)
 		self.prefs_group.add(self.iwaddir_listrow)
 		self.prefs_group.add(self.mods_listrow)

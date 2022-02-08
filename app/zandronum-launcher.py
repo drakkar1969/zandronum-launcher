@@ -44,7 +44,7 @@ class FileDialogButton(Gtk.Button):
 		self.connect("clicked", self.on_clicked)
 
 	def set_label(self):
-		if os.path.exists(self.selected_file):
+		if self.selected_file != "":
 			self.content.set_label(os.path.basename(self.selected_file.rstrip(os.sep)))
 		else:
 			self.content.set_label("(None)")
@@ -62,18 +62,17 @@ class FileDialogButton(Gtk.Button):
 		self.set_label()
 
 	def get_selected_file(self):
-		if os.path.exists(self.selected_file): return(self.selected_file)
-		else: return("")
+		return(self.selected_file)
 
 	def set_default_folder(self, def_folder):
 		self.default_folder = def_folder
 		self.set_label()
 
 	def on_clicked(self, button):
-		if os.path.exists(self.selected_file):
+		if self.selected_file != "":
 			self.dialog.set_file(Gio.File.new_for_path(self.selected_file))
 		else:
-			if os.path.exists(self.default_folder):
+			if self.default_folder != "":
 				self.dialog.set_current_folder(Gio.File.new_for_path(self.default_folder))
 
 		self.dialog.show()

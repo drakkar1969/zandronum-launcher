@@ -226,7 +226,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.game_group.add(self.iwad_listrow)
 		self.game_group.add(self.pwad_listrow)
 
-		# Warp entru
+		# Warp entry
 		self.warp_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
 		self.warp_entry.set_text(app.main_config["launcher"]["warp"])
 

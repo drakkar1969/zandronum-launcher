@@ -367,7 +367,7 @@ class LauncherApp(Adw.Application):
 		self.config_dir = os.path.join(os.getenv('HOME'), ".config/zandronum")
 
 		if os.path.exists(self.config_dir) == False:
-			os.makedirs(self.config_dir, exist_ok=True)
+			os.makedirs(self.config_dir)
 
 		# Zandronum INI file
 		self.zandronum_ini_file = os.path.join(self.config_dir, "zandronum.ini")

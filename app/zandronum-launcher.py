@@ -81,14 +81,12 @@ class FileDialogButton(Gtk.Button):
 			self.set_label()
 
 class PreferencesWindow(Adw.PreferencesWindow):
-	win_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)
-
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
 		self.set_default_size(520, -1)
 		self.set_title("Zandronum Preferences")
-		self.set_transient_for(self.win_parent)
+		self.set_transient_for(app.main_window)
 		self.set_destroy_with_parent(True)
 		self.set_modal(True)
 		self.set_search_enabled(False)
@@ -312,7 +310,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.add_expandrow.set_enable_expansion(False)
 
 	def on_menu_prefs_clicked(self, action, param):
-		prefs_window = PreferencesWindow(win_parent=self)
+		prefs_window = PreferencesWindow()
 
 		prefs_window.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
 		prefs_window.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])

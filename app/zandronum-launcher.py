@@ -446,7 +446,7 @@ class LauncherApp(Adw.Application):
 		# Initialize Zandronum command line with executable
 		cmdline = self.main_config["zandronum"]["exec_file"]
 
-		# Get IWAD na,e
+		# Get IWAD name
 		iwad_name = self.main_config["launcher"]["iwad"]
 
 		# Add IWAD file if present

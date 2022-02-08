@@ -80,8 +80,7 @@ class FileDialogButton(Gtk.Button):
 
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
-			self.selected_file = dialog.get_file().get_path()
-			self.set_label()
+			self.set_selected_file(dialog.get_file().get_path())
 
 class PreferencesWindow(Adw.PreferencesWindow):
 	win_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)

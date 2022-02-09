@@ -172,7 +172,6 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.launch_btn = Gtk.Button(label="Launch")
 		self.launch_btn.add_css_class("suggested-action")
-		self.launch_btn.add_css_class("default")
 		self.launch_btn.connect("clicked", self.on_launch_btn_clicked)
 
 		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic")

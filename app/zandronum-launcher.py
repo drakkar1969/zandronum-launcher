@@ -321,6 +321,16 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
 
+	def get_iwad_combo_selection(self):
+		iwad_item = self.iwad_combo.get_active_iter()
+
+		try:
+			iwad_filename = self.iwad_store[iwad_item][1]
+		except:
+			iwad_filename = ""
+
+		return(iwad_filename)
+
 	def on_keypress_launch(self, action, param):
 		app.launch_flag = True
 
@@ -349,16 +359,6 @@ class MainWindow(Adw.ApplicationWindow):
 	def on_menu_prefs_clicked(self, action, param):
 		prefs_window = PreferencesWindow()
 		prefs_window.show()
-
-	def get_iwad_combo_selection(self):
-		iwad_item = self.iwad_combo.get_active_iter()
-
-		try:
-			iwad_filename = self.iwad_store[iwad_item][1]
-		except:
-			iwad_filename = ""
-
-		return(iwad_filename)
 
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):

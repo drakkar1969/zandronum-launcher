@@ -187,10 +187,10 @@ class MainWindow(Adw.ApplicationWindow):
 		self.add_action(self.menu_prefs_action)
 		app.set_accels_for_action("win.menu_prefs", ["<ctrl>comma", "<ctrl>p"])
 
-		self.menu_quit_action = Gio.SimpleAction.new("menu_quit", None)
-		self.menu_quit_action.connect("activate", self.on_menu_quit_clicked)
-		self.add_action(self.menu_quit_action)
-		app.set_accels_for_action("win.menu_quit", ["<ctrl>q", "q"])
+		self.key_quit_action = Gio.SimpleAction.new("key_quit", None)
+		self.key_quit_action.connect("activate", self.on_keypress_quit)
+		self.add_action(self.key_quit_action)
+		app.set_accels_for_action("win.key_quit", ["<ctrl>q", "q"])
 
 		self.key_launch_action = Gio.SimpleAction.new("key_launch", None)
 		self.key_launch_action.connect("activate", self.on_keypress_launch)
@@ -207,15 +207,11 @@ class MainWindow(Adw.ApplicationWindow):
 							<attribute name='label'>Reset to Defaults</attribute>
 							<attribute name='action'>win.menu_reset</attribute>
 						</item>
-						<item>
-							<attribute name='label'>Zandronum Preferences...</attribute>
-							<attribute name='action'>win.menu_prefs</attribute>
-						</item>
 					</section>
 					<section>
 						<item>
-							<attribute name='label'>Quit</attribute>
-							<attribute name='action'>win.menu_quit</attribute>
+							<attribute name='label'>Zandronum Preferences...</attribute>
+							<attribute name='action'>win.menu_prefs</attribute>
 						</item>
 					</section>
 				</menu>
@@ -359,7 +355,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.close()
 
-	def on_menu_quit_clicked(self, action, param):
+	def on_keypress_quit(self, action, param):
 		self.close()
 
 	def on_menu_reset_clicked(self, action, param):

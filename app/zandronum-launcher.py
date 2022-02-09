@@ -202,7 +202,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# PWAD file/clear buttons
 		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
 
-		self.pwadfile_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=304, dlg_title="Select WAD File", dlg_parent=self)
+		self.pwadfile_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=310, dlg_title="Select WAD File", dlg_parent=self)
 		self.pwadfile_btn.set_file_filter(pwad_filter)
 		self.pwadfile_btn.set_default_folder(app.config_dir)
 		self.pwadfile_btn.set_selected_file(app.main_config["launcher"]["file"])
@@ -210,9 +210,14 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwadclear_btn = Gtk.Button(icon_name="edit-clear-symbolic", valign=Gtk.Align.CENTER)
 		self.pwadclear_btn.connect("clicked", self.on_pwadclear_btn_clicked)
 
+		self.pwad_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+		self.pwad_box.set_spacing(6)
+		self.pwad_box.append(self.pwadfile_btn)
+		self.pwad_box.append(self.pwadclear_btn)
+
 		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", activatable=True, selectable=True)
-		self.pwad_listrow.add_suffix(self.pwadfile_btn)
-		self.pwad_listrow.add_suffix(self.pwadclear_btn)
+		# self.pwad_listrow.add_suffix(self.pwadfile_btn)
+		self.pwad_listrow.add_suffix(self.pwad_box)
 		self.pwad_listrow.set_activatable_widget(self.pwadfile_btn)
 		self.pwad_listrow.set_use_underline(True)
 

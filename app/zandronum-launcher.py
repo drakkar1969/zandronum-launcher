@@ -142,7 +142,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.menu_prefs_action = Gio.SimpleAction.new("menu_prefs", None)
 		self.menu_prefs_action.connect("activate", self.on_menu_prefs_clicked)
 		self.add_action(self.menu_prefs_action)
-		app.set_accels_for_action("win.menu_prefs", ["<primary>comma"])
+		app.set_accels_for_action("win.menu_prefs", ["<primary>comma", "<primary>p"])
 
 		self.key_quit_action = Gio.SimpleAction.new("key_quit", None)
 		self.key_quit_action.connect("activate", self.on_keypress_quit)

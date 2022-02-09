@@ -91,8 +91,11 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.set_modal(True)
 		self.set_search_enabled(False)
 
+		self.connect("close-request", self.on_window_close)
+
 		# Executable button
 		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, btn_icon="application-x-executable-symbolic")
+		self.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
 
 		self.exec_listrow = Adw.ActionRow(title="Application _Path", activatable=True, selectable=True)
 		self.exec_listrow.add_suffix(self.exec_btn)
@@ -101,6 +104,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		# IWAD dir button
 		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Directory", dlg_parent=self, folder_select=True)
+		self.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
 
 		self.iwaddir_listrow = Adw.ActionRow(title="IWAD _Directory", activatable=True, selectable=True)
 		self.iwaddir_listrow.add_suffix(self.iwaddir_btn)
@@ -109,6 +113,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		# Mods switch
 		self.mods_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
+		self.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
 
 		self.mods_listrow = Adw.ActionRow(title="Enable Hi-Res _Graphics", activatable=True, selectable=True)
 		self.mods_listrow.add_suffix(self.mods_switch)
@@ -126,6 +131,17 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.page.add(self.prefs_group)
 
 		self.add(self.page)
+
+	def on_window_close(self, window):
+		app.main_config["zandronum"]["exec_file"] = self.exec_btn.get_selected_file()
+
+		iwad_dir = self.iwaddir_btn.get_selected_file()
+
+		if iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
+			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
+			app.main_window.populate_iwad_combo()
+
+		app.main_config["zandronum"]["use_mods"] = self.mods_switch.get_active()
 
 class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
@@ -332,25 +348,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 	def on_menu_prefs_clicked(self, action, param):
 		prefs_window = PreferencesWindow()
-
-		prefs_window.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
-		prefs_window.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
-		prefs_window.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
-
-		prefs_window.connect("close-request", self.on_preferences_window_close)
-
 		prefs_window.show()
-
-	def on_preferences_window_close(self, window):
-		app.main_config["zandronum"]["exec_file"] = window.exec_btn.get_selected_file()
-
-		iwad_dir = window.iwaddir_btn.get_selected_file()
-
-		if iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
-			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
-			self.populate_iwad_combo()
-
-		app.main_config["zandronum"]["use_mods"] = window.mods_switch.get_active()
 
 	def get_iwad_combo_selection(self):
 		iwad_item = self.iwad_combo.get_active_iter()

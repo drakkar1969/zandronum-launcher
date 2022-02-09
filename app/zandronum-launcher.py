@@ -150,6 +150,8 @@ class MainWindow(Adw.ApplicationWindow):
 		self.set_default_size(620, -1)
 		self.set_title("Zandronum Launcher")
 
+		self.connect("close-request", self.on_window_close)
+
 		# Actions
 		self.menu_reset_action = Gio.SimpleAction.new("menu_reset", None)
 		self.menu_reset_action.connect("activate", self.on_menu_reset_clicked)
@@ -360,6 +362,12 @@ class MainWindow(Adw.ApplicationWindow):
 		prefs_window = PreferencesWindow()
 		prefs_window.show()
 
+	def on_window_close(self, window):
+		app.main_config["launcher"]["iwad"] = self.get_iwad_combo_selection()
+		app.main_config["launcher"]["file"] = self.pwadfile_btn.get_selected_file()
+		app.main_config["launcher"]["params"] = self.params_entry.get_text()
+		app.main_config["launcher"]["params_on"] = self.add_expandrow.get_enable_expansion()
+
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
@@ -421,14 +429,7 @@ class LauncherApp(Adw.Application):
 
 	def on_activate(self, app):
 		self.main_window = MainWindow(application=app)
-		self.main_window.connect("close-request", self.on_main_window_close)
 		self.main_window.present()
-
-	def on_main_window_close(self, window):
-		self.main_config["launcher"]["iwad"] = window.get_iwad_combo_selection()
-		self.main_config["launcher"]["file"] = window.pwadfile_btn.get_selected_file()
-		self.main_config["launcher"]["params"] = window.params_entry.get_text()
-		self.main_config["launcher"]["params_on"] = window.add_expandrow.get_enable_expansion()
 
 	def write_launcher_config(self):
 		parser = configparser.ConfigParser()

@@ -138,22 +138,22 @@ class MainWindow(Adw.ApplicationWindow):
 		self.menu_reset_action = Gio.SimpleAction.new("menu_reset", None)
 		self.menu_reset_action.connect("activate", self.on_menu_reset_clicked)
 		self.add_action(self.menu_reset_action)
-		app.set_accels_for_action("win.menu_reset", ["<primary>r"])
+		app.set_accels_for_action("win.menu_reset", ["<ctrl>r"])
 
 		self.menu_prefs_action = Gio.SimpleAction.new("menu_prefs", None)
 		self.menu_prefs_action.connect("activate", self.on_menu_prefs_clicked)
 		self.add_action(self.menu_prefs_action)
-		app.set_accels_for_action("win.menu_prefs", ["<primary>comma", "<primary>p"])
+		app.set_accels_for_action("win.menu_prefs", ["<ctrl>comma", "<ctrl>p"])
 
 		self.menu_quit_action = Gio.SimpleAction.new("menu_quit", None)
 		self.menu_quit_action.connect("activate", self.on_menu_quit_clicked)
 		self.add_action(self.menu_quit_action)
-		app.set_accels_for_action("win.menu_quit", ["<primary>q", "q"])
+		app.set_accels_for_action("win.menu_quit", ["<ctrl>q", "q"])
 
 		self.key_launch_action = Gio.SimpleAction.new("key_launch", None)
 		self.key_launch_action.connect("activate", self.on_keypress_launch)
 		self.add_action(self.key_launch_action)
-		app.set_accels_for_action("win.key_launch", ["<primary>Return", "<primary>KP_Enter"])
+		app.set_accels_for_action("win.key_launch", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
 		# Header menu
 		launcher_menusection = Gio.Menu.new()

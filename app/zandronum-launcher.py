@@ -215,7 +215,6 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_box.append(self.pwadclear_btn)
 
 		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", activatable=True, selectable=True)
-		# self.pwad_listrow.add_suffix(self.pwadfile_btn)
 		self.pwad_listrow.add_suffix(self.pwad_box)
 		self.pwad_listrow.set_activatable_widget(self.pwadfile_btn)
 		self.pwad_listrow.set_use_underline(True)
@@ -245,20 +244,20 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Launch params box
 		self.launch_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-		self.launch_box.set_spacing(30)
 		self.launch_box.set_margin_top(24)
 		self.launch_box.set_margin_bottom(36)
-		self.launch_box.set_margin_start(36)
-		self.launch_box.set_margin_end(36)
 		self.launch_box.append(self.launch_group)
+
+		# Launch clamp
+		self.launch_clamp = Adw.Clamp()
+		self.launch_clamp.set_child(self.launch_box)
 
 		# Window box
 		self.win_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
 		self.win_box.append(self.header_bar)
-		self.win_box.append(self.launch_box)
+		self.win_box.append(self.launch_clamp)
 		
-		# self.set_child(self.win_box)
 		self.set_content(self.win_box)
 
 	def populate_iwad_combo(self):

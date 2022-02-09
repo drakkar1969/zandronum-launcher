@@ -145,10 +145,10 @@ class MainWindow(Adw.ApplicationWindow):
 		self.add_action(self.menu_prefs_action)
 		app.set_accels_for_action("win.menu_prefs", ["<primary>comma", "<primary>p"])
 
-		self.key_quit_action = Gio.SimpleAction.new("key_quit", None)
-		self.key_quit_action.connect("activate", self.on_keypress_quit)
-		self.add_action(self.key_quit_action)
-		app.set_accels_for_action("win.key_quit", ["q", "<primary>q"])
+		self.menu_quit_action = Gio.SimpleAction.new("menu_quit", None)
+		self.menu_quit_action.connect("activate", self.on_menu_quit_clicked)
+		self.add_action(self.menu_quit_action)
+		app.set_accels_for_action("win.menu_quit", ["<primary>q", "q"])
 
 		self.key_launch_action = Gio.SimpleAction.new("key_launch", None)
 		self.key_launch_action.connect("activate", self.on_keypress_launch)
@@ -156,14 +156,16 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.key_launch", ["<primary>Return", "<primary>KP_Enter"])
 
 		# Header menu
-		reset_menu = Gio.Menu.new()
-		reset_menu.append("Reset to Defaults", "win.menu_reset")
-		prefs_menu = Gio.Menu.new()
-		prefs_menu.append("Zandronum Preferences...", "win.menu_prefs")
+		launcher_menusection = Gio.Menu.new()
+		launcher_menusection.append("Reset to Defaults", "win.menu_reset")
+		launcher_menusection.append("Zandronum Preferences...", "win.menu_prefs")
+
+		quit_menusection = Gio.Menu.new()
+		quit_menusection.append("Quit", "win.menu_quit")
 
 		header_menu = Gio.Menu.new()
-		header_menu.append_section(None, reset_menu)
-		header_menu.append_section(None, prefs_menu)
+		header_menu.append_section(None, launcher_menusection)
+		header_menu.append_section(None, quit_menusection)
 
 		self.header_popover = Gtk.PopoverMenu()
 		self.header_popover.set_menu_model(header_menu)
@@ -288,9 +290,6 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
 
-	def on_keypress_quit(self, action, param):
-		self.close()
-
 	def on_keypress_launch(self, action, param):
 		app.launch_flag = True
 
@@ -302,6 +301,9 @@ class MainWindow(Adw.ApplicationWindow):
 	def on_launch_btn_clicked(self, button):
 		app.launch_flag = True
 
+		self.close()
+
+	def on_menu_quit_clicked(self, action, param):
 		self.close()
 
 	def on_menu_reset_clicked(self, action, param):

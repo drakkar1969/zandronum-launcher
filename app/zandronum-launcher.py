@@ -135,23 +135,23 @@ class MainWindow(Adw.ApplicationWindow):
 		self.set_title("Zandronum Launcher")
 
 		# Actions
-		self.action_menu_reset = Gio.SimpleAction.new("menu_reset", None)
-		self.action_menu_reset.connect("activate", self.on_menu_reset_clicked)
-		self.add_action(self.action_menu_reset)
+		self.menu_reset_action = Gio.SimpleAction.new("menu_reset", None)
+		self.menu_reset_action.connect("activate", self.on_menu_reset_clicked)
+		self.add_action(self.menu_reset_action)
 
-		self.action_menu_prefs = Gio.SimpleAction.new("menu_prefs", None)
-		self.action_menu_prefs.connect("activate", self.on_menu_prefs_clicked)
-		self.add_action(self.action_menu_prefs)
+		self.menu_prefs_action = Gio.SimpleAction.new("menu_prefs", None)
+		self.menu_prefs_action.connect("activate", self.on_menu_prefs_clicked)
+		self.add_action(self.menu_prefs_action)
 		app.set_accels_for_action("win.menu_prefs", ["<primary>comma"])
 
-		self.action_key_quit = Gio.SimpleAction.new("key_quit", None)
-		self.action_key_quit.connect("activate", self.on_keypress_quit)
-		self.add_action(self.action_key_quit)
+		self.key_quit_action = Gio.SimpleAction.new("key_quit", None)
+		self.key_quit_action.connect("activate", self.on_keypress_quit)
+		self.add_action(self.key_quit_action)
 		app.set_accels_for_action("win.key_quit", ["q", "<primary>q"])
 
-		self.action_key_launch = Gio.SimpleAction.new("key_launch", None)
-		self.action_key_launch.connect("activate", self.on_keypress_launch)
-		self.add_action(self.action_key_launch)
+		self.key_launch_action = Gio.SimpleAction.new("key_launch", None)
+		self.key_launch_action.connect("activate", self.on_keypress_launch)
+		self.add_action(self.key_launch_action)
 		app.set_accels_for_action("win.key_launch", ["<primary>Return", "<primary>KP_Enter"])
 
 		# Header menu
@@ -282,7 +282,7 @@ class MainWindow(Adw.ApplicationWindow):
 			self.iwad_combo.set_active(-1)
 
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
-		self.action_key_launch.set_enabled(True if len(self.iwad_store) > 0 else False)
+		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
 
 	def on_keypress_quit(self, action, param):
 		self.close()

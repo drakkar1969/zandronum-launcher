@@ -138,6 +138,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.menu_reset_action = Gio.SimpleAction.new("menu_reset", None)
 		self.menu_reset_action.connect("activate", self.on_menu_reset_clicked)
 		self.add_action(self.menu_reset_action)
+		app.set_accels_for_action("win.menu_reset", ["<primary>r"])
 
 		self.menu_prefs_action = Gio.SimpleAction.new("menu_prefs", None)
 		self.menu_prefs_action.connect("activate", self.on_menu_prefs_clicked)

@@ -121,28 +121,25 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, btn_icon="application-x-executable-symbolic")
 		self.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
 
-		self.exec_listrow = Adw.ActionRow(title="Application _Path", activatable=True, selectable=True)
+		self.exec_listrow = Adw.ActionRow(title="Application _Path", activatable=True, selectable=True, use_underline=True)
 		self.exec_listrow.add_suffix(self.exec_btn)
 		self.exec_listrow.set_activatable_widget(self.exec_btn)
-		self.exec_listrow.set_use_underline(True)
 
 		# IWAD dir button
 		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Directory", dlg_parent=self, folder_select=True)
 		self.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
 
-		self.iwaddir_listrow = Adw.ActionRow(title="IWAD _Directory", activatable=True, selectable=True)
+		self.iwaddir_listrow = Adw.ActionRow(title="IWAD _Directory", activatable=True, selectable=True, use_underline=True)
 		self.iwaddir_listrow.add_suffix(self.iwaddir_btn)
 		self.iwaddir_listrow.set_activatable_widget(self.iwaddir_btn)
-		self.iwaddir_listrow.set_use_underline(True)
 
 		# Mods switch
 		self.mods_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
 		self.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
 
-		self.mods_listrow = Adw.ActionRow(title="Enable Hi-Res _Graphics", activatable=True, selectable=True)
+		self.mods_listrow = Adw.ActionRow(title="Enable Hi-Res _Graphics", activatable=True, selectable=True, use_underline=True)
 		self.mods_listrow.add_suffix(self.mods_switch)
 		self.mods_listrow.set_activatable_widget(self.mods_switch)
-		self.mods_listrow.set_use_underline(True)
 
 		# Preferences group
 		self.prefs_group = Adw.PreferencesGroup(title="Preferences")
@@ -224,8 +221,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.header_popover.set_menu_model(menu_model)
 
 		# Header
-		self.launch_btn = Gtk.Button(label="Launch")
-		self.launch_btn.add_css_class("suggested-action")
+		self.launch_btn = Gtk.Button(label="Launch", css_classes=["suggested-action"])
 		self.launch_btn.connect("clicked", self.on_launch_btn_clicked)
 
 		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic")
@@ -248,10 +244,9 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.populate_iwad_combo()
 
-		self.iwad_listrow = Adw.ActionRow(title="_Game", activatable=True, selectable=True)
+		self.iwad_listrow = Adw.ActionRow(title="_Game", activatable=True, selectable=True, use_underline=True)
 		self.iwad_listrow.add_suffix(self.iwad_combo)
 		self.iwad_listrow.set_activatable_widget(self.iwad_combo)
-		self.iwad_listrow.set_use_underline(True)
 
 		# PWAD file/clear buttons
 		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
@@ -269,27 +264,23 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_box.append(self.pwadfile_btn)
 		self.pwad_box.append(self.pwadclear_btn)
 
-		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", activatable=True, selectable=True)
+		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", activatable=True, selectable=True, use_underline=True)
 		self.pwad_listrow.add_suffix(self.pwad_box)
 		self.pwad_listrow.set_activatable_widget(self.pwadfile_btn)
-		self.pwad_listrow.set_use_underline(True)
 
 		# Custom params entry
 		self.params_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
 
-		self.params_listrow = Adw.ActionRow(title="_Custom Switches", activatable=True, selectable=True)
+		self.params_listrow = Adw.ActionRow(title="_Custom Switches", activatable=True, selectable=True, use_underline=True)
 		self.params_listrow.add_suffix(self.params_entry)
 		self.params_listrow.set_activatable_widget(self.params_entry)
-		self.params_listrow.set_use_underline(True)
 
 		# Additional expander row
-		self.add_expandrow = Adw.ExpanderRow(title="_Additional Parameters", activatable=True, selectable=True)
-		self.add_expandrow.add_row(self.params_listrow)
-		self.add_expandrow.set_show_enable_switch(True)
+		self.add_expandrow = Adw.ExpanderRow(title="_Additional Parameters", activatable=True, selectable=True, use_underline=True, show_enable_switch=True)
 		self.add_expandrow.set_enable_expansion(app.main_config["launcher"]["params_on"])
 		self.add_expandrow.set_expanded(app.main_config["launcher"]["params_on"])
-		self.add_expandrow.set_use_underline(True)
+		self.add_expandrow.add_row(self.params_listrow)
 
 		# Launch params group
 		self.launch_group = Adw.PreferencesGroup(title="Launch Parameters")

@@ -323,16 +323,6 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
 
-	def get_iwad_combo_selection(self):
-		iwad_item = self.iwad_combo.get_active_iter()
-
-		try:
-			iwad_filename = self.iwad_store[iwad_item][1]
-		except:
-			iwad_filename = ""
-
-		return(iwad_filename)
-
 	def on_keypress_launch(self, action, param):
 		app.launch_flag = True
 
@@ -363,7 +353,14 @@ class MainWindow(Adw.ApplicationWindow):
 		prefs_window.show()
 
 	def on_window_close(self, window):
-		app.main_config["launcher"]["iwad"] = self.get_iwad_combo_selection()
+		iwad_item = self.iwad_combo.get_active_iter()
+
+		try:
+			iwad_filename = self.iwad_store[iwad_item][1]
+		except:
+			iwad_filename = ""
+
+		app.main_config["launcher"]["iwad"] = iwad_filename
 		app.main_config["launcher"]["file"] = self.pwadfile_btn.get_selected_file()
 		app.main_config["launcher"]["params"] = self.params_entry.get_text()
 		app.main_config["launcher"]["params_on"] = self.add_expandrow.get_enable_expansion()

@@ -285,12 +285,12 @@ class MainWindow(Adw.ApplicationWindow):
 		self.action_key_launch.set_enabled(True if len(self.iwad_store) > 0 else False)
 
 	def on_keypress_quit(self, action, param):
-		self.destroy()
+		self.close()
 
 	def on_keypress_launch(self, action, param):
 		app.launch_flag = True
 
-		self.destroy()
+		self.close()
 
 	def on_pwadclear_btn_clicked(self, button):
 		self.pwadfile_btn.set_selected_file("")
@@ -298,7 +298,7 @@ class MainWindow(Adw.ApplicationWindow):
 	def on_launch_btn_clicked(self, button):
 		app.launch_flag = True
 
-		self.destroy()
+		self.close()
 
 	def on_menu_reset_clicked(self, action, param):
 		try:
@@ -402,16 +402,16 @@ class LauncherApp(Adw.Application):
 
 	def on_activate(self, app):
 		self.main_window = MainWindow(application=app)
+		self.main_window.connect("close-request", self.on_main_window_close)
 		self.main_window.present()
 
-	def write_launcher_config(self):
-		# Read control values into config
-		self.main_config["launcher"]["iwad"] = self.main_window.get_iwad_combo_selection()
-		self.main_config["launcher"]["file"] = self.main_window.pwadfile_btn.get_selected_file()
-		self.main_config["launcher"]["params"] = self.main_window.params_entry.get_text()
-		self.main_config["launcher"]["params_on"] = self.main_window.add_expandrow.get_enable_expansion()
+	def on_main_window_close(self, window):
+		self.main_config["launcher"]["iwad"] = window.get_iwad_combo_selection()
+		self.main_config["launcher"]["file"] = window.pwadfile_btn.get_selected_file()
+		self.main_config["launcher"]["params"] = window.params_entry.get_text()
+		self.main_config["launcher"]["params_on"] = window.add_expandrow.get_enable_expansion()
 
-		# Save config
+	def write_launcher_config(self):
 		parser = configparser.ConfigParser()
 		parser.read_dict(self.main_config)
 

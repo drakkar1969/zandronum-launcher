@@ -321,14 +321,11 @@ class MainWindow(Adw.ApplicationWindow):
 		prefs_window.show()
 
 	def on_preferences_window_close(self, window):
-		exec_file = window.exec_btn.get_selected_file()
-
-		if exec_file != "":
-			app.main_config["zandronum"]["exec_file"] = exec_file
+		app.main_config["zandronum"]["exec_file"] = window.exec_btn.get_selected_file()
 
 		iwad_dir = window.iwaddir_btn.get_selected_file()
 
-		if iwad_dir != "" and iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
+		if iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
 			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
 			self.populate_iwad_combo()
 

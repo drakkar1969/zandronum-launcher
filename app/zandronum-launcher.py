@@ -228,8 +228,6 @@ class MainWindow(Adw.ApplicationWindow):
 		self.header_popover.set_menu_model(menu_model)
 
 		# Header
-		self.header_bar = Adw.HeaderBar()
-
 		self.launch_btn = Gtk.Button(label="Launch")
 		self.launch_btn.add_css_class("suggested-action")
 		self.launch_btn.connect("clicked", self.on_launch_btn_clicked)
@@ -237,6 +235,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic")
 		self.menu_btn.set_popover(self.header_popover)
 
+		self.header_bar = Adw.HeaderBar()
 		self.header_bar.pack_start(self.launch_btn)
 		self.header_bar.pack_end(self.menu_btn)
 
@@ -347,15 +346,15 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
 
-	def on_keypress_launch(self, action, param):
-		app.launch_flag = True
-
-		self.close()
-
 	def on_pwadclear_btn_clicked(self, button):
 		self.pwadfile_btn.set_selected_file("")
 
 	def on_launch_btn_clicked(self, button):
+		app.launch_flag = True
+
+		self.close()
+
+	def on_keypress_launch(self, action, param):
 		app.launch_flag = True
 
 		self.close()

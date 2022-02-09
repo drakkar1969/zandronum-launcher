@@ -156,19 +156,34 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.key_launch", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
 		# Header menu
-		launcher_menusection = Gio.Menu.new()
-		launcher_menusection.append("Reset to Defaults", "win.menu_reset")
-		launcher_menusection.append("Zandronum Preferences...", "win.menu_prefs")
+		menu_builder = Gtk.Builder.new_from_string("""
+			<?xml version="1.0" encoding="UTF-8"?>
+			<interface>
+				<menu id='header-menu'>
+					<section>
+						<item>
+							<attribute name='label'>Reset to Defaults</attribute>
+							<attribute name='action'>win.menu_reset</attribute>
+						</item>
+						<item>
+							<attribute name='label'>Zandronum Preferences...</attribute>
+							<attribute name='action'>win.menu_prefs</attribute>
+						</item>
+					</section>
+					<section>
+						<item>
+							<attribute name='label'>Quit</attribute>
+							<attribute name='action'>win.menu_quit</attribute>
+						</item>
+					</section>
+				</menu>
+			</interface>
+		""", -1)
 
-		quit_menusection = Gio.Menu.new()
-		quit_menusection.append("Quit", "win.menu_quit")
-
-		header_menu = Gio.Menu.new()
-		header_menu.append_section(None, launcher_menusection)
-		header_menu.append_section(None, quit_menusection)
+		menu_model = menu_builder.get_object("header-menu")
 
 		self.header_popover = Gtk.PopoverMenu()
-		self.header_popover.set_menu_model(header_menu)
+		self.header_popover.set_menu_model(menu_model)
 
 		# Header
 		self.header_bar = Adw.HeaderBar()

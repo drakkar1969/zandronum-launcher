@@ -7,12 +7,36 @@ from gi.repository import Gtk, Adw, Gio, GObject, Gdk
 
 # IWAD filenames/descriptions/mod files
 doom_iwads = {
-	"doom.wad": {"name": "The Ultimate Doom", "patch": "", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "jfo-udoom.pk3"]},
-	"doom2.wad": {"name": "Doom II: Hell on Earth", "patch": "", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "jfo-doom2.pk3"]},
-	"plutonia.wad": {"name": "Final Doom - The Plutonia Experiment", "patch": "", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-plut.pk3", "jfo-plut.pk3"]},
-	"tnt.wad": {"name": "Final Doom - TNT: Evilution", "patch": "tnt31-patch.wad", "mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-tnt.pk3", "jfo-tnt.pk3"]},
-	"freedoom1.wad": {"name": "Freedoom Phase 1", "patch": "", "mods": []},
-	"freedoom2.wad": {"name": "Freedoom Phase 2", "patch": "", "mods": []}
+	"doom.wad": {
+		"name": "The Ultimate Doom",
+		"patch": "",
+		"mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "jfo-udoom.pk3"]
+	},
+	"doom2.wad": {
+		"name": "Doom II: Hell on Earth",
+		"patch": "",
+		"mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "jfo-doom2.pk3"]
+	},
+	"plutonia.wad": {
+		"name": "Final Doom - The Plutonia Experiment",
+		"patch": "",
+		"mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-plut.pk3", "jfo-plut.pk3"]
+	},
+	"tnt.wad": {
+		"name": "Final Doom - TNT: Evilution",
+		"patch": "tnt31-patch.wad",
+		"mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-tnt.pk3", "jfo-tnt.pk3"]
+	},
+	"freedoom1.wad": {
+		"name": "Freedoom Phase 1",
+		"patch": "",
+		"mods": []
+	},
+	"freedoom2.wad": {
+		"name": "Freedoom Phase 2",
+		"patch": "",
+		"mods": []
+	}
 }
 
 class FileDialogButton(Gtk.Button):

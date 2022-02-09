@@ -233,26 +233,26 @@ class MainWindow(Adw.ApplicationWindow):
 		self.add_expandrow.set_expanded(app.main_config["launcher"]["params_on"])
 		self.add_expandrow.set_use_underline(True)
 
-		# Preferences group
-		self.prefs_group = Adw.PreferencesGroup(title="Launch Parameters")
-		self.prefs_group.add(self.iwad_listrow)
-		self.prefs_group.add(self.pwad_listrow)
-		self.prefs_group.add(self.add_expandrow)
+		# Launch params group
+		self.launch_group = Adw.PreferencesGroup(title="Launch Parameters")
+		self.launch_group.add(self.iwad_listrow)
+		self.launch_group.add(self.pwad_listrow)
+		self.launch_group.add(self.add_expandrow)
 
-		# Preferences box
-		self.prefs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-		self.prefs_box.set_spacing(30)
-		self.prefs_box.set_margin_top(24)
-		self.prefs_box.set_margin_bottom(36)
-		self.prefs_box.set_margin_start(36)
-		self.prefs_box.set_margin_end(36)
-		self.prefs_box.append(self.prefs_group)
+		# Launch params box
+		self.launch_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+		self.launch_box.set_spacing(30)
+		self.launch_box.set_margin_top(24)
+		self.launch_box.set_margin_bottom(36)
+		self.launch_box.set_margin_start(36)
+		self.launch_box.set_margin_end(36)
+		self.launch_box.append(self.launch_group)
 
 		# Window box
 		self.win_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
 		self.win_box.append(self.header_bar)
-		self.win_box.append(self.prefs_box)
+		self.win_box.append(self.launch_box)
 		
 		# self.set_child(self.win_box)
 		self.set_content(self.win_box)

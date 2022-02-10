@@ -498,7 +498,7 @@ class LauncherApp(Adw.Application):
 		subprocess.Popen(shlex.split(cmdline))
 
 # Main app
-app = LauncherApp(application_id="com.github.drakkar.zandronumlauncher")
+app = LauncherApp(application_id="com.github.zandronumlauncher")
 app.run(sys.argv)
 
 app.write_launcher_config()

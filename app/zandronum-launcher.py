@@ -250,7 +250,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# PWAD file/clear buttons
 		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
 
-		self.pwadfile_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=316, dlg_title="Select WAD File", dlg_parent=self)
+		self.pwadfile_btn = FileDialogButton(valign=Gtk.Align.CENTER, dlg_title="Select WAD File", dlg_parent=self, hexpand=True)
 		self.pwadfile_btn.set_file_filter(pwad_filter)
 		self.pwadfile_btn.set_default_folder(app.config_dir)
 		self.pwadfile_btn.set_selected_file(app.main_config["launcher"]["file"])
@@ -258,7 +258,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwadclear_btn = Gtk.Button(icon_name="edit-clear-symbolic", valign=Gtk.Align.CENTER)
 		self.pwadclear_btn.connect("clicked", self.on_pwadclear_btn_clicked)
 
-		self.pwad_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, css_classes=["linked"])
+		self.pwad_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, width_request=350, hexpand=False, css_classes=["linked"])
 		self.pwad_box.append(self.pwadfile_btn)
 		self.pwad_box.append(self.pwadclear_btn)
 

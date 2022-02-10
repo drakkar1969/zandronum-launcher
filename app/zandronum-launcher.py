@@ -210,7 +210,7 @@ class MainWindow(Adw.ApplicationWindow):
 					</section>
 					<section>
 						<item>
-							<attribute name='label'>Zandronum Preferences...</attribute>
+							<attribute name='label'>Zandronum Preferences</attribute>
 							<attribute name='action'>win.menu_prefs</attribute>
 						</item>
 					</section>

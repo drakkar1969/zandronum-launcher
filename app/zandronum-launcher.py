@@ -291,9 +291,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_group.add(self.add_expandrow)
 
 		# Launch clamp
-		self.launch_clamp = Adw.Clamp()
-		self.launch_clamp.set_margin_top(24)
-		self.launch_clamp.set_margin_bottom(36)
+		self.launch_clamp = Adw.Clamp(margin_top=24, margin_bottom=36)
 		self.launch_clamp.set_child(self.launch_group)
 
 		# Window box

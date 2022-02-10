@@ -88,7 +88,6 @@ class FileDialogButton(Gtk.Button):
 
 	def set_default_folder(self, def_folder):
 		self.default_folder = Gio.File.new_for_path(def_folder) if def_folder != "" else None
-		self.set_label()
 
 	def on_clicked(self, button):
 		if self.selected_file is not None:

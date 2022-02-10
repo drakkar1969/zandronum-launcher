@@ -290,15 +290,17 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_group.add(self.pwad_listrow)
 		self.launch_group.add(self.add_expandrow)
 
-		# Launch params page
-		self.launch_page = Adw.PreferencesPage()
-		self.launch_page.add(self.launch_group)
+		# Launch clamp
+		self.launch_clamp = Adw.Clamp()
+		self.launch_clamp.set_margin_top(24)
+		self.launch_clamp.set_margin_bottom(36)
+		self.launch_clamp.set_child(self.launch_group)
 
 		# Window box
 		self.win_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
 		self.win_box.append(self.header_bar)
-		self.win_box.append(self.launch_page)
+		self.win_box.append(self.launch_clamp)
 		
 		self.set_content(self.win_box)
 

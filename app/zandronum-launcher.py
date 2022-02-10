@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import gi, sys, os, configparser, subprocess, shlex
-gi.require_version('Gtk', '4.0')
-gi.require_version('Adw', '1')
+gi.require_version("Gtk", "4.0")
+gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw, Gio, GObject, Gdk
 
 # IWAD filenames/descriptions/mod files
@@ -374,7 +374,7 @@ class MainWindow(Adw.ApplicationWindow):
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
-		self.connect('activate', self.on_activate)
+		self.connect("activate", self.on_activate)
 
 		# Launch Zandronum flag
 		self.launch_flag = False
@@ -385,7 +385,7 @@ class LauncherApp(Adw.Application):
 		self.mod_dir = os.path.join(self.app_dir, "mods")
 
 		# Config dir
-		self.config_dir = os.path.join(os.getenv('HOME'), ".config/zandronum")
+		self.config_dir = os.path.join(os.getenv("HOME"), ".config/zandronum")
 
 		if os.path.exists(self.config_dir) == False:
 			os.makedirs(self.config_dir)
@@ -438,7 +438,7 @@ class LauncherApp(Adw.Application):
 		parser = configparser.ConfigParser()
 		parser.read_dict(self.main_config)
 
-		with open(self.launcher_config_file, 'w') as configfile:
+		with open(self.launcher_config_file, "w") as configfile:
 			parser.write(configfile)
 
 	def launch_zandronum(self):

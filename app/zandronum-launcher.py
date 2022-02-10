@@ -65,7 +65,7 @@ class FileDialogButton(Gtk.Button):
 		self.set_child(self.btn_box)
 
 		# Create dialog
-		self.dialog = Gtk.FileChooserNative.new(title=self.dlg_title, parent=self.dlg_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
+		self.dialog = Gtk.FileChooserNative.new(self.dlg_title, self.dlg_parent, Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
 		self.dialog.set_select_multiple(False)
 		self.dialog.set_modal(True)
 		self.dialog.connect("response", self.on_dialog_response)

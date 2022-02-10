@@ -201,27 +201,27 @@ class MainWindow(Adw.ApplicationWindow):
 		menu_builder = Gtk.Builder.new_from_string("""
 			<?xml version="1.0" encoding="UTF-8"?>
 			<interface>
-				<menu id='header-menu'>
+				<object class="GtkPopoverMenu" id="header_popover">
+					<property name="menu_model">header_menu</property>
+				</object>
+				<menu id="header_menu">
 					<section>
 						<item>
-							<attribute name='label'>Reset to Defaults</attribute>
-							<attribute name='action'>win.menu_reset</attribute>
+							<attribute name="label">Reset to Defaults</attribute>
+							<attribute name="action">win.menu_reset</attribute>
 						</item>
 					</section>
 					<section>
 						<item>
-							<attribute name='label'>Zandronum Preferences</attribute>
-							<attribute name='action'>win.menu_prefs</attribute>
+							<attribute name="label">Zandronum Preferences</attribute>
+							<attribute name="action">win.menu_prefs</attribute>
 						</item>
 					</section>
 				</menu>
 			</interface>
 		""", -1)
 
-		menu_model = menu_builder.get_object("header-menu")
-
-		self.header_popover = Gtk.PopoverMenu()
-		self.header_popover.set_menu_model(menu_model)
+		self.header_popover = menu_builder.get_object("header_popover")
 
 		# Header
 		self.launch_btn = Gtk.Button(label="Launch", css_classes=["suggested-action"])

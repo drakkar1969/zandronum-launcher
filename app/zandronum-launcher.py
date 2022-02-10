@@ -54,11 +54,15 @@ class FileDialogButton(Gtk.Button):
 		if self.btn_icon == "":
 			self.btn_icon = "folder-symbolic" if self.folder_select == True else "document-open-symbolic"
 
-		# Add button widget
-		self.content = Adw.ButtonContent(label="", icon_name=self.btn_icon, halign=Gtk.Align.START)
-		image = self.content.get_first_child()
-		if image is not None: image.set_margin_end(6)
-		self.set_child(self.content)
+		# Add button widgets
+		self.image = Gtk.Image.new_from_icon_name(self.btn_icon)
+		self.label = Gtk.Label()
+
+		self.btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+		self.btn_box.append(self.image)
+		self.btn_box.append(self.label)
+
+		self.set_child(self.btn_box)
 
 		# Create dialog
 		self.dialog = Gtk.FileChooserNative.new(title=self.dlg_title, parent=self.dlg_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
@@ -70,7 +74,7 @@ class FileDialogButton(Gtk.Button):
 		self.connect("clicked", self.on_clicked)
 
 	def set_label(self):
-		self.content.set_label(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
+		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
 
 	def set_file_filter(self, mime_types):
 		if mime_types is not None:

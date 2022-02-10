@@ -230,7 +230,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic")
 		self.menu_btn.set_popover(self.header_popover)
 
-		self.header_bar = Adw.HeaderBar()
+		self.header_bar = Gtk.HeaderBar()
 		self.header_bar.pack_start(self.launch_btn)
 		self.header_bar.pack_end(self.menu_btn)
 

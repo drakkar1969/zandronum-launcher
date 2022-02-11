@@ -316,13 +316,13 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_group.add(self.add_expandrow)
 
 		# Launch box
-		self.launch_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
+		self.launch_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=28)
 
 		self.launch_box.append(self.launch_group)
 		self.launch_box.append(self.launch_btn)
 
 		# Launch clamp
-		self.launch_clamp = Adw.Clamp(margin_top=24, margin_bottom=24)
+		self.launch_clamp = Adw.Clamp(margin_top=24, margin_bottom=28)
 		self.launch_clamp.set_child(self.launch_box)
 
 		# Window box

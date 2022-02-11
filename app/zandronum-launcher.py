@@ -225,6 +225,7 @@ class MainWindow(Adw.ApplicationWindow):
 		super().__init__(*args, **kwargs)
 
 		self.set_default_size(620, -1)
+		self.set_valign(Gtk.Align.CENTER)
 		self.set_title("Zandronum Launcher")
 
 		self.connect("close-request", self.on_window_close)

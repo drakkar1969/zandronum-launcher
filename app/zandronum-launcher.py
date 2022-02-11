@@ -336,6 +336,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.win_box.append(self.launch_clamp)
 		
 		self.set_content(self.win_box)
+		self.set_focus(self.iwad_listrow)
 
 	def populate_iwad_combo(self):
 		self.iwad_store.clear()

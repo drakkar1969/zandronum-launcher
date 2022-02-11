@@ -290,10 +290,10 @@ class MainWindow(Adw.ApplicationWindow):
 		self.iwad_store = Gtk.ListStore(str, str)
 		self.iwad_combo.set_model(self.iwad_store)
 
-		iwad_renderer = Gtk.CellRendererText()
+		iwad_cell = Gtk.CellRendererText()
 
-		self.iwad_combo.pack_start(iwad_renderer, True)
-		self.iwad_combo.add_attribute(iwad_renderer, "text", 0)
+		self.iwad_combo.pack_start(iwad_cell, True)
+		self.iwad_combo.add_attribute(iwad_cell, "text", 0)
 
 		self.iwad_listrow = Adw.ActionRow(title="_Game", use_underline=True)
 		self.iwad_listrow.add_suffix(self.iwad_combo)

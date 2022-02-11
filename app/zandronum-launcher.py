@@ -39,30 +39,57 @@ doom_iwads = {
 	}
 }
 
-class FileDialogButton(Gtk.Button):
+class FileDialogButton(Gtk.Box):
 	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
 	dlg_parent = GObject.Property(type=Gtk.Widget, default=None, flags=GObject.ParamFlags.READWRITE)
 	folder_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 	btn_icon = GObject.Property(type=str, default="", flags=GObject.ParamFlags.READWRITE)
+	can_clear = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
+	is_linked = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-
-		# Initialize class variables
+		
+		# Initialize internal variables
 		self.selected_file = None
 		self.default_folder = None
+
+		# Add file button
 		if self.btn_icon == "":
 			self.btn_icon = "folder-symbolic" if self.folder_select == True else "document-open-symbolic"
 
-		# Add button widgets
 		self.image = Gtk.Image.new_from_icon_name(self.btn_icon)
 		self.label = Gtk.Label()
 
-		self.btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+		self.btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, hexpand=True, spacing=6)
 		self.btn_box.append(self.image)
 		self.btn_box.append(self.label)
 
-		self.set_child(self.btn_box)
+		self.file_btn = Gtk.Button()
+		self.file_btn.set_child(self.btn_box)
+		self.file_btn.connect("clicked", self.on_file_btn_clicked)
+
+		self.append(self.file_btn)
+
+		# Add clear button if enabled
+		if self.can_clear == True:
+			self.clear_btn = Gtk.Button(icon_name="user-trash-symbolic")
+			self.clear_btn.connect("clicked", self.on_clear_btn_clicked)
+
+			self.append(self.clear_btn)
+
+		# Set widget properties
+		self.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
+		self.set_hexpand(False)
+
+		if self.can_clear == True:
+			if self.is_linked == True:
+				self.add_css_class("linked")
+			else:
+				self.set_spacing(6)
+				self.clear_btn.add_css_class("flat")
+
+		self.set_label()
 
 		# Create dialog
 		self.dialog = Gtk.FileChooserNative.new(self.dlg_title, self.dlg_parent, Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
@@ -70,11 +97,10 @@ class FileDialogButton(Gtk.Button):
 		self.dialog.set_modal(True)
 		self.dialog.connect("response", self.on_dialog_response)
 
-		# Set handler for button click
-		self.connect("clicked", self.on_clicked)
-
 	def set_label(self):
 		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
+		if self.can_clear == True:
+			self.clear_btn.set_sensitive(True if self.selected_file is not None else False)
 
 	def set_file_filter(self, mime_types):
 		if mime_types is not None:
@@ -93,7 +119,7 @@ class FileDialogButton(Gtk.Button):
 	def set_default_folder(self, def_folder):
 		self.default_folder = Gio.File.new_for_path(def_folder) if def_folder != "" else None
 
-	def on_clicked(self, button):
+	def on_file_btn_clicked(self, button):
 		if self.selected_file is not None:
 			self.dialog.set_file(self.selected_file)
 		else:
@@ -106,6 +132,10 @@ class FileDialogButton(Gtk.Button):
 		if response == Gtk.ResponseType.ACCEPT:
 			self.selected_file = dialog.get_file()
 			self.set_label()
+
+	def on_clear_btn_clicked(self, button):
+		self.selected_file = None
+		self.set_label()
 
 class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):
@@ -251,24 +281,18 @@ class MainWindow(Adw.ApplicationWindow):
 		self.iwad_listrow.add_suffix(self.iwad_combo)
 		self.iwad_listrow.set_activatable_widget(self.iwad_combo)
 
-		# PWAD file/clear buttons
+		# PWAD button
 		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
 
-		self.pwadfile_btn = FileDialogButton(valign=Gtk.Align.CENTER, dlg_title="Select WAD File", dlg_parent=self, hexpand=True)
-		self.pwadfile_btn.set_file_filter(pwad_filter)
-		self.pwadfile_btn.set_default_folder(app.config_dir)
-		self.pwadfile_btn.set_selected_file(app.main_config["launcher"]["file"])
+		self.pwad_btn = FileDialogButton(valign=Gtk.Align.CENTER, dlg_title="Select WAD File", dlg_parent=self, can_clear=True, width_request=350)
+		self.pwad_btn.set_file_filter(pwad_filter)
 
-		self.pwadclear_btn = Gtk.Button(icon_name="edit-clear-symbolic", valign=Gtk.Align.CENTER)
-		self.pwadclear_btn.connect("clicked", self.on_pwadclear_btn_clicked)
-
-		self.pwad_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, width_request=350, hexpand=False, css_classes=["linked"])
-		self.pwad_box.append(self.pwadfile_btn)
-		self.pwad_box.append(self.pwadclear_btn)
+		self.pwad_btn.set_default_folder(app.config_dir)
+		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
 
 		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", use_underline=True)
-		self.pwad_listrow.add_suffix(self.pwad_box)
-		self.pwad_listrow.set_activatable_widget(self.pwadfile_btn)
+		self.pwad_listrow.add_suffix(self.pwad_btn)
+		self.pwad_listrow.set_activatable_widget(self.pwad_btn)
 
 		# Custom params entry
 		self.params_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
@@ -329,9 +353,6 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
 
-	def on_pwadclear_btn_clicked(self, button):
-		self.pwadfile_btn.set_selected_file("")
-
 	def on_launch_btn_clicked(self, button):
 		app.launch_flag = True
 
@@ -350,7 +371,7 @@ class MainWindow(Adw.ApplicationWindow):
 			self.iwad_combo.set_active(0)
 		except:
 			self.iwad_combo.set_active(-1)
-		self.pwadfile_btn.set_selected_file("")
+		self.pwad_btn.set_selected_file("")
 		self.params_entry.set_text("")
 		self.add_expandrow.set_enable_expansion(False)
 
@@ -367,7 +388,7 @@ class MainWindow(Adw.ApplicationWindow):
 			iwad_filename = ""
 
 		app.main_config["launcher"]["iwad"] = iwad_filename
-		app.main_config["launcher"]["file"] = self.pwadfile_btn.get_selected_file()
+		app.main_config["launcher"]["file"] = self.pwad_btn.get_selected_file()
 		app.main_config["launcher"]["params"] = self.params_entry.get_text()
 		app.main_config["launcher"]["params_on"] = self.add_expandrow.get_enable_expansion()
 

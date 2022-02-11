@@ -268,10 +268,6 @@ class MainWindow(Adw.ApplicationWindow):
 		self.header_bar = Gtk.HeaderBar()
 		self.header_bar.pack_end(self.menu_btn)
 
-		# Launch button
-		self.launch_btn = Gtk.Button(label="_Launch Zandronum", halign=Gtk.Align.CENTER, use_underline=True, css_classes=["suggested-action", "pill"])
-		self.launch_btn.connect("clicked", self.on_launch_btn_clicked)
-
 		# IWAD (game) combo
 		self.iwad_combo = Gtk.ComboBox(valign=Gtk.Align.CENTER, width_request=350)
 
@@ -314,6 +310,10 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_group.add(self.iwad_listrow)
 		self.launch_group.add(self.pwad_listrow)
 		self.launch_group.add(self.add_expandrow)
+
+		# Launch button
+		self.launch_btn = Gtk.Button(label="_Launch Zandronum", halign=Gtk.Align.CENTER, use_underline=True, css_classes=["suggested-action", "pill"])
+		self.launch_btn.connect("clicked", self.on_launch_btn_clicked)
 
 		# Launch box
 		self.launch_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=28)

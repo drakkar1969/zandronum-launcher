@@ -279,8 +279,6 @@ class MainWindow(Adw.ApplicationWindow):
 		self.iwad_combo.pack_start(iwad_renderer, True)
 		self.iwad_combo.add_attribute(iwad_renderer, "text", 0)
 
-		self.populate_iwad_combo()
-
 		self.iwad_listrow = Adw.ActionRow(title="_Game", use_underline=True)
 		self.iwad_listrow.add_suffix(self.iwad_combo)
 		self.iwad_listrow.set_activatable_widget(self.iwad_combo)
@@ -291,16 +289,12 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_btn = FileDialogButton(valign=Gtk.Align.CENTER, dlg_title="Select WAD File", dlg_parent=self, can_clear=True, width_request=350)
 		self.pwad_btn.set_file_filter(pwad_filter)
 
-		self.pwad_btn.set_default_folder(app.config_dir)
-		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
-
 		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", use_underline=True)
 		self.pwad_listrow.add_suffix(self.pwad_btn)
 		self.pwad_listrow.set_activatable_widget(self.pwad_btn)
 
 		# Custom params entry
 		self.params_entry = Gtk.Entry(valign=Gtk.Align.CENTER, secondary_icon_name="edit-clear-symbolic", width_request=350)
-		self.params_entry.set_text(app.main_config["launcher"]["params"])
 		self.params_entry.connect("icon-press", self.on_params_entry_clear)
 
 		self.params_listrow = Adw.ActionRow(title="_Custom Switches", use_underline=True)
@@ -309,8 +303,6 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Additional expander row
 		self.add_expandrow = Adw.ExpanderRow(title="_Additional Parameters", use_underline=True, show_enable_switch=True)
-		self.add_expandrow.set_enable_expansion(app.main_config["launcher"]["params_on"])
-		self.add_expandrow.set_expanded(app.main_config["launcher"]["params_on"])
 		self.add_expandrow.add_row(self.params_listrow)
 
 		# Launch params group
@@ -337,6 +329,17 @@ class MainWindow(Adw.ApplicationWindow):
 		
 		self.set_content(self.win_box)
 		self.set_focus(self.iwad_listrow)
+
+		# Widget initialization
+		self.populate_iwad_combo()
+
+		self.pwad_btn.set_default_folder(app.config_dir)
+		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
+
+		self.params_entry.set_text(app.main_config["launcher"]["params"])
+
+		self.add_expandrow.set_enable_expansion(app.main_config["launcher"]["params_on"])
+		self.add_expandrow.set_expanded(app.main_config["launcher"]["params_on"])
 
 	def populate_iwad_combo(self):
 		self.iwad_store.clear()

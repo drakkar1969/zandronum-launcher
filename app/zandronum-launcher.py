@@ -430,26 +430,29 @@ class MainWindow(Adw.ApplicationWindow):
 		iwad_item = self.iwad_combo.get_active_iter()
 
 		try:
-			app.main_config["launcher"]["iwad"] = self.iwad_store[iwad_item][1]
+			iwad_name = self.iwad_store[iwad_item][1]
 		except:
-			app.main_config["launcher"]["iwad"] = ""
+			iwad_name = ""
 
-		app.main_config["launcher"]["file"] = self.pwad_btn.get_selected_file()
+		pwad_file = self.pwad_btn.get_selected_file()
 
 		params = self.params_entry.get_text()
 		params_on = (self.add_expandrow.get_enable_expansion() and params != "")
 
-		app.main_config["launcher"]["params"] = params
-		app.main_config["launcher"]["params_on"] = params_on
-
 		if self.launch_flag == True:
-			error_status = self.launch_zandronum()
+			error_status = self.launch_zandronum(iwad_name, pwad_file, params, params_on)
 
 			if error_status == True: self.launch_flag = False
 
+		if error_status == False:
+			app.main_config["launcher"]["iwad"] = iwad_name
+			app.main_config["launcher"]["file"] = pwad_file
+			app.main_config["launcher"]["params"] = params
+			app.main_config["launcher"]["params_on"] = params_on
+
 		return(error_status)
 
-	def launch_zandronum(self):
+	def launch_zandronum(self, iwad_name, pwad_file, params, params_on):
 		# Return with error if Zandronum executable does not exist
 		if os.path.exists(app.main_config["zandronum"]["exec_file"]) == False:
 			self.show_toast("ERROR: Zandronum executable not found")
@@ -457,9 +460,6 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Initialize Zandronum command line with executable
 		cmdline = app.main_config["zandronum"]["exec_file"]
-
-		# Get IWAD name
-		iwad_name = app.main_config["launcher"]["iwad"]
 
 		# Return with error if IWAD name is empty
 		if iwad_name == "":
@@ -494,13 +494,11 @@ class MainWindow(Adw.ApplicationWindow):
 					if os.path.exists(mod_file): cmdline += ' -file "{:s}"'.format(mod_file)
 
 		# Add PWAD file if present
-		pwad_file = app.main_config["launcher"]["file"]
 		if os.path.exists(pwad_file): cmdline += ' -file "{:s}"'.format(pwad_file)
 
 		# Add extra params if present and enabled
-		if app.main_config["launcher"]["params_on"] == True:
-			extra_params = app.main_config["launcher"]["params"]
-			if extra_params != "": cmdline += ' {:s}'.format(extra_params)
+		if params_on == True:
+			if params != "": cmdline += ' {:s}'.format(params)
 
 		# Launch Zandronum
 		subprocess.Popen(shlex.split(cmdline))
@@ -587,6 +585,6 @@ class LauncherApp(Adw.Application):
 app = LauncherApp(application_id="com.github.zandronumlauncher")
 app.run(sys.argv)
 
-# app.write_launcher_config()
+app.write_launcher_config()
 
 app.main_window.destroy()

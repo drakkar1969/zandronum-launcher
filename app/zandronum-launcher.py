@@ -224,7 +224,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.key_quit_action = Gio.SimpleAction.new("key_quit", None)
 		self.key_quit_action.connect("activate", self.on_keypress_quit)
 		self.add_action(self.key_quit_action)
-		app.set_accels_for_action("win.key_quit", ["<ctrl>q", "q"])
+		app.set_accels_for_action("win.key_quit", ["<ctrl>q"])
 
 		self.key_launch_action = Gio.SimpleAction.new("key_launch", None)
 		self.key_launch_action.connect("activate", self.on_keypress_launch)

@@ -254,15 +254,15 @@ class MainWindow(Adw.ApplicationWindow):
 		self.header_popover = menu_builder.get_object("header_popover")
 
 		# Header
-		self.launch_btn = Gtk.Button(label="Launch", css_classes=["suggested-action"])
-		self.launch_btn.connect("clicked", self.on_launch_btn_clicked)
-
 		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic")
 		self.menu_btn.set_popover(self.header_popover)
 
 		self.header_bar = Gtk.HeaderBar()
-		self.header_bar.pack_start(self.launch_btn)
 		self.header_bar.pack_end(self.menu_btn)
+
+		# Launch button
+		self.launch_btn = Gtk.Button(label="_Launch Zandronum", halign=Gtk.Align.CENTER, use_underline=True, css_classes=["suggested-action", "pill"])
+		self.launch_btn.connect("clicked", self.on_launch_btn_clicked)
 
 		# IWAD (game) combo
 		self.iwad_combo = Gtk.ComboBox(valign=Gtk.Align.CENTER, width_request=350)
@@ -315,9 +315,15 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_group.add(self.pwad_listrow)
 		self.launch_group.add(self.add_expandrow)
 
+		# Launch box
+		self.launch_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
+
+		self.launch_box.append(self.launch_group)
+		self.launch_box.append(self.launch_btn)
+
 		# Launch clamp
-		self.launch_clamp = Adw.Clamp(margin_top=24, margin_bottom=36)
-		self.launch_clamp.set_child(self.launch_group)
+		self.launch_clamp = Adw.Clamp(margin_top=24, margin_bottom=24)
+		self.launch_clamp.set_child(self.launch_box)
 
 		# Window box
 		self.win_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)

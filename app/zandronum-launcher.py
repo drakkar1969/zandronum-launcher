@@ -425,7 +425,7 @@ class MainWindow(Adw.ApplicationWindow):
 		prefs_window.show()
 
 	def on_window_close(self, window):
-		retval = False
+		error_status = False
 
 		iwad_item = self.iwad_combo.get_active_iter()
 
@@ -443,11 +443,11 @@ class MainWindow(Adw.ApplicationWindow):
 		app.main_config["launcher"]["params_on"] = params_on
 
 		if self.launch_flag == True:
-			retval = self.launch_zandronum()
+			error_status = self.launch_zandronum()
 
-			if retval == True: self.launch_flag = False
+			if error_status == True: self.launch_flag = False
 
-		return(retval)
+		return(error_status)
 
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist

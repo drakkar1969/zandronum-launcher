@@ -224,6 +224,8 @@ class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
+		self.launch_flag = False
+
 		self.set_default_size(620, -1)
 		self.set_valign(Gtk.Align.CENTER)
 		self.set_title("Zandronum Launcher")
@@ -395,7 +397,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.params_entry.set_text("")
 
 	def on_launch_btn_clicked(self, button):
-		app.launch_flag = True
+		self.launch_flag = True
 
 		self.close()
 
@@ -434,13 +436,69 @@ class MainWindow(Adw.ApplicationWindow):
 		app.main_config["launcher"]["params"] = params
 		app.main_config["launcher"]["params_on"] = params_on
 
+		if self.launch_flag == True:
+			self.launch_zandronum()
+
+	def launch_zandronum(self):
+		# Return with error if Zandronum executable does not exist
+		if os.path.exists(app.main_config["zandronum"]["exec_file"]) == False:
+			print("Zandronum-Launcher: ERROR: Zandronum executable not found")
+			return
+
+		# Initialize Zandronum command line with executable
+		cmdline = app.main_config["zandronum"]["exec_file"]
+
+		# Get IWAD name
+		iwad_name = app.main_config["launcher"]["iwad"]
+
+		# Return with error if IWAD name is empty
+		if iwad_name == "":
+			print("Zandronum-Launcher: ERROR: No IWAD file specified")
+			return
+
+		iwad_file = os.path.join(app.main_config["zandronum"]["iwad_dir"], iwad_name)
+
+		# Return with error if IWAD file does not exist
+		if os.path.exists(iwad_file) == False:
+			print("Zandronum-Launcher: ERROR: IWAD file not found")
+			return
+
+		# Add IWAD file
+		cmdline += ' -iwad "{:s}"'.format(iwad_file)
+
+		# Add patch file if present
+		patch_name = doom_iwads[iwad_name]["patch"]
+		if patch_name != "":
+			patch_file = os.path.join(app.patch_dir, patch_name)
+
+			if os.path.exists(patch_file): cmdline += ' -file "{:s}"'.format(patch_file)
+
+		# Add mod files if use hi-res graphics option is true
+		if app.main_config["zandronum"]["use_mods"] == True:
+			mod_list = doom_iwads[iwad_name]["mods"]
+
+			for mod_name in mod_list:
+				if mod_name != "":
+					mod_file = os.path.join(app.mod_dir, mod_name)
+
+					if os.path.exists(mod_file): cmdline += ' -file "{:s}"'.format(mod_file)
+
+		# Add PWAD file if present
+		pwad_file = app.main_config["launcher"]["file"]
+		if os.path.exists(pwad_file): cmdline += ' -file "{:s}"'.format(pwad_file)
+
+		# Add extra params if present and enabled
+		if app.main_config["launcher"]["params_on"] == True:
+			extra_params = app.main_config["launcher"]["params"]
+			if extra_params != "": cmdline += ' {:s}'.format(extra_params)
+
+		# Launch Zandronum
+		subprocess.Popen(shlex.split(cmdline))
+
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 		self.connect("activate", self.on_activate)
-
-		# Launch Zandronum flag
-		self.launch_flag = False
 
 		# App dirs
 		self.app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -509,69 +567,10 @@ class LauncherApp(Adw.Application):
 		with open(self.launcher_config_file, "w") as configfile:
 			parser.write(configfile)
 
-	def launch_zandronum(self):
-		# Return with error if Zandronum executable does not exist
-		if os.path.exists(self.main_config["zandronum"]["exec_file"]) == False:
-			print("Zandronum-Launcher: ERROR: Zandronum executable not found")
-			return
-
-		# Initialize Zandronum command line with executable
-		cmdline = self.main_config["zandronum"]["exec_file"]
-
-		# Get IWAD name
-		iwad_name = self.main_config["launcher"]["iwad"]
-
-		# Return with error if IWAD name is empty
-		if iwad_name == "":
-			print("Zandronum-Launcher: ERROR: No IWAD file specified")
-			return
-
-		iwad_file = os.path.join(self.main_config["zandronum"]["iwad_dir"], iwad_name)
-
-		# Return with error if IWAD file does not exist
-		if os.path.exists(iwad_file) == False:
-			print("Zandronum-Launcher: ERROR: IWAD file not found")
-			return
-
-		# Add IWAD file
-		cmdline += ' -iwad "{:s}"'.format(iwad_file)
-
-		# Add patch file if present
-		patch_name = doom_iwads[iwad_name]["patch"]
-		if patch_name != "":
-			patch_file = os.path.join(self.patch_dir, patch_name)
-
-			if os.path.exists(patch_file): cmdline += ' -file "{:s}"'.format(patch_file)
-
-		# Add mod files if use hi-res graphics option is true
-		if self.main_config["zandronum"]["use_mods"] == True:
-			mod_list = doom_iwads[iwad_name]["mods"]
-
-			for mod_name in mod_list:
-				if mod_name != "":
-					mod_file = os.path.join(self.mod_dir, mod_name)
-
-					if os.path.exists(mod_file): cmdline += ' -file "{:s}"'.format(mod_file)
-
-		# Add PWAD file if present
-		pwad_file = self.main_config["launcher"]["file"]
-		if os.path.exists(pwad_file): cmdline += ' -file "{:s}"'.format(pwad_file)
-
-		# Add extra params if present and enabled
-		if self.main_config["launcher"]["params_on"] == True:
-			extra_params = self.main_config["launcher"]["params"]
-			if extra_params != "": cmdline += ' {:s}'.format(extra_params)
-
-		# Launch Zandronum
-		subprocess.Popen(shlex.split(cmdline))
-
 # Main app
 app = LauncherApp(application_id="com.github.zandronumlauncher")
 app.run(sys.argv)
 
-app.write_launcher_config()
-
-if app.launch_flag == True:
-	app.launch_zandronum()
+# app.write_launcher_config()
 
 app.main_window.destroy()

@@ -400,9 +400,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.close()
 
 	def on_keypress_launch(self, action, param):
-		app.launch_flag = True
-
-		self.close()
+		self.launch_btn.activate()
 
 	def on_keypress_quit(self, action, param):
 		self.close()

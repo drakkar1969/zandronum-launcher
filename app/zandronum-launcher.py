@@ -421,6 +421,8 @@ class MainWindow(Adw.ApplicationWindow):
 		prefs_window.show()
 
 	def on_window_close(self, window):
+		retval = False
+
 		iwad_item = self.iwad_combo.get_active_iter()
 
 		try:
@@ -437,13 +439,17 @@ class MainWindow(Adw.ApplicationWindow):
 		app.main_config["launcher"]["params_on"] = params_on
 
 		if self.launch_flag == True:
-			self.launch_zandronum()
+			retval = self.launch_zandronum()
+
+			if retval == True: self.launch_flag = False
+
+		return(retval)
 
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
 		if os.path.exists(app.main_config["zandronum"]["exec_file"]) == False:
 			print("Zandronum-Launcher: ERROR: Zandronum executable not found")
-			return
+			return(True)
 
 		# Initialize Zandronum command line with executable
 		cmdline = app.main_config["zandronum"]["exec_file"]
@@ -454,14 +460,14 @@ class MainWindow(Adw.ApplicationWindow):
 		# Return with error if IWAD name is empty
 		if iwad_name == "":
 			print("Zandronum-Launcher: ERROR: No IWAD file specified")
-			return
+			return(True)
 
 		iwad_file = os.path.join(app.main_config["zandronum"]["iwad_dir"], iwad_name)
 
 		# Return with error if IWAD file does not exist
 		if os.path.exists(iwad_file) == False:
 			print("Zandronum-Launcher: ERROR: IWAD file not found")
-			return
+			return(True)
 
 		# Add IWAD file
 		cmdline += ' -iwad "{:s}"'.format(iwad_file)
@@ -493,7 +499,10 @@ class MainWindow(Adw.ApplicationWindow):
 			if extra_params != "": cmdline += ' {:s}'.format(extra_params)
 
 		# Launch Zandronum
-		subprocess.Popen(shlex.split(cmdline))
+		# subprocess.Popen(shlex.split(cmdline))
+		print(cmdline)
+
+		return(False)
 
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):

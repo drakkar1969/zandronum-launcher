@@ -232,22 +232,22 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Actions
 		self.menu_reset_action = Gio.SimpleAction.new("menu_reset", None)
-		self.menu_reset_action.connect("activate", self.on_menu_reset_clicked)
+		self.menu_reset_action.connect("activate", self.on_menu_reset_action)
 		self.add_action(self.menu_reset_action)
 		app.set_accels_for_action("win.menu_reset", ["<ctrl>r"])
 
 		self.menu_prefs_action = Gio.SimpleAction.new("menu_prefs", None)
-		self.menu_prefs_action.connect("activate", self.on_menu_prefs_clicked)
+		self.menu_prefs_action.connect("activate", self.on_menu_prefs_action)
 		self.add_action(self.menu_prefs_action)
 		app.set_accels_for_action("win.menu_prefs", ["<ctrl>comma", "<ctrl>p"])
 
 		self.key_quit_action = Gio.SimpleAction.new("key_quit", None)
-		self.key_quit_action.connect("activate", self.on_keypress_quit)
+		self.key_quit_action.connect("activate", self.on_key_quit_action)
 		self.add_action(self.key_quit_action)
 		app.set_accels_for_action("win.key_quit", ["<ctrl>q"])
 
 		self.key_launch_action = Gio.SimpleAction.new("key_launch", None)
-		self.key_launch_action.connect("activate", self.on_keypress_launch)
+		self.key_launch_action.connect("activate", self.on_key_launch_action)
 		self.add_action(self.key_launch_action)
 		app.set_accels_for_action("win.key_launch", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
@@ -399,13 +399,13 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.close()
 
-	def on_keypress_launch(self, action, param):
+	def on_key_launch_action(self, action, param):
 		self.launch_btn.activate()
 
-	def on_keypress_quit(self, action, param):
+	def on_key_quit_action(self, action, param):
 		self.close()
 
-	def on_menu_reset_clicked(self, action, param):
+	def on_menu_reset_action(self, action, param):
 		try:
 			self.iwad_combo.set_active(0)
 		except:
@@ -414,7 +414,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.params_entry.set_text("")
 		self.add_expandrow.set_enable_expansion(False)
 
-	def on_menu_prefs_clicked(self, action, param):
+	def on_menu_prefs_action(self, action, param):
 		prefs_window = PreferencesWindow()
 		prefs_window.show()
 

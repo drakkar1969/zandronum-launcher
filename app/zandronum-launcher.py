@@ -348,8 +348,12 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.win_box.append(self.header_bar)
 		self.win_box.append(self.launch_clamp)
+
+		# Toast overlay
+		self.toast_overlay = Adw.ToastOverlay()
+		self.toast_overlay.set_child(self.win_box)
 		
-		self.set_content(self.win_box)
+		self.set_content(self.toast_overlay)
 		self.set_focus(self.iwad_listrow)
 
 		# Widget initialization
@@ -448,7 +452,7 @@ class MainWindow(Adw.ApplicationWindow):
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
 		if os.path.exists(app.main_config["zandronum"]["exec_file"]) == False:
-			print("Zandronum-Launcher: ERROR: Zandronum executable not found")
+			self.show_toast("ERROR: Zandronum executable not found")
 			return(True)
 
 		# Initialize Zandronum command line with executable
@@ -459,14 +463,14 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Return with error if IWAD name is empty
 		if iwad_name == "":
-			print("Zandronum-Launcher: ERROR: No IWAD file specified")
+			self.show_toast("ERROR: No IWAD file specified")
 			return(True)
 
 		iwad_file = os.path.join(app.main_config["zandronum"]["iwad_dir"], iwad_name)
 
 		# Return with error if IWAD file does not exist
 		if os.path.exists(iwad_file) == False:
-			print("Zandronum-Launcher: ERROR: IWAD file not found")
+			self.show_toast("ERROR: IWAD file not found")
 			return(True)
 
 		# Add IWAD file
@@ -499,10 +503,13 @@ class MainWindow(Adw.ApplicationWindow):
 			if extra_params != "": cmdline += ' {:s}'.format(extra_params)
 
 		# Launch Zandronum
-		# subprocess.Popen(shlex.split(cmdline))
-		print(cmdline)
+		subprocess.Popen(shlex.split(cmdline))
 
 		return(False)
+
+	def show_toast(self, toast_title):
+		toast = Adw.Toast(title=toast_title, priority=Adw.ToastPriority.HIGH)
+		self.toast_overlay.add_toast(toast)
 
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):

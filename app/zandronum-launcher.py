@@ -295,8 +295,9 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_listrow.set_activatable_widget(self.pwad_btn)
 
 		# Custom params entry
-		self.params_entry = Gtk.Entry(valign=Gtk.Align.CENTER, width_request=350)
+		self.params_entry = Gtk.Entry(valign=Gtk.Align.CENTER, secondary_icon_name="edit-clear-symbolic", width_request=350)
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
+		self.params_entry.connect("icon-press", self.on_params_entry_clear)
 
 		self.params_listrow = Adw.ActionRow(title="_Custom Switches", use_underline=True)
 		self.params_listrow.add_suffix(self.params_entry)
@@ -352,6 +353,9 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
+
+	def on_params_entry_clear(self, pos, data):
+		self.params_entry.set_text("")
 
 	def on_launch_btn_clicked(self, button):
 		app.launch_flag = True

@@ -470,7 +470,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Return with error if IWAD file does not exist
 		if os.path.exists(iwad_file) == False:
-			self.show_toast("ERROR: IWAD file not found")
+			self.show_toast("ERROR: IWAD file {:s} not found".format(iwad_name))
 			return(True)
 
 		# Add IWAD file

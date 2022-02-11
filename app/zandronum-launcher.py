@@ -145,7 +145,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		self.set_default_size(520, -1)
+		self.set_default_size(560, -1)
 		self.set_title("Zandronum Preferences")
 		self.set_transient_for(app.main_window)
 		self.set_destroy_with_parent(True)
@@ -157,16 +157,23 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		# Executable button
 		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, btn_icon="application-x-executable-symbolic")
 
-		self.exec_listrow = Adw.ActionRow(title="Application _Path", use_underline=True)
+		self.exec_listrow = Adw.ActionRow(title="_Application Path", use_underline=True)
 		self.exec_listrow.add_suffix(self.exec_btn)
 		self.exec_listrow.set_activatable_widget(self.exec_btn)
 
 		# IWAD dir button
 		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Directory", dlg_parent=self, folder_select=True)
 
-		self.iwaddir_listrow = Adw.ActionRow(title="IWAD _Directory", use_underline=True)
+		self.iwaddir_listrow = Adw.ActionRow(title="_IWAD Folder", use_underline=True)
 		self.iwaddir_listrow.add_suffix(self.iwaddir_btn)
 		self.iwaddir_listrow.set_activatable_widget(self.iwaddir_btn)
+
+		# PWAD dir button
+		self.pwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select WAD Directory", dlg_parent=self, folder_select=True)
+
+		self.pwaddir_listrow = Adw.ActionRow(title="Default _WAD Folder", use_underline=True)
+		self.pwaddir_listrow.add_suffix(self.pwaddir_btn)
+		self.pwaddir_listrow.set_activatable_widget(self.pwaddir_btn)
 
 		# Mods switch
 		self.mods_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
@@ -179,6 +186,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.prefs_group = Adw.PreferencesGroup(title="Preferences")
 		self.prefs_group.add(self.exec_listrow)
 		self.prefs_group.add(self.iwaddir_listrow)
+		self.prefs_group.add(self.pwaddir_listrow)
 		self.prefs_group.add(self.mods_listrow)
 
 		# Preferences page
@@ -192,6 +200,8 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		self.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
 
+		self.pwaddir_btn.set_selected_file(app.main_config["zandronum"]["pwad_dir"])
+
 		self.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
 
 	def on_window_close(self, window):
@@ -202,6 +212,11 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		if iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
 			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
 			app.main_window.populate_iwad_combo()
+
+		pwad_dir = self.pwaddir_btn.get_selected_file()
+
+		app.main_config["zandronum"]["pwad_dir"] = pwad_dir
+		app.main_window.set_pwad_default_folder(pwad_dir)
 
 		app.main_config["zandronum"]["use_mods"] = self.mods_switch.get_active()
 
@@ -337,7 +352,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# Widget initialization
 		self.populate_iwad_combo()
 
-		self.pwad_btn.set_default_folder(app.config_dir)
+		self.set_pwad_default_folder(app.main_config["zandronum"]["pwad_dir"])
 		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
 
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
@@ -371,6 +386,9 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
+
+	def set_pwad_default_folder(self, def_folder):
+		self.pwad_btn.set_default_folder(def_folder)
 
 	def on_params_entry_clear(self, pos, data):
 		self.params_entry.set_text("")
@@ -449,6 +467,7 @@ class LauncherApp(Adw.Application):
 
 		default_exec_file = "/usr/bin/zandronum"
 		default_iwad_dir = os.path.join(self.app_dir, "iwads")
+		default_pwad_dir = self.config_dir
 
 		self.main_config = { "launcher": {}, "zandronum": {} }
 
@@ -462,6 +481,7 @@ class LauncherApp(Adw.Application):
 
 		self.main_config["zandronum"]["exec_file"] = parser.get("zandronum", "exec_file", fallback=default_exec_file)
 		self.main_config["zandronum"]["iwad_dir"] = parser.get("zandronum", "iwad_dir", fallback=default_iwad_dir)
+		self.main_config["zandronum"]["pwad_dir"] = parser.get("zandronum", "pwad_dir", fallback=default_pwad_dir)
 		try:
 			self.main_config["zandronum"]["use_mods"] = parser.getboolean("zandronum", "use_mods", fallback=True)
 		except:
@@ -472,6 +492,9 @@ class LauncherApp(Adw.Application):
 
 		if self.main_config["zandronum"]["iwad_dir"] == "" or os.path.exists(self.main_config["zandronum"]["iwad_dir"]) == False:
 			self.main_config["zandronum"]["iwad_dir"] = default_iwad_dir
+
+		if self.main_config["zandronum"]["pwad_dir"] == "" or os.path.exists(self.main_config["zandronum"]["pwad_dir"]) == False:
+			self.main_config["zandronum"]["pwad_dir"] = default_pwad_dir
 
 	def on_activate(self, app):
 		self.main_window = MainWindow(application=app)

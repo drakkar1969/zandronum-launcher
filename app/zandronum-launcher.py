@@ -423,14 +423,17 @@ class MainWindow(Adw.ApplicationWindow):
 		iwad_item = self.iwad_combo.get_active_iter()
 
 		try:
-			iwad_filename = self.iwad_store[iwad_item][1]
+			app.main_config["launcher"]["iwad"] = self.iwad_store[iwad_item][1]
 		except:
-			iwad_filename = ""
+			app.main_config["launcher"]["iwad"] = ""
 
-		app.main_config["launcher"]["iwad"] = iwad_filename
 		app.main_config["launcher"]["file"] = self.pwad_btn.get_selected_file()
-		app.main_config["launcher"]["params"] = self.params_entry.get_text()
-		app.main_config["launcher"]["params_on"] = self.add_expandrow.get_enable_expansion()
+
+		params = self.params_entry.get_text()
+		params_on = (self.add_expandrow.get_enable_expansion() and params != "")
+
+		app.main_config["launcher"]["params"] = params
+		app.main_config["launcher"]["params_on"] = params_on
 
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):

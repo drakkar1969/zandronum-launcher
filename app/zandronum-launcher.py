@@ -81,6 +81,7 @@ class FileDialogButton(Gtk.Box):
 		# Set widget properties
 		self.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
 		self.set_hexpand(False)
+		self.connect("mnemonic-activate", self.on_activate)
 
 		if self.can_clear == True:
 			if self.is_linked == True:
@@ -96,6 +97,9 @@ class FileDialogButton(Gtk.Box):
 		self.dialog.set_select_multiple(False)
 		self.dialog.set_modal(True)
 		self.dialog.connect("response", self.on_dialog_response)
+
+	def on_activate(self, cycling, data):
+		self.file_btn.activate()
 
 	def set_label(self):
 		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")

@@ -225,11 +225,11 @@ class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		# Builder
-		main_builder = Gtk.Builder.new_from_file(os.path.join(app.app_dir, "ui/main.ui"))
-
 		# Zandronum launch flag
 		self.launch_flag = False
+
+		# Builder
+		main_builder = Gtk.Builder.new_from_file(os.path.join(app.app_dir, "ui/main.ui"))
 
 		# Window properties
 		self.set_default_size(620, -1)

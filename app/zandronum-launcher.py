@@ -80,15 +80,14 @@ class FileDialogButton(Gtk.Box):
 
 		# Set widget properties
 		self.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
+		self.set_spacing(6)
 		self.set_hexpand(False)
 		self.connect("mnemonic-activate", self.on_activate)
 
-		if self.can_clear == True:
-			if self.is_linked == True:
-				self.add_css_class("linked")
-			else:
-				self.set_spacing(6)
-				self.clear_btn.add_css_class("flat")
+		if self.is_linked == True:
+			self.add_css_class("linked")
+		else:
+			if self.can_clear == True: self.clear_btn.add_css_class("flat")
 
 		self.set_label()
 

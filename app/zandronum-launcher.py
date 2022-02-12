@@ -106,12 +106,13 @@ class FileDialogButton(Gtk.Box):
 		if self.can_clear == True:
 			self.clear_btn.set_sensitive(True if self.selected_file is not None else False)
 
-	def set_file_filter(self, mime_types):
+	def set_file_filter(self, name, mime_types):
 		if mime_types is not None:
 			file_filter = Gtk.FileFilter()
 			for mime_type in mime_types:
 				file_filter.add_mime_type(mime_type)
-			self.dialog.set_filter(file_filter)
+			file_filter.set_name(name)
+			self.dialog.add_filter(file_filter)
 
 	def set_selected_file(self, sel_file):
 		self.selected_file = Gio.File.new_for_path(sel_file) if sel_file != "" else None
@@ -305,7 +306,7 @@ class MainWindow(Adw.ApplicationWindow):
 		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
 
 		self.pwad_btn = FileDialogButton(valign=Gtk.Align.CENTER, dlg_title="Select WAD File", dlg_parent=self, can_clear=True, width_request=350)
-		self.pwad_btn.set_file_filter(pwad_filter)
+		self.pwad_btn.set_file_filter("WAD files", pwad_filter)
 
 		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", use_underline=True)
 		self.pwad_listrow.add_suffix(self.pwad_btn)

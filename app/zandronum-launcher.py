@@ -494,7 +494,7 @@ class MainWindow(Adw.ApplicationWindow):
 					if os.path.exists(mod_file): cmdline += ' -file "{:s}"'.format(mod_file)
 
 		# Add PWAD file if present
-		if os.path.exists(pwad_file): cmdline += ' -file "{:s}"'.format(pwad_file)
+		if pwad_file != "" and os.path.exists(pwad_file): cmdline += ' -file "{:s}"'.format(pwad_file)
 
 		# Add extra params if present and enabled
 		if params_on == True:

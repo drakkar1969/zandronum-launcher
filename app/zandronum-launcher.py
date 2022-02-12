@@ -45,7 +45,8 @@ class FileDialogButton(Gtk.Box):
 	folder_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 	btn_icon = GObject.Property(type=str, default="", flags=GObject.ParamFlags.READWRITE)
 	can_clear = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
-	is_linked = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
+	can_reset = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
+	is_linked = GObject.Property(type=bool, default=True, flags=GObject.ParamFlags.READWRITE)
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -53,6 +54,7 @@ class FileDialogButton(Gtk.Box):
 		# Initialize internal variables
 		self.selected_file = None
 		self.default_folder = None
+		self.default_file = None
 
 		# Add file button
 		if self.btn_icon == "":
@@ -78,6 +80,13 @@ class FileDialogButton(Gtk.Box):
 
 			self.append(self.clear_btn)
 
+		# Add reset button if enabled
+		if self.can_reset == True:
+			self.reset_btn = Gtk.Button(icon_name="view-refresh-symbolic")
+			self.reset_btn.connect("clicked", self.on_reset_btn_clicked)
+
+			self.append(self.reset_btn)
+
 		# Set widget properties
 		self.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
 		self.set_spacing(6)
@@ -88,6 +97,7 @@ class FileDialogButton(Gtk.Box):
 			self.add_css_class("linked")
 		else:
 			if self.can_clear == True: self.clear_btn.add_css_class("flat")
+			if self.can_reset == True: self.reset_btn.add_css_class("flat")
 
 		self.set_label()
 
@@ -102,8 +112,15 @@ class FileDialogButton(Gtk.Box):
 
 	def set_label(self):
 		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
+
 		if self.can_clear == True:
 			self.clear_btn.set_sensitive(True if self.selected_file is not None else False)
+
+		if self.can_reset == True:
+			if self.selected_file is None or self.default_file is None:
+				self.reset_btn.set_sensitive(False)
+			else:
+				self.reset_btn.set_sensitive(False if self.selected_file.get_path() == self.default_file.get_path() else True)
 
 	def set_file_filter(self, name, mime_types):
 		if mime_types is not None:
@@ -123,6 +140,9 @@ class FileDialogButton(Gtk.Box):
 	def set_default_folder(self, def_folder):
 		self.default_folder = Gio.File.new_for_path(def_folder) if def_folder != "" else None
 
+	def set_default_file(self, def_file):
+		self.default_file = Gio.File.new_for_path(def_file) if def_file != "" else None
+
 	def on_file_btn_clicked(self, button):
 		if self.selected_file is not None:
 			self.dialog.set_file(self.selected_file)
@@ -141,6 +161,10 @@ class FileDialogButton(Gtk.Box):
 		self.selected_file = None
 		self.set_label()
 
+	def on_reset_btn_clicked(self, button):
+		self.selected_file = self.default_file
+		self.set_label()
+
 class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -155,21 +179,24 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.connect("close-request", self.on_window_close)
 
 		# Executable button
-		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, btn_icon="application-x-executable-symbolic")
+		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, btn_icon="application-x-executable-symbolic", can_reset=True)
+		self.exec_btn.set_default_file(app.default_exec_file)
 
 		self.exec_listrow = Adw.ActionRow(title="_Zandronum Path", use_underline=True)
 		self.exec_listrow.add_suffix(self.exec_btn)
 		self.exec_listrow.set_activatable_widget(self.exec_btn)
 
 		# IWAD dir button
-		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Directory", dlg_parent=self, folder_select=True)
+		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Directory", dlg_parent=self, folder_select=True, can_reset=True)
+		self.iwaddir_btn.set_default_file(app.default_iwad_dir)
 
 		self.iwaddir_listrow = Adw.ActionRow(title="_IWAD Folder", use_underline=True)
 		self.iwaddir_listrow.add_suffix(self.iwaddir_btn)
 		self.iwaddir_listrow.set_activatable_widget(self.iwaddir_btn)
 
 		# PWAD dir button
-		self.pwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select WAD Directory", dlg_parent=self, folder_select=True)
+		self.pwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select WAD Directory", dlg_parent=self, folder_select=True, can_reset=True)
+		self.pwaddir_btn.set_default_file(app.default_pwad_dir)
 
 		self.pwaddir_listrow = Adw.ActionRow(title="Default _WAD Folder", use_underline=True)
 		self.pwaddir_listrow.add_suffix(self.pwaddir_btn)
@@ -516,15 +543,16 @@ class LauncherApp(Adw.Application):
 
 			shutil.copyfile(zandronum_ini_src, zandronum_ini_file)
 
+		# Default settings
+		self.default_exec_file = "/usr/bin/zandronum"
+		self.default_iwad_dir = os.path.join(self.app_dir, "iwads")
+		self.default_pwad_dir = self.config_dir
+
 		# Parse configuration file
 		self.launcher_config_file = os.path.join(self.config_dir, "launcher.conf")
 
 		parser = configparser.ConfigParser()
 		parser.read(self.launcher_config_file)
-
-		default_exec_file = "/usr/bin/zandronum"
-		default_iwad_dir = os.path.join(self.app_dir, "iwads")
-		default_pwad_dir = self.config_dir
 
 		self.main_config = { "launcher": {}, "zandronum": {} }
 
@@ -536,22 +564,22 @@ class LauncherApp(Adw.Application):
 		except:
 			self.main_config["launcher"]["params_on"] = False
 
-		self.main_config["zandronum"]["exec_file"] = parser.get("zandronum", "exec_file", fallback=default_exec_file)
-		self.main_config["zandronum"]["iwad_dir"] = parser.get("zandronum", "iwad_dir", fallback=default_iwad_dir)
-		self.main_config["zandronum"]["pwad_dir"] = parser.get("zandronum", "pwad_dir", fallback=default_pwad_dir)
+		self.main_config["zandronum"]["exec_file"] = parser.get("zandronum", "exec_file", fallback=self.default_exec_file)
+		self.main_config["zandronum"]["iwad_dir"] = parser.get("zandronum", "iwad_dir", fallback=self.default_iwad_dir)
+		self.main_config["zandronum"]["pwad_dir"] = parser.get("zandronum", "pwad_dir", fallback=self.default_pwad_dir)
 		try:
 			self.main_config["zandronum"]["use_mods"] = parser.getboolean("zandronum", "use_mods", fallback=True)
 		except:
 			self.main_config["zandronum"]["use_mods"] = True
 
 		if self.main_config["zandronum"]["exec_file"] == "" or os.path.exists(self.main_config["zandronum"]["exec_file"]) == False:
-			self.main_config["zandronum"]["exec_file"] = default_exec_file
+			self.main_config["zandronum"]["exec_file"] = self.default_exec_file
 
 		if self.main_config["zandronum"]["iwad_dir"] == "" or os.path.exists(self.main_config["zandronum"]["iwad_dir"]) == False:
-			self.main_config["zandronum"]["iwad_dir"] = default_iwad_dir
+			self.main_config["zandronum"]["iwad_dir"] = self.default_iwad_dir
 
 		if self.main_config["zandronum"]["pwad_dir"] == "" or os.path.exists(self.main_config["zandronum"]["pwad_dir"]) == False:
-			self.main_config["zandronum"]["pwad_dir"] = default_pwad_dir
+			self.main_config["zandronum"]["pwad_dir"] = self.default_pwad_dir
 
 	def on_activate(self, app):
 		self.main_window = MainWindow(application=app)

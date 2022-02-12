@@ -225,11 +225,93 @@ class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
+		# Builder
+		main_builder = Gtk.Builder.new_from_string("""
+			<?xml version="1.0" encoding="UTF-8"?>
+			<interface>
+				<object class="GtkPopoverMenu" id="header_popover">
+					<property name="menu_model">header_menu</property>
+				</object>
+				<menu id="header_menu">
+					<section>
+						<item>
+							<attribute name="label">Reset to Defaults</attribute>
+							<attribute name="action">win.menu-reset</attribute>
+						</item>
+						<item>
+							<attribute name="label">Zandronum Preferences</attribute>
+							<attribute name="action">win.menu-prefs</attribute>
+						</item>
+					</section>
+					<section>
+						<item>
+							<attribute name="label">Keyboard Shortcuts</attribute>
+							<attribute name="action">win.show-help-overlay</attribute>
+						</item>
+					</section>
+				</menu>
+				<object class="GtkShortcutsWindow" id="shortcut_window">
+					<property name="modal">True</property>
+					<child>
+						<object class="GtkShortcutsSection">
+							<property name="section-name">shortcuts</property>
+							<child>
+								<object class="GtkShortcutsGroup">
+									<property name="title">Actions</property>
+									<child>
+										<object class="GtkShortcutsShortcut">
+											<property name="accelerator">F10</property>
+											<property name="title">Main menu</property>
+										</object>
+									</child>
+									<child>
+										<object class="GtkShortcutsShortcut">
+											<property name="accelerator">&lt;ctrl&gt;R</property>
+											<property name="title">Reset to defaults</property>
+										</object>
+									</child>
+									<child>
+										<object class="GtkShortcutsShortcut">
+											<property name="accelerator">&lt;ctrl&gt;comma &lt;ctrl&gt;P</property>
+											<property name="title">Zandronum preferences</property>
+										</object>
+									</child>
+									<child>
+										<object class="GtkShortcutsShortcut">
+											<property name="accelerator">&lt;ctrl&gt;question</property>
+											<property name="title">Shortcuts</property>
+										</object>
+									</child>
+									<child>
+										<object class="GtkShortcutsShortcut">
+											<property name="accelerator">&lt;ctrl&gt;Return &lt;ctrl&gt;KP_Enter</property>
+											<property name="title">Launch Zandronum</property>
+										</object>
+									</child>
+									<child>
+										<object class="GtkShortcutsShortcut">
+											<property name="accelerator">&lt;ctrl&gt;Q</property>
+											<property name="title">Quit</property>
+										</object>
+									</child>
+								</object>
+							</child>
+						</object>
+					</child>
+				</object>
+			</interface>
+		""", -1)
+
+		# Zandronum launch flag
 		self.launch_flag = False
 
+		# Window properties
 		self.set_default_size(620, -1)
 		self.set_valign(Gtk.Align.CENTER)
 		self.set_title("Zandronum Launcher")
+
+		self.shortcut_window = main_builder.get_object("shortcut_window")
+		self.set_help_overlay(self.shortcut_window)
 
 		self.connect("close-request", self.on_window_close)
 
@@ -254,33 +336,11 @@ class MainWindow(Adw.ApplicationWindow):
 		self.add_action(self.key_launch_action)
 		app.set_accels_for_action("win.key-launch", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
-		# Header menu
-		menu_builder = Gtk.Builder.new_from_string("""
-			<?xml version="1.0" encoding="UTF-8"?>
-			<interface>
-				<object class="GtkPopoverMenu" id="header_popover">
-					<property name="menu_model">header_menu</property>
-				</object>
-				<menu id="header_menu">
-					<section>
-						<item>
-							<attribute name="label">Reset to Defaults</attribute>
-							<attribute name="action">win.menu_reset</attribute>
-						</item>
-					</section>
-					<section>
-						<item>
-							<attribute name="label">Zandronum Preferences</attribute>
-							<attribute name="action">win.menu_prefs</attribute>
-						</item>
-					</section>
-				</menu>
-			</interface>
-		""", -1)
-
-		self.header_popover = menu_builder.get_object("header_popover")
+		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
 		# Header
+		self.header_popover = main_builder.get_object("header_popover")
+
 		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic", primary=True)
 		self.menu_btn.set_popover(self.header_popover)
 

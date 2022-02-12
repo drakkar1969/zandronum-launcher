@@ -114,13 +114,16 @@ class FileDialogButton(Gtk.Box):
 		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
 
 		if self.can_clear == True:
-			self.clear_btn.set_sensitive(True if self.selected_file is not None else False)
+			self.clear_btn.set_sensitive(False if self.selected_file is None else True)
 
 		if self.can_reset == True:
-			if self.selected_file is None or self.default_file is None:
+			if self.default_file is None:
 				self.reset_btn.set_sensitive(False)
 			else:
-				self.reset_btn.set_sensitive(False if self.selected_file.get_path() == self.default_file.get_path() else True)
+				if self.selected_file is None:
+					self.reset_btn.set_sensitive(True)
+				else:
+					self.reset_btn.set_sensitive(False if self.default_file.equal(self.selected_file) else True)
 
 	def set_file_filter(self, name, mime_types):
 		if mime_types is not None:
@@ -142,6 +145,7 @@ class FileDialogButton(Gtk.Box):
 
 	def set_default_file(self, def_file):
 		self.default_file = Gio.File.new_for_path(def_file) if def_file != "" else None
+		self.set_label()
 
 	def on_file_btn_clicked(self, button):
 		if self.selected_file is not None:

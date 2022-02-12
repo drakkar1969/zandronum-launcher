@@ -99,7 +99,7 @@ class FileDialogButton(Gtk.Box):
 			if self.can_clear == True: self.clear_btn.add_css_class("flat")
 			if self.can_reset == True: self.reset_btn.add_css_class("flat")
 
-		self.set_label()
+		self.set_state()
 
 		# Create dialog
 		self.dialog = Gtk.FileChooserNative.new(self.dlg_title, self.dlg_parent, Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
@@ -110,7 +110,7 @@ class FileDialogButton(Gtk.Box):
 	def on_activate(self, cycling, data):
 		self.file_btn.activate()
 
-	def set_label(self):
+	def set_state(self):
 		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
 
 		if self.can_clear == True:
@@ -135,7 +135,7 @@ class FileDialogButton(Gtk.Box):
 
 	def set_selected_file(self, sel_file):
 		self.selected_file = Gio.File.new_for_path(sel_file) if sel_file != "" else None
-		self.set_label()
+		self.set_state()
 
 	def get_selected_file(self):
 		return(self.selected_file.get_path() if self.selected_file is not None else "")
@@ -145,7 +145,7 @@ class FileDialogButton(Gtk.Box):
 
 	def set_default_file(self, def_file):
 		self.default_file = Gio.File.new_for_path(def_file) if def_file != "" else None
-		self.set_label()
+		self.set_state()
 
 	def on_file_btn_clicked(self, button):
 		if self.selected_file is not None:
@@ -159,15 +159,15 @@ class FileDialogButton(Gtk.Box):
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
 			self.selected_file = dialog.get_file()
-			self.set_label()
+			self.set_state()
 
 	def on_clear_btn_clicked(self, button):
 		self.selected_file = None
-		self.set_label()
+		self.set_state()
 
 	def on_reset_btn_clicked(self, button):
 		self.selected_file = self.default_file
-		self.set_label()
+		self.set_state()
 
 class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):

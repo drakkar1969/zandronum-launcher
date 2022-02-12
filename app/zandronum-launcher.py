@@ -216,7 +216,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		pwad_dir = self.pwaddir_btn.get_selected_file()
 
 		app.main_config["zandronum"]["pwad_dir"] = pwad_dir
-		app.main_window.set_pwad_default_folder(pwad_dir)
+		app.main_window.pwad_btn.set_default_folder(pwad_dir)
 
 		app.main_config["zandronum"]["use_mods"] = self.mods_switch.get_active()
 
@@ -359,7 +359,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# Widget initialization
 		self.populate_iwad_combo()
 
-		self.set_pwad_default_folder(app.main_config["zandronum"]["pwad_dir"])
+		self.pwad_btn.set_default_folder(app.main_config["zandronum"]["pwad_dir"])
 		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
 
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
@@ -393,9 +393,6 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
-
-	def set_pwad_default_folder(self, def_folder):
-		self.pwad_btn.set_default_folder(def_folder)
 
 	def on_params_entry_clear(self, pos, data):
 		self.params_entry.set_text("")

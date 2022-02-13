@@ -73,19 +73,19 @@ class FileDialogButton(Gtk.Box):
 
 		self.append(self.file_btn)
 
-		# Add clear button if enabled
-		if self.can_clear == True:
-			self.clear_btn = Gtk.Button(icon_name="user-trash-symbolic")
-			self.clear_btn.connect("clicked", self.on_clear_btn_clicked)
+		# Add clear button (visible if enabled)
+		self.clear_btn = Gtk.Button(icon_name="user-trash-symbolic")
+		self.clear_btn.connect("clicked", self.on_clear_btn_clicked)
+		self.clear_btn.set_visible(self.can_clear)
 
-			self.append(self.clear_btn)
+		self.append(self.clear_btn)
 
-		# Add reset button if enabled
-		if self.can_reset == True:
-			self.reset_btn = Gtk.Button(icon_name="view-refresh-symbolic")
-			self.reset_btn.connect("clicked", self.on_reset_btn_clicked)
+		# Add reset button (visible if enabled)
+		self.reset_btn = Gtk.Button(icon_name="view-refresh-symbolic")
+		self.reset_btn.connect("clicked", self.on_reset_btn_clicked)
+		self.reset_btn.set_visible(self.can_reset)
 
-			self.append(self.reset_btn)
+		self.append(self.reset_btn)
 
 		# Set widget properties
 		self.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)

@@ -216,7 +216,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		# Executable button
 		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, icon_name="application-x-executable-symbolic", can_reset=True)
-		self.exec_btn.set_default_file(app.default_exec_file)
 
 		self.exec_listrow = Adw.ActionRow(title="_Zandronum Path", use_underline=True)
 		self.exec_listrow.add_suffix(self.exec_btn)
@@ -224,7 +223,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		# IWAD dir button
 		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Folder", dlg_parent=self, folder_select=True, can_reset=True)
-		self.iwaddir_btn.set_default_file(app.default_iwad_dir)
 
 		self.iwaddir_listrow = Adw.ActionRow(title="_IWAD Folder", use_underline=True)
 		self.iwaddir_listrow.add_suffix(self.iwaddir_btn)
@@ -232,7 +230,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		# PWAD dir button
 		self.pwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Default WAD Folder", dlg_parent=self, folder_select=True, can_reset=True)
-		self.pwaddir_btn.set_default_file(app.default_pwad_dir)
 
 		self.pwaddir_listrow = Adw.ActionRow(title="Default _WAD Folder", use_underline=True)
 		self.pwaddir_listrow.add_suffix(self.pwaddir_btn)
@@ -259,10 +256,13 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.add(self.page)
 
 		# Widget initialization
+		self.exec_btn.set_default_file(app.default_exec_file)
 		self.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
 
+		self.iwaddir_btn.set_default_file(app.default_iwad_dir)
 		self.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
 
+		self.pwaddir_btn.set_default_file(app.default_pwad_dir)
 		self.pwaddir_btn.set_selected_file(app.main_config["zandronum"]["pwad_dir"])
 
 		self.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])

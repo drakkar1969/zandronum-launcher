@@ -207,7 +207,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		self.set_default_size(560, -1)
 		self.set_title("Zandronum Preferences")
-		self.set_transient_for(app.main_window)
 		self.set_modal(True)
 		self.set_search_enabled(False)
 
@@ -468,7 +467,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.add_expandrow.set_enable_expansion(False)
 
 	def on_menu_prefs_action(self, action, param):
-		prefs_window = PreferencesWindow()
+		prefs_window = PreferencesWindow(transient_for=self)
 		prefs_window.show()
 
 	def on_window_close(self, window):

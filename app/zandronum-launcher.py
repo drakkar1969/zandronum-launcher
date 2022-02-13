@@ -114,16 +114,13 @@ class FileDialogButton(Gtk.Box):
 		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
 
 		if self.can_clear == True:
-			self.clear_btn.set_sensitive(False if self.selected_file is None else True)
+			self.clear_btn.set_sensitive(self.selected_file is not None)
 
 		if self.can_reset == True:
-			if self.default_file is None:
-				self.reset_btn.set_sensitive(False)
+			if self.default_file is None or self.selected_file is None:
+				self.reset_btn.set_sensitive(self.default_file is not None)
 			else:
-				if self.selected_file is None:
-					self.reset_btn.set_sensitive(True)
-				else:
-					self.reset_btn.set_sensitive(False if self.default_file.equal(self.selected_file) else True)
+				self.reset_btn.set_sensitive(not self.default_file.equal(self.selected_file))
 
 	def set_file_filter(self, name, mime_types):
 		if mime_types is not None:

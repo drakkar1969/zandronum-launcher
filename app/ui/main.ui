@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-	<object class="GtkPopoverMenu" id="header_popover">
-		<property name="menu_model">header_menu</property>
+	<object class="GtkPopoverMenu" id="header-popover">
+		<property name="menu_model">header-menu</property>
 	</object>
-	<menu id="header_menu">
+	<menu id="header-menu">
 		<section>
 			<item>
 				<attribute name="label">Reset to Defaults</attribute>
@@ -21,7 +21,7 @@
 			</item>
 		</section>
 	</menu>
-	<object class="GtkShortcutsWindow" id="shortcut_window">
+	<object class="GtkShortcutsWindow" id="shortcut-window">
 		<property name="modal">True</property>
 		<child>
 			<object class="GtkShortcutsSection">

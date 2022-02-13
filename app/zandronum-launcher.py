@@ -298,7 +298,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.set_valign(Gtk.Align.CENTER)
 		self.set_title("Zandronum Launcher")
 
-		self.shortcut_window = main_builder.get_object("shortcut_window")
+		self.shortcut_window = main_builder.get_object("shortcut-window")
 		self.set_help_overlay(self.shortcut_window)
 
 		self.connect("close-request", self.on_window_close)
@@ -327,7 +327,7 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
 		# Header
-		self.header_popover = main_builder.get_object("header_popover")
+		self.header_popover = main_builder.get_object("header-popover")
 
 		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic", primary=True)
 		self.menu_btn.set_popover(self.header_popover)

@@ -208,7 +208,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.set_default_size(560, -1)
 		self.set_title("Zandronum Preferences")
 		self.set_transient_for(app.main_window)
-		self.set_destroy_with_parent(True)
 		self.set_modal(True)
 		self.set_search_enabled(False)
 
@@ -282,6 +281,8 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		app.main_window.pwad_btn.set_default_folder(pwad_dir)
 
 		app.main_config["zandronum"]["use_mods"] = self.mods_switch.get_active()
+
+		self.destroy()
 
 class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):

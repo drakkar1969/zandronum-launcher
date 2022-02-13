@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+	<object class="GtkPopoverMenu" id="header-popover">
+		<property name="menu_model">header-menu</property>
+	</object>
+	<menu id="header-menu">
+		<section>
+			<item>
+				<attribute name="label">Reset to Defaults</attribute>
+				<attribute name="action">win.menu-reset</attribute>
+			</item>
+			<item>
+				<attribute name="label">Zandronum Preferences</attribute>
+				<attribute name="action">win.menu-prefs</attribute>
+			</item>
+		</section>
+		<section>
+			<item>
+				<attribute name="label">Keyboard Shortcuts</attribute>
+				<attribute name="action">win.show-help-overlay</attribute>
+			</item>
+		</section>
+	</menu>
+</interface>

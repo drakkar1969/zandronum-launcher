@@ -223,7 +223,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.exec_listrow.set_activatable_widget(self.exec_btn)
 
 		# IWAD dir button
-		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Directory", dlg_parent=self, folder_select=True, can_reset=True)
+		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Folder", dlg_parent=self, folder_select=True, can_reset=True)
 		self.iwaddir_btn.set_default_file(app.default_iwad_dir)
 
 		self.iwaddir_listrow = Adw.ActionRow(title="_IWAD Folder", use_underline=True)
@@ -231,7 +231,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.iwaddir_listrow.set_activatable_widget(self.iwaddir_btn)
 
 		# PWAD dir button
-		self.pwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select WAD Directory", dlg_parent=self, folder_select=True, can_reset=True)
+		self.pwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Default WAD Folder", dlg_parent=self, folder_select=True, can_reset=True)
 		self.pwaddir_btn.set_default_file(app.default_pwad_dir)
 
 		self.pwaddir_listrow = Adw.ActionRow(title="Default _WAD Folder", use_underline=True)
@@ -353,7 +353,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# PWAD button
 		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
 
-		self.pwad_btn = FileDialogButton(valign=Gtk.Align.CENTER, dlg_title="Select WAD File", dlg_parent=self, can_clear=True, width_request=350)
+		self.pwad_btn = FileDialogButton(valign=Gtk.Align.CENTER, dlg_title="Open WAD File", dlg_parent=self, can_clear=True, width_request=350)
 		self.pwad_btn.set_file_filter("WAD files", pwad_filter)
 
 		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", use_underline=True)

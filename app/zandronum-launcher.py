@@ -54,7 +54,7 @@ class FileDialogButton(Gtk.Box):
 
 	# Dialog properties
 	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
-	dlg_parent = GObject.Property(type=Gtk.Widget, default=None, flags=GObject.ParamFlags.READWRITE)
+	dlg_parent = GObject.Property(type=Gtk.Widget, default=None, flags=(GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY))
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)

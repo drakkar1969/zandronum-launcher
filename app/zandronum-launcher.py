@@ -575,7 +575,7 @@ class LauncherApp(Adw.Application):
 		self.zandronum_ini_file = os.path.join(self.config_dir, "zandronum.ini")
 
 		if os.path.exists(self.zandronum_ini_file) == False:
-			zandronum_ini_src = os.path.join(app_dir, "config/zandronum.ini")
+			zandronum_ini_src = os.path.join(self.app_dir, "config/zandronum.ini")
 
 			shutil.copyfile(zandronum_ini_src, zandronum_ini_file)
 

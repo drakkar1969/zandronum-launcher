@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+	<template class="MainWindow" parent="AdwApplicationWindow">
+		<!-- MAIN WINDOW -->
+		<property name="default_width">620</property>
+		<property name="default_height">-1</property>
+		<property name="valign">center</property>
+		<property name="title">Zandronum Launcher</property>
+		<signal name="close-request" handler="on_window_close" swapped="no"/>
+		<child>
+			<object class="AdwToastOverlay" id="toast_overlay">
+				<child>
+					<object class="GtkBox">
+						<property name="orientation">vertical</property>
+						<child>
+							<object class="GtkHeaderBar">
+								<child type="end">
+									<object class="GtkMenuButton">
+										<property name="icon_name">open-menu-symbolic</property>
+										<property name="primary">True</property>
+										<property name="popover">header_popover</property>
+									</object>
+								</child>
+							</object>
+						</child>
+						<child>
+							<object class="AdwClamp">
+								<property name="margin_top">24</property>
+								<property name="margin_bottom">28</property>
+								<child>
+									<object class="GtkBox">
+										<property name="orientation">vertical</property>
+										<property name="spacing">28</property>
+										<child>
+											<object class="AdwPreferencesGroup">
+												<property name="title">Launch Parameters</property>
+												<child>
+													<object class="AdwActionRow" id="iwad_listrow">
+														<property name="title">_Game</property>
+														<property name="use_underline">True</property>
+														<property name="activatable_widget">iwad_combo</property>
+														<child>
+															<object class="GtkComboBox" id="iwad_combo">
+																<property name="valign">center</property>
+																<property name="width_request">350</property>
+																<property name="model">iwad_store</property>
+																<child>
+																	<object class="GtkCellRendererText"/>
+																	<attributes>
+																		<attribute name="text">0</attribute>
+																	</attributes>
+																</child>
+															</object>
+														</child>
+													</object>
+												</child>
+												<child>
+													<object class="AdwActionRow" id="pwad_listrow">
+														<property name="title">Optional WAD _File</property>
+														<property name="use_underline">True</property>
+														<property name="activatable_widget">pwad_btn</property>
+														<child>
+															<object class="FileDialogButton" id="pwad_btn">
+																<property name="valign">center</property>
+																<property name="width_request">350</property>
+																<property name="can_clear">True</property>
+																<property name="dlg_title">Open WAD File</property>
+															</object>
+														</child>
+													</object>
+												</child>
+												<child>
+													<object class="AdwExpanderRow" id="expand_row">
+														<property name="title">_Additional Parameters</property>
+														<property name="use_underline">True</property>
+														<property name="show_enable_switch">True</property>
+														<child>
+															<object class="AdwActionRow" id="params_listrow">
+																<property name="title">_Custom Switches</property>
+																<property name="use_underline">True</property>
+																<property name="activatable_widget">params_entry</property>
+																<child>
+																	<object class="GtkEntry" id="params_entry">
+																		<property name="valign">center</property>
+																		<property name="width_request">350</property>
+																		<property name="secondary_icon_name">edit-clear-symbolic</property>
+																		<signal name="icon-press" handler="on_params_entry_clear" swapped="no"/>
+																	</object>
+																</child>
+															</object>
+														</child>
+													</object>
+												</child>
+											</object>
+										</child>
+										<child>
+											<object class="GtkButton" id="launch_btn">
+												<property name="label">_Launch Zandronum</property>
+												<property name="halign">center</property>
+												<property name="use_underline">True</property>
+												<signal name="clicked" handler="on_launch_btn_clicked" swapped="no"/>
+												<style>
+													<class name="suggested-action"/>
+													<class name="pill"/>
+												</style>
+											</object>
+										</child>
+									</object>
+								</child>
+							</object>
+						</child>
+					</object>
+				</child>
+			</object>
+		</child>
+		<!-- IWAD COMBO LISTSTORE -->
+		<object class="GtkListStore" id="iwad_store">
+			<columns>
+				<column type="gchararray"/>
+				<column type="gchararray"/>
+			</columns>
+		</object>
+		<!-- PREFERENCES WINDOW -->
+		<object class="PreferencesWindow" id="prefs_window">
+			<signal name="close-request" handler="on_prefs_window_close" swapped="no"/>
+		</object>
+		<!-- HEADER POPOVER MENU -->
+		<object class="GtkPopoverMenu" id="header_popover">
+			<property name="menu_model">header_menu</property>
+		</object>
+		<menu id="header_menu">
+			<section>
+				<item>
+					<attribute name="label">Reset to Defaults</attribute>
+					<attribute name="action">win.menu-reset</attribute>
+				</item>
+				<item>
+					<attribute name="label">Zandronum Preferences</attribute>
+					<attribute name="action">win.menu-prefs</attribute>
+				</item>
+			</section>
+			<section>
+				<item>
+					<attribute name="label">Keyboard Shortcuts</attribute>
+					<attribute name="action">win.show-help-overlay</attribute>
+				</item>
+			</section>
+		</menu>
+		<!-- SHORTCUT WINDOW -->
+		<object class="GtkShortcutsWindow" id="shortcut_window">
+			<property name="modal">True</property>
+			<child>
+				<object class="GtkShortcutsSection">
+					<property name="section-name">shortcuts</property>
+					<child>
+						<object class="GtkShortcutsGroup">
+							<property name="title">Actions</property>
+							<child>
+								<object class="GtkShortcutsShortcut">
+									<property name="accelerator">F10</property>
+									<property name="title">Main menu</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkShortcutsShortcut">
+									<property name="accelerator">&lt;ctrl&gt;R</property>
+									<property name="title">Reset to defaults</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkShortcutsShortcut">
+									<property name="accelerator">&lt;ctrl&gt;comma &lt;ctrl&gt;P</property>
+									<property name="title">Zandronum preferences</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkShortcutsShortcut">
+									<property name="accelerator">&lt;ctrl&gt;question</property>
+									<property name="title">Shortcuts</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkShortcutsShortcut">
+									<property name="accelerator">&lt;ctrl&gt;Return &lt;ctrl&gt;KP_Enter</property>
+									<property name="title">Launch Zandronum</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkShortcutsShortcut">
+									<property name="accelerator">&lt;ctrl&gt;Q</property>
+									<property name="title">Quit</property>
+								</object>
+							</child>
+						</object>
+					</child>
+				</object>
+			</child>
+		</object>
+	</template>
+</interface>

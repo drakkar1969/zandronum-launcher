@@ -200,28 +200,30 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	# 	self.iwaddir_btn = FileDialogButton(dlg_parent=self)
 	# 	self.pwaddir_btn = FileDialogButton(dlg_parent=self)
 
+@Gtk.Template(filename=os.path.join(ui_dir, "window.ui"))
 class MainWindow(Adw.ApplicationWindow):
+	__gtype_name__ = "MainWindow"
+
+	# Class widget variables
+	shortcut_window = Gtk.Template.Child()
+	iwad_store = Gtk.Template.Child()
+	iwad_combo = Gtk.Template.Child()
+	iwad_listrow = Gtk.Template.Child()
+	pwad_btn = Gtk.Template.Child()
+	expand_row = Gtk.Template.Child()
+	params_entry = Gtk.Template.Child()
+	launch_btn = Gtk.Template.Child()
+	toast_overlay = Gtk.Template.Child()
+	prefs_window = Gtk.Template.Child()
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
 		# Zandronum launch flag
 		self.launch_flag = False
 
-		# Window properties
-		self.set_default_size(620, -1)
-		self.set_valign(Gtk.Align.CENTER)
-		self.set_title("Zandronum Launcher")
-
-		# Preferences window
-		self.prefs_window = PreferencesWindow(transient_for=self)
-		self.prefs_window.connect("close-request", self.on_prefs_window_close)
-
 		# Shortcut window
-		shortcut_builder = Gtk.Builder.new_from_file(os.path.join(app.app_dir, "ui/shortcutwindow.ui"))
-		self.shortcut_window = shortcut_builder.get_object("shortcut_window")
 		self.set_help_overlay(self.shortcut_window)
-
-		self.connect("close-request", self.on_window_close)
 
 		# Actions
 		self.menu_reset_action = Gio.SimpleAction.new("menu-reset", None)
@@ -246,98 +248,28 @@ class MainWindow(Adw.ApplicationWindow):
 
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
-		# Header
-		headermenu_builder = Gtk.Builder.new_from_file(os.path.join(app.app_dir, "ui/headermenu.ui"))
-		self.header_popover = headermenu_builder.get_object("header_popover")
-
-		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic", primary=True)
-		self.menu_btn.set_popover(self.header_popover)
-
-		self.header_bar = Gtk.HeaderBar()
-		self.header_bar.pack_end(self.menu_btn)
-
-		# IWAD (game) combo
-		self.iwad_combo = Gtk.ComboBox(valign=Gtk.Align.CENTER, width_request=350)
-
-		self.iwad_store = Gtk.ListStore(str, str)
-		self.iwad_combo.set_model(self.iwad_store)
-
-		iwad_cell = Gtk.CellRendererText()
-
-		self.iwad_combo.pack_start(iwad_cell, True)
-		self.iwad_combo.add_attribute(iwad_cell, "text", 0)
-
-		self.iwad_listrow = Adw.ActionRow(title="_Game", use_underline=True)
-		self.iwad_listrow.add_suffix(self.iwad_combo)
-		self.iwad_listrow.set_activatable_widget(self.iwad_combo)
-
-		# PWAD button
-		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
-
-		self.pwad_btn = FileDialogButton(valign=Gtk.Align.CENTER, dlg_title="Open WAD File", dlg_parent=self, can_clear=True, width_request=350)
-		self.pwad_btn.set_file_filter("WAD files", pwad_filter)
-
-		self.pwad_listrow = Adw.ActionRow(title="Optional WAD _File", use_underline=True)
-		self.pwad_listrow.add_suffix(self.pwad_btn)
-		self.pwad_listrow.set_activatable_widget(self.pwad_btn)
-
-		# Custom params entry
-		self.params_entry = Gtk.Entry(valign=Gtk.Align.CENTER, secondary_icon_name="edit-clear-symbolic", width_request=350)
-		self.params_entry.connect("icon-press", self.on_params_entry_clear)
-
-		self.params_listrow = Adw.ActionRow(title="_Custom Switches", use_underline=True)
-		self.params_listrow.add_suffix(self.params_entry)
-		self.params_listrow.set_activatable_widget(self.params_entry)
-
-		# Additional expander row
-		self.add_expandrow = Adw.ExpanderRow(title="_Additional Parameters", use_underline=True, show_enable_switch=True)
-		self.add_expandrow.add_row(self.params_listrow)
-
-		# Launch params group
-		self.launch_group = Adw.PreferencesGroup(title="Launch Parameters")
-		self.launch_group.add(self.iwad_listrow)
-		self.launch_group.add(self.pwad_listrow)
-		self.launch_group.add(self.add_expandrow)
-
-		# Launch button
-		self.launch_btn = Gtk.Button(label="_Launch Zandronum", halign=Gtk.Align.CENTER, use_underline=True, css_classes=["suggested-action", "pill"])
-		self.launch_btn.connect("clicked", self.on_launch_btn_clicked)
-
-		# Launch box
-		self.launch_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=28)
-
-		self.launch_box.append(self.launch_group)
-		self.launch_box.append(self.launch_btn)
-
-		# Launch clamp
-		self.launch_clamp = Adw.Clamp(margin_top=24, margin_bottom=28)
-		self.launch_clamp.set_child(self.launch_box)
-
-		# Window box
-		self.win_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-
-		self.win_box.append(self.header_bar)
-		self.win_box.append(self.launch_clamp)
-
-		# Toast overlay
-		self.toast_overlay = Adw.ToastOverlay()
-		self.toast_overlay.set_child(self.win_box)
-		
-		self.set_content(self.toast_overlay)
-		self.set_focus(self.iwad_listrow)
-
 		# Widget initialization
+
+		# self.pwad_btn = FileDialogButton(dlg_parent=self)
+
 		self.populate_iwad_combo()
 
+		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
+
+		self.pwad_btn.set_file_filter("WAD files", pwad_filter)
 		self.pwad_btn.set_default_folder(app.main_config["zandronum"]["pwad_dir"])
 		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
 
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
 
-		self.add_expandrow.set_enable_expansion(app.main_config["launcher"]["params_on"])
-		self.add_expandrow.set_expanded(app.main_config["launcher"]["params_on"])
+		self.expand_row.set_enable_expansion(app.main_config["launcher"]["params_on"])
+		self.expand_row.set_expanded(app.main_config["launcher"]["params_on"])
+
+		self.set_focus(self.iwad_listrow)
 
 		# Preferences initialization
+		self.prefs_window.set_transient_for(self)
+
 		self.prefs_window.exec_btn.set_default_file(app.default_exec_file)
 		self.prefs_window.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
 
@@ -376,9 +308,11 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
 
+	@Gtk.Template.Callback()
 	def on_params_entry_clear(self, pos, data):
 		self.params_entry.set_text("")
 
+	@Gtk.Template.Callback()
 	def on_launch_btn_clicked(self, button):
 		self.launch_flag = True
 
@@ -397,11 +331,12 @@ class MainWindow(Adw.ApplicationWindow):
 			self.iwad_combo.set_active(-1)
 		self.pwad_btn.set_selected_file("")
 		self.params_entry.set_text("")
-		self.add_expandrow.set_enable_expansion(False)
+		self.expand_row.set_enable_expansion(False)
 
 	def on_menu_prefs_action(self, action, param):
 		self.prefs_window.show()
 
+	@Gtk.Template.Callback()
 	def on_prefs_window_close(self, window):
 		app.main_config["zandronum"]["exec_file"] = self.prefs_window.exec_btn.get_selected_file()
 
@@ -418,6 +353,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		app.main_config["zandronum"]["use_mods"] = self.prefs_window.mods_switch.get_active()
 
+	@Gtk.Template.Callback()
 	def on_window_close(self, window):
 		error_status = False
 
@@ -431,7 +367,7 @@ class MainWindow(Adw.ApplicationWindow):
 		pwad_file = self.pwad_btn.get_selected_file()
 
 		params = self.params_entry.get_text()
-		params_on = (self.add_expandrow.get_enable_expansion() and params != "")
+		params_on = (self.expand_row.get_enable_expansion() and params != "")
 
 		if self.launch_flag == True:
 			error_status = self.launch_zandronum(iwad_name, pwad_file, params, params_on)
@@ -450,7 +386,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 	def launch_zandronum(self, iwad_name, pwad_file, params, params_on):
 		# Return with error if Zandronum executable does not exist
-		if os.path.exists(app.main_config["zandronum"]["exec_file"]) == False:
+		if os.path.exists(app.main_config["zandronum"]["exec_file"]) != False:
 			self.show_toast("ERROR: Zandronum executable not found")
 			return(True)
 

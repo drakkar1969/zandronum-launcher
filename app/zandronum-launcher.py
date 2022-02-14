@@ -39,7 +39,9 @@ doom_iwads = {
 	}
 }
 
-ui_dir = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "ui")
+# Global path variables
+app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
+ui_dir = os.path.join(app_dir, "ui")
 
 @Gtk.Template(filename=os.path.join(ui_dir, "filedialogbutton.ui"))
 class FileDialogButton(Gtk.Box):
@@ -427,9 +429,8 @@ class LauncherApp(Adw.Application):
 		self.connect("shutdown", self.on_shutdown)
 
 		# App dirs
-		self.app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
-		self.patch_dir = os.path.join(self.app_dir, "patches")
-		self.mod_dir = os.path.join(self.app_dir, "mods")
+		self.patch_dir = os.path.join(app_dir, "patches")
+		self.mod_dir = os.path.join(app_dir, "mods")
 
 		# Config dir
 		self.config_dir = os.path.join(os.getenv("HOME"), ".config/zandronum")
@@ -441,13 +442,13 @@ class LauncherApp(Adw.Application):
 		self.zandronum_ini_file = os.path.join(self.config_dir, "zandronum.ini")
 
 		if os.path.exists(self.zandronum_ini_file) == False:
-			zandronum_ini_src = os.path.join(self.app_dir, "config/zandronum.ini")
+			zandronum_ini_src = os.path.join(app_dir, "config/zandronum.ini")
 
 			shutil.copyfile(zandronum_ini_src, zandronum_ini_file)
 
 		# Default settings
 		self.default_exec_file = "/usr/bin/zandronum"
-		self.default_iwad_dir = os.path.join(self.app_dir, "iwads")
+		self.default_iwad_dir = os.path.join(app_dir, "iwads")
 		self.default_pwad_dir = self.config_dir
 
 		# Parse configuration file

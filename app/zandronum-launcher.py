@@ -59,7 +59,6 @@ class FileDialogButton(Gtk.Box):
 
 	# Dialog properties
 	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
-	dlg_parent = GObject.Property(type=Gtk.Widget, default=None, flags=(GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY))
 
 	# Class widget variables
 	image = Gtk.Template.Child()
@@ -88,9 +87,6 @@ class FileDialogButton(Gtk.Box):
 
 		self.notify("selected-file")
 		self.notify("default-file")
-
-		# Dialog parent
-		self.dialog.set_transient_for(self.dlg_parent)
 
 	@Gtk.Template.Callback()
 	def on_activate(self, cycling, data):
@@ -163,6 +159,9 @@ class FileDialogButton(Gtk.Box):
 	def on_reset_btn_clicked(self, button):
 		self.selected_file = self.default_file
 
+	def set_dialog_parent(self, parent):
+		self.dialog.set_transient_for(parent)
+
 	def set_file_filter(self, name, mime_types):
 		if mime_types is not None:
 			file_filter = Gtk.FileFilter()
@@ -196,9 +195,9 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-	# 	self.exec_btn = FileDialogButton(dlg_parent=self)
-	# 	self.iwaddir_btn = FileDialogButton(dlg_parent=self)
-	# 	self.pwaddir_btn = FileDialogButton(dlg_parent=self)
+		self.exec_btn.set_dialog_parent(self)
+		self.iwaddir_btn.set_dialog_parent(self)
+		self.pwaddir_btn.set_dialog_parent(self)
 
 @Gtk.Template(filename=os.path.join(ui_dir, "window.ui"))
 class MainWindow(Adw.ApplicationWindow):
@@ -249,13 +248,11 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
 		# Widget initialization
-
-		# self.pwad_btn = FileDialogButton(dlg_parent=self)
-
 		self.populate_iwad_combo()
 
 		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
 
+		self.pwad_btn.set_dialog_parent(self)
 		self.pwad_btn.set_file_filter("WAD files", pwad_filter)
 		self.pwad_btn.set_default_folder(app.main_config["zandronum"]["pwad_dir"])
 		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])

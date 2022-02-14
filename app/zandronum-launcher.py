@@ -39,12 +39,17 @@ doom_iwads = {
 	}
 }
 
+ui_dir = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "ui")
+
+@Gtk.Template(filename=os.path.join(ui_dir, "filedialogbutton.ui"))
 class FileDialogButton(Gtk.Box):
+	__gtype_name__ = "FileDialogButton"
+
 	# Button properties
 	icon_name = GObject.Property(type=str, default="", flags=GObject.ParamFlags.READWRITE)
+	folder_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 	can_clear = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 	can_reset = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
-	folder_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 	is_linked = GObject.Property(type=bool, default=True, flags=(GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY))
 
 	# File properties
@@ -56,54 +61,18 @@ class FileDialogButton(Gtk.Box):
 	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
 	dlg_parent = GObject.Property(type=Gtk.Widget, default=None, flags=(GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY))
 
+	# Class widget variables
+	image = Gtk.Template.Child("image")
+	label = Gtk.Template.Child("label")
+	file_btn = Gtk.Template.Child("file-btn")
+	clear_btn = Gtk.Template.Child("clear-btn")
+	reset_btn = Gtk.Template.Child("reset-btn")
+
+	# Dialog variable
+	dialog = Gtk.Template.Child("dialog")
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-
-		# Widget properties
-		self.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
-		self.set_hexpand(False)
-
-		self.connect("mnemonic-activate", self.on_activate)
-
-		self.connect("notify::icon-name", self.on_icon_name_notify)
-		self.connect("notify::can-clear", self.on_can_clear_notify)
-		self.connect("notify::can-reset", self.on_can_reset_notify)
-		self.connect("notify::folder-select", self.on_icon_name_notify)
-
-		self.connect("notify::selected-file", self.on_selected_file_notify)
-		self.connect("notify::default-file", self.on_default_file_notify)
-
-		# File button
-		self.image = Gtk.Image.new_from_icon_name("document-open-symbolic")
-		self.label = Gtk.Label(label="(None)")
-
-		self.btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, hexpand=True, spacing=6)
-		self.btn_box.append(self.image)
-		self.btn_box.append(self.label)
-
-		self.file_btn = Gtk.Button()
-		self.file_btn.connect("clicked", self.on_file_btn_clicked)
-		self.file_btn.set_child(self.btn_box)
-
-		self.append(self.file_btn)
-
-		# Clear button
-		self.clear_btn = Gtk.Button(icon_name="user-trash-symbolic")
-		self.clear_btn.connect("clicked", self.on_clear_btn_clicked)
-
-		self.append(self.clear_btn)
-
-		# Reset button
-		self.reset_btn = Gtk.Button(icon_name="view-refresh-symbolic")
-		self.reset_btn.connect("clicked", self.on_reset_btn_clicked)
-
-		self.append(self.reset_btn)
-
-		# Dialog
-		self.dialog = Gtk.FileChooserNative.new("", self.dlg_parent, Gtk.FileChooserAction.OPEN)
-		self.dialog.set_select_multiple(False)
-		self.dialog.set_modal(True)
-		self.dialog.connect("response", self.on_dialog_response)
 
 		# Update widget state
 		if self.is_linked == True:
@@ -120,9 +89,14 @@ class FileDialogButton(Gtk.Box):
 		self.notify("selected-file")
 		self.notify("default-file")
 
+		# Dialog parent
+		self.dialog.set_transient_for(self.dlg_parent)
+
+	@Gtk.Template.Callback()
 	def on_activate(self, cycling, data):
 		self.file_btn.activate()
 
+	@Gtk.Template.Callback()
 	def on_icon_name_notify(self, pspec, user_data):
 		icon_name = self.icon_name
 
@@ -140,25 +114,30 @@ class FileDialogButton(Gtk.Box):
 		else:
 			self.reset_btn.set_sensitive(not self.default_file.equal(self.selected_file))
 
+	@Gtk.Template.Callback()
 	def on_can_clear_notify(self, pspec, user_data):
 		self.clear_btn.set_visible(self.can_clear)
 
 		if self.can_clear == True: self.set_clear_btn_state()
 
+	@Gtk.Template.Callback()
 	def on_can_reset_notify(self, pspec, user_data):
 		self.reset_btn.set_visible(self.can_reset)
 
 		if self.can_reset == True: self.set_reset_btn_state()
 
+	@Gtk.Template.Callback()
 	def on_selected_file_notify(self, pspec, user_data):
 		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
 
 		if self.can_clear == True: self.set_clear_btn_state()
 		if self.can_reset == True: self.set_reset_btn_state()
 
+	@Gtk.Template.Callback()
 	def on_default_file_notify(self, pspec, user_data):
 		if self.can_reset == True: self.set_reset_btn_state()
 
+	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
 		self.dialog.set_title(self.dlg_title)
 		self.dialog.set_action(Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
@@ -171,13 +150,16 @@ class FileDialogButton(Gtk.Box):
 
 		self.dialog.show()
 
+	@Gtk.Template.Callback()
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
 			self.selected_file = dialog.get_file()
 
+	@Gtk.Template.Callback()
 	def on_clear_btn_clicked(self, button):
 		self.selected_file = None
 
+	@Gtk.Template.Callback()
 	def on_reset_btn_clicked(self, button):
 		self.selected_file = self.default_file
 

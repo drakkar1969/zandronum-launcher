@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+	<template class="FileDialogButton" parent="GtkBox">
+		<property name="orientation">horizontal</property>
+		<property name="hexpand">False</property>
+		<signal name="mnemonic-activate" handler="on_activate" swapped="no"/>
+		<signal name="notify::icon-name" handler="on_icon_name_notify" swapped="no"/>
+		<signal name="notify::folder-select" handler="on_icon_name_notify" swapped="no"/>
+		<signal name="notify::can-clear" handler="on_can_clear_notify" swapped="no"/>
+		<signal name="notify::can-reset" handler="on_can_reset_notify" swapped="no"/>
+		<signal name="notify::selected-file" handler="on_selected_file_notify" swapped="no"/>
+		<signal name="notify::default-file" handler="on_default_file_notify" swapped="no"/>
+		<child>
+			<object class="GtkButton" id="file-btn">
+				<signal name="clicked" handler="on_file_btn_clicked" swapped="no"/>
+				<child>
+					<object class="GtkBox">
+						<property name="orientation">horizontal</property>
+						<property name="hexpand">True</property>
+						<property name="spacing">6</property>
+						<child>
+							<object class="GtkImage" id="image">
+								<property name="icon_name">document-open-symbolic</property>
+							</object>
+						</child>
+						<child>
+							<object class="GtkLabel" id="label">
+								<property name="label">(None)</property>
+							</object>
+						</child>
+					</object>
+				</child>
+			</object>
+		</child>
+		<child>
+			<object class="GtkButton" id="clear-btn">
+				<property name="icon_name">user-trash-symbolic</property>
+				<signal name="clicked" handler="on_clear_btn_clicked" swapped="no"/>
+			</object>
+		</child>
+		<child>
+			<object class="GtkButton" id="reset-btn">
+				<property name="icon_name">view-refresh-symbolic</property>
+				<signal name="clicked" handler="on_reset_btn_clicked" swapped="no"/>
+			</object>
+		</child>
+		<object class="GtkFileChooserNative" id="dialog">
+			<property name="select_multiple">False</property>
+			<property name="modal">True</property>
+			<signal name="response" handler="on_dialog_response" swapped="no"/>
+		</object>
+	</template>
+</interface>

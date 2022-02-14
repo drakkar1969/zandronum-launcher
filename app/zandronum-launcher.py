@@ -248,7 +248,7 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
 		# Widget initialization
-		self.populate_iwad_combo()
+		self.populate_iwad_combo(app.main_config["launcher"]["iwad"])
 
 		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
 
@@ -278,7 +278,9 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.prefs_window.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
 
-	def populate_iwad_combo(self):
+	def populate_iwad_combo(self, iwad_selected):
+		if iwad_selected is None: iwad_selected = ""
+
 		self.iwad_store.clear()
 
 		iwads = os.listdir(app.main_config["zandronum"]["iwad_dir"])
@@ -292,7 +294,7 @@ class MainWindow(Adw.ApplicationWindow):
 				self.iwad_store.set_value(iwad_iter, 0, doom_iwads[iwad_lc]["name"])
 				self.iwad_store.set_value(iwad_iter, 1, iwad_lc)
 				
-		if self.iwad_combo.set_active_id(app.main_config["launcher"]["iwad"]) == False:
+		if self.iwad_combo.set_active_id(iwad_selected) == False:
 			self.iwad_combo.set_active(0)
 
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
@@ -331,7 +333,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		if iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
 			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
-			self.populate_iwad_combo()
+			self.populate_iwad_combo(self.iwad_combo.get_active_id())
 
 		pwad_dir = self.prefs_window.pwaddir_btn.get_selected_file()
 

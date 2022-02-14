@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+	<template class="PreferencesWindow" parent="AdwPreferencesWindow">
+		<property name="default_width">560</property>
+		<property name="default_height">-1</property>
+		<property name="title">Zandronum Preferences</property>
+		<property name="modal">True</property>
+		<property name="search_enabled">False</property>
+		<signal name="close-request" handler="on_window_close" swapped="no"/>
+		<child>
+			<object class="AdwPreferencesPage">
+				<child>
+					<object class="AdwPreferencesGroup">
+						<property name="title">Preferences</property>
+						<child>
+							<object class="AdwActionRow">
+								<property name="title">_Zandronum Path</property>
+								<property name="use_underline">True</property>
+								<property name="activatable_widget">exec-btn</property>
+								<child>
+									<object class="FileDialogButton" id="exec-btn">
+										<property name="valign">center</property>
+										<property name="width_request">300</property>
+										<property name="icon_name">application-x-executable-symbolic</property>
+										<property name="can_reset">True</property>
+										<property name="dlg_title">Select Zandronum Executable</property>
+									</object>
+								</child>
+							</object>
+						</child>
+						<child>
+							<object class="AdwActionRow">
+								<property name="title">_IWAD Folder</property>
+								<property name="use_underline">True</property>
+								<property name="activatable_widget">iwaddir-btn</property>
+								<child>
+									<object class="FileDialogButton" id="iwaddir-btn">
+										<property name="valign">center</property>
+										<property name="width_request">300</property>
+										<property name="folder_select">True</property>
+										<property name="can_reset">True</property>
+										<property name="dlg_title">Select IWAD Folder</property>
+									</object>
+								</child>
+							</object>
+						</child>
+						<child>
+							<object class="AdwActionRow">
+								<property name="title">Default _WAD Folder</property>
+								<property name="use_underline">True</property>
+								<property name="activatable_widget">pwaddir-btn</property>
+								<child>
+									<object class="FileDialogButton" id="pwaddir-btn">
+										<property name="valign">center</property>
+										<property name="width_request">300</property>
+										<property name="folder_select">True</property>
+										<property name="can_reset">True</property>
+										<property name="dlg_title">Select Default WAD Folder</property>
+									</object>
+								</child>
+							</object>
+						</child>
+						<child>
+							<object class="AdwActionRow">
+								<property name="title">Enable Hi-Res _Graphics</property>
+								<property name="use_underline">True</property>
+								<property name="activatable_widget">mods-switch</property>
+								<child>
+									<object class="GtkSwitch" id="mods-switch">
+										<property name="valign">center</property>
+									</object>
+								</child>
+							</object>
+						</child>
+					</object>
+				</child>
+			</object>
+		</child>
+	</template>
+</interface>

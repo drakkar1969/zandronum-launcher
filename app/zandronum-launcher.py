@@ -183,57 +183,22 @@ class FileDialogButton(Gtk.Box):
 	def set_default_file(self, def_file):
 		self.default_file = Gio.File.new_for_path(def_file) if def_file != "" else None
 
+@Gtk.Template(filename=os.path.join(ui_dir, "preferences.ui"))
 class PreferencesWindow(Adw.PreferencesWindow):
+	__gtype_name__ = "PreferencesWindow"
+
+	# Class widget variables
+	exec_btn = Gtk.Template.Child("exec-btn")
+	iwaddir_btn = Gtk.Template.Child("iwaddir-btn")
+	pwaddir_btn = Gtk.Template.Child("pwaddir-btn")
+	mods_switch = Gtk.Template.Child("mods-switch")
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		self.set_default_size(560, -1)
-		self.set_title("Zandronum Preferences")
-		self.set_modal(True)
-		self.set_search_enabled(False)
-
-		self.connect("close-request", self.on_window_close)
-
-		# Executable button
-		self.exec_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Zandronum Executable", dlg_parent=self, icon_name="application-x-executable-symbolic", can_reset=True)
-
-		self.exec_listrow = Adw.ActionRow(title="_Zandronum Path", use_underline=True)
-		self.exec_listrow.add_suffix(self.exec_btn)
-		self.exec_listrow.set_activatable_widget(self.exec_btn)
-
-		# IWAD dir button
-		self.iwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select IWAD Folder", dlg_parent=self, folder_select=True, can_reset=True)
-
-		self.iwaddir_listrow = Adw.ActionRow(title="_IWAD Folder", use_underline=True)
-		self.iwaddir_listrow.add_suffix(self.iwaddir_btn)
-		self.iwaddir_listrow.set_activatable_widget(self.iwaddir_btn)
-
-		# PWAD dir button
-		self.pwaddir_btn = FileDialogButton(valign=Gtk.Align.CENTER, width_request=300, dlg_title="Select Default WAD Folder", dlg_parent=self, folder_select=True, can_reset=True)
-
-		self.pwaddir_listrow = Adw.ActionRow(title="Default _WAD Folder", use_underline=True)
-		self.pwaddir_listrow.add_suffix(self.pwaddir_btn)
-		self.pwaddir_listrow.set_activatable_widget(self.pwaddir_btn)
-
-		# Mods switch
-		self.mods_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
-
-		self.mods_listrow = Adw.ActionRow(title="Enable Hi-Res _Graphics", use_underline=True)
-		self.mods_listrow.add_suffix(self.mods_switch)
-		self.mods_listrow.set_activatable_widget(self.mods_switch)
-
-		# Preferences group
-		self.prefs_group = Adw.PreferencesGroup(title="Preferences")
-		self.prefs_group.add(self.exec_listrow)
-		self.prefs_group.add(self.iwaddir_listrow)
-		self.prefs_group.add(self.pwaddir_listrow)
-		self.prefs_group.add(self.mods_listrow)
-
-		# Preferences page
-		self.page = Adw.PreferencesPage()
-		self.page.add(self.prefs_group)
-
-		self.add(self.page)
+	# 	self.exec_btn = FileDialogButton(dlg_parent=self)
+	# 	self.iwaddir_btn = FileDialogButton(dlg_parent=self)
+	# 	self.pwaddir_btn = FileDialogButton(dlg_parent=self)
 
 		# Widget initialization
 		self.exec_btn.set_default_file(app.default_exec_file)
@@ -247,6 +212,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		self.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
 
+	@Gtk.Template.Callback()
 	def on_window_close(self, window):
 		app.main_config["zandronum"]["exec_file"] = self.exec_btn.get_selected_file()
 

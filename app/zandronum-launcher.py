@@ -281,26 +281,19 @@ class MainWindow(Adw.ApplicationWindow):
 	def populate_iwad_combo(self):
 		self.iwad_store.clear()
 
-		iwad_index = 0
-
 		iwads = os.listdir(app.main_config["zandronum"]["iwad_dir"])
 		iwads.sort()
 
-		for i in range(len(iwads)):
-			iwad_lc = iwads[i].lower()
+		for iwad in iwads:
+			iwad_lc = iwad.lower()
 
 			if iwad_lc in doom_iwads:
 				iwad_iter = self.iwad_store.append()
 				self.iwad_store.set_value(iwad_iter, 0, doom_iwads[iwad_lc]["name"])
 				self.iwad_store.set_value(iwad_iter, 1, iwad_lc)
 				
-			if iwad_lc == app.main_config["launcher"]["iwad"]:
-				iwad_index = i
-
-		try:
-			self.iwad_combo.set_active(iwad_index)
-		except:
-			self.iwad_combo.set_active(-1)
+		if self.iwad_combo.set_active_id(app.main_config["launcher"]["iwad"]) == False:
+			self.iwad_combo.set_active(0)
 
 		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
 		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
@@ -322,10 +315,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.close()
 
 	def on_menu_reset_action(self, action, param):
-		try:
-			self.iwad_combo.set_active(0)
-		except:
-			self.iwad_combo.set_active(-1)
+		self.iwad_combo.set_active(0)
 		self.pwad_btn.set_selected_file("")
 		self.params_entry.set_text("")
 		self.expander_row.set_enable_expansion(False)
@@ -354,12 +344,8 @@ class MainWindow(Adw.ApplicationWindow):
 	def on_window_close(self, window):
 		error_status = False
 
-		iwad_item = self.iwad_combo.get_active_iter()
-
-		try:
-			iwad_name = self.iwad_store[iwad_item][1]
-		except:
-			iwad_name = ""
+		iwad_name = self.iwad_combo.get_active_id()
+		if iwad_name is None: iwad_name = ""
 
 		pwad_file = self.pwad_btn.get_selected_file()
 

@@ -44,6 +44,7 @@
 																<property name="valign">center</property>
 																<property name="width_request">350</property>
 																<property name="model">iwad_store</property>
+																<property name="id_column">1</property>
 																<child>
 																	<object class="GtkCellRendererText"/>
 																	<attributes>

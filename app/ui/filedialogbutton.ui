@@ -11,7 +11,7 @@
 		<signal name="notify::selected-file" handler="on_selected_file_notify" swapped="no"/>
 		<signal name="notify::default-file" handler="on_default_file_notify" swapped="no"/>
 		<child>
-			<object class="GtkButton" id="file-btn">
+			<object class="GtkButton" id="file_btn">
 				<signal name="clicked" handler="on_file_btn_clicked" swapped="no"/>
 				<child>
 					<object class="GtkBox">
@@ -33,13 +33,13 @@
 			</object>
 		</child>
 		<child>
-			<object class="GtkButton" id="clear-btn">
+			<object class="GtkButton" id="clear_btn">
 				<property name="icon_name">user-trash-symbolic</property>
 				<signal name="clicked" handler="on_clear_btn_clicked" swapped="no"/>
 			</object>
 		</child>
 		<child>
-			<object class="GtkButton" id="reset-btn">
+			<object class="GtkButton" id="reset_btn">
 				<property name="icon_name">view-refresh-symbolic</property>
 				<signal name="clicked" handler="on_reset_btn_clicked" swapped="no"/>
 			</object>

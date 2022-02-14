@@ -62,14 +62,14 @@ class FileDialogButton(Gtk.Box):
 	dlg_parent = GObject.Property(type=Gtk.Widget, default=None, flags=(GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY))
 
 	# Class widget variables
-	image = Gtk.Template.Child("image")
-	label = Gtk.Template.Child("label")
-	file_btn = Gtk.Template.Child("file-btn")
-	clear_btn = Gtk.Template.Child("clear-btn")
-	reset_btn = Gtk.Template.Child("reset-btn")
+	image = Gtk.Template.Child()
+	label = Gtk.Template.Child()
+	file_btn = Gtk.Template.Child()
+	clear_btn = Gtk.Template.Child()
+	reset_btn = Gtk.Template.Child()
 
 	# Dialog variable
-	dialog = Gtk.Template.Child("dialog")
+	dialog = Gtk.Template.Child()
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -188,10 +188,10 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	__gtype_name__ = "PreferencesWindow"
 
 	# Class widget variables
-	exec_btn = Gtk.Template.Child("exec-btn")
-	iwaddir_btn = Gtk.Template.Child("iwaddir-btn")
-	pwaddir_btn = Gtk.Template.Child("pwaddir-btn")
-	mods_switch = Gtk.Template.Child("mods-switch")
+	exec_btn = Gtk.Template.Child()
+	iwaddir_btn = Gtk.Template.Child()
+	pwaddir_btn = Gtk.Template.Child()
+	mods_switch = Gtk.Template.Child()
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -245,7 +245,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Shortcut window
 		shortcut_builder = Gtk.Builder.new_from_file(os.path.join(app.app_dir, "ui/shortcutwindow.ui"))
-		self.shortcut_window = shortcut_builder.get_object("shortcut-window")
+		self.shortcut_window = shortcut_builder.get_object("shortcut_window")
 		self.set_help_overlay(self.shortcut_window)
 
 		self.connect("close-request", self.on_window_close)
@@ -275,7 +275,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Header
 		headermenu_builder = Gtk.Builder.new_from_file(os.path.join(app.app_dir, "ui/headermenu.ui"))
-		self.header_popover = headermenu_builder.get_object("header-popover")
+		self.header_popover = headermenu_builder.get_object("header_popover")
 
 		self.menu_btn = Gtk.MenuButton(icon_name="open-menu-symbolic", primary=True)
 		self.menu_btn.set_popover(self.header_popover)

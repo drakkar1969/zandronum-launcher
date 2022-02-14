@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-	<object class="GtkPopoverMenu" id="header-popover">
-		<property name="menu_model">header-menu</property>
+	<object class="GtkPopoverMenu" id="header_popover">
+		<property name="menu_model">header_menu</property>
 	</object>
-	<menu id="header-menu">
+	<menu id="header_menu">
 		<section>
 			<item>
 				<attribute name="label">Reset to Defaults</attribute>

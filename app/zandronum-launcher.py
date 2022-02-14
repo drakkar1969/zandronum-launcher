@@ -424,6 +424,7 @@ class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 		self.connect("activate", self.on_activate)
+		self.connect("shutdown", self.on_shutdown)
 
 		# App dirs
 		self.app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -486,17 +487,17 @@ class LauncherApp(Adw.Application):
 		self.main_window = MainWindow(application=app)
 		self.main_window.present()
 
-	def write_launcher_config(self):
+	def on_shutdown(self, user_data):
+		# Write configuration file
 		parser = configparser.ConfigParser()
 		parser.read_dict(self.main_config)
 
 		with open(self.launcher_config_file, "w") as configfile:
 			parser.write(configfile)
 
+		# Destroy main window
+		app.main_window.destroy()
+
 # Main app
 app = LauncherApp(application_id="com.github.zandronumlauncher")
 app.run(sys.argv)
-
-app.write_launcher_config()
-
-app.main_window.destroy()

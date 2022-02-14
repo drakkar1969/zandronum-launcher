@@ -121,6 +121,15 @@
 				<column type="gchararray"/>
 			</columns>
 		</object>
+		<!-- PWAD FILEFILTER -->
+		<object class="GtkFileFilter" id="pwad_file_filter">
+			<property name="name">WAD files</property>
+			<mime-types>
+				<mime-type>application/x-doom-wad</mime-type>
+				<mime-type>application/zip</mime-type>
+				<mime-type>application/x-7z-compressed</mime-type>
+			</mime-types>
+		</object>
 		<!-- PREFERENCES WINDOW -->
 		<object class="PreferencesWindow" id="prefs_window">
 			<signal name="close-request" handler="on_prefs_window_close" swapped="no"/>

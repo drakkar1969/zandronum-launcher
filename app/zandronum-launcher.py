@@ -162,13 +162,8 @@ class FileDialogButton(Gtk.Box):
 	def set_dialog_parent(self, parent):
 		self.dialog.set_transient_for(parent)
 
-	def set_file_filter(self, name, mime_types):
-		if mime_types is not None:
-			file_filter = Gtk.FileFilter()
-			for mime_type in mime_types:
-				file_filter.add_mime_type(mime_type)
-			file_filter.set_name(name)
-			self.dialog.add_filter(file_filter)
+	def add_file_filter(self, file_filter):
+		self.dialog.add_filter(file_filter)
 
 	def set_default_folder(self, def_folder):
 		self.default_folder = Gio.File.new_for_path(def_folder) if def_folder != "" else None
@@ -208,6 +203,7 @@ class MainWindow(Adw.ApplicationWindow):
 	iwad_store = Gtk.Template.Child()
 	iwad_combo = Gtk.Template.Child()
 	iwad_listrow = Gtk.Template.Child()
+	pwad_file_filter = Gtk.Template.Child()
 	pwad_btn = Gtk.Template.Child()
 	expander_row = Gtk.Template.Child()
 	params_entry = Gtk.Template.Child()
@@ -250,10 +246,8 @@ class MainWindow(Adw.ApplicationWindow):
 		# Widget initialization
 		self.populate_iwad_combo(app.main_config["launcher"]["iwad"])
 
-		pwad_filter = ["application/x-doom-wad", "application/zip", "application/x-7z-compressed"]
-
 		self.pwad_btn.set_dialog_parent(self)
-		self.pwad_btn.set_file_filter("WAD files", pwad_filter)
+		self.pwad_btn.add_file_filter(self.pwad_file_filter)
 		self.pwad_btn.set_default_folder(app.main_config["zandronum"]["pwad_dir"])
 		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
 
@@ -371,7 +365,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 	def launch_zandronum(self, iwad_name, pwad_file, params, params_on):
 		# Return with error if Zandronum executable does not exist
-		if os.path.exists(app.main_config["zandronum"]["exec_file"]) != False:
+		if os.path.exists(app.main_config["zandronum"]["exec_file"]) == False:
 			self.show_toast("ERROR: Zandronum executable not found")
 			return(True)
 

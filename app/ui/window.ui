@@ -168,25 +168,25 @@
 							<child>
 								<object class="GtkShortcutsShortcut">
 									<property name="accelerator">F10</property>
-									<property name="title">Main menu</property>
+									<property name="title">Main Menu</property>
 								</object>
 							</child>
 							<child>
 								<object class="GtkShortcutsShortcut">
 									<property name="accelerator">&lt;ctrl&gt;R</property>
-									<property name="title">Reset to defaults</property>
+									<property name="title">Reset to Defaults</property>
 								</object>
 							</child>
 							<child>
 								<object class="GtkShortcutsShortcut">
 									<property name="accelerator">&lt;ctrl&gt;comma &lt;ctrl&gt;P</property>
-									<property name="title">Zandronum preferences</property>
+									<property name="title">Zandronum Preferences</property>
 								</object>
 							</child>
 							<child>
 								<object class="GtkShortcutsShortcut">
 									<property name="accelerator">&lt;ctrl&gt;question</property>
-									<property name="title">Shortcuts</property>
+									<property name="title">Show Keyboard Shortcuts</property>
 								</object>
 							</child>
 							<child>

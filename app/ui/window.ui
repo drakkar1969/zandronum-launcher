@@ -10,7 +10,7 @@
 		<child>
 			<object class="AdwToastOverlay" id="toast_overlay">
 				<child>
-					<object class="GtkBox">
+					<object class="GtkBox" id="window_box">
 						<property name="orientation">vertical</property>
 						<child>
 							<object class="GtkHeaderBar">
@@ -28,7 +28,7 @@
 								<property name="margin_top">24</property>
 								<property name="margin_bottom">28</property>
 								<child>
-									<object class="GtkBox">
+									<object class="GtkBox" id="launch_box">
 										<property name="orientation">vertical</property>
 										<property name="spacing">28</property>
 										<child>
@@ -70,7 +70,7 @@
 													</object>
 												</child>
 												<child>
-													<object class="AdwExpanderRow" id="expand_row">
+													<object class="AdwExpanderRow" id="expander_row">
 														<property name="title">_Additional Parameters</property>
 														<property name="use_underline">True</property>
 														<property name="show_enable_switch">True</property>

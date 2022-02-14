@@ -210,7 +210,7 @@ class MainWindow(Adw.ApplicationWindow):
 	iwad_combo = Gtk.Template.Child()
 	iwad_listrow = Gtk.Template.Child()
 	pwad_btn = Gtk.Template.Child()
-	expand_row = Gtk.Template.Child()
+	expander_row = Gtk.Template.Child()
 	params_entry = Gtk.Template.Child()
 	launch_btn = Gtk.Template.Child()
 	toast_overlay = Gtk.Template.Child()
@@ -262,8 +262,8 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
 
-		self.expand_row.set_enable_expansion(app.main_config["launcher"]["params_on"])
-		self.expand_row.set_expanded(app.main_config["launcher"]["params_on"])
+		self.expander_row.set_enable_expansion(app.main_config["launcher"]["params_on"])
+		self.expander_row.set_expanded(app.main_config["launcher"]["params_on"])
 
 		self.set_focus(self.iwad_listrow)
 
@@ -331,7 +331,7 @@ class MainWindow(Adw.ApplicationWindow):
 			self.iwad_combo.set_active(-1)
 		self.pwad_btn.set_selected_file("")
 		self.params_entry.set_text("")
-		self.expand_row.set_enable_expansion(False)
+		self.expander_row.set_enable_expansion(False)
 
 	def on_menu_prefs_action(self, action, param):
 		self.prefs_window.show()
@@ -367,7 +367,7 @@ class MainWindow(Adw.ApplicationWindow):
 		pwad_file = self.pwad_btn.get_selected_file()
 
 		params = self.params_entry.get_text()
-		params_on = (self.expand_row.get_enable_expansion() and params != "")
+		params_on = (self.expander_row.get_enable_expansion() and params != "")
 
 		if self.launch_flag == True:
 			error_status = self.launch_zandronum(iwad_name, pwad_file, params, params_on)

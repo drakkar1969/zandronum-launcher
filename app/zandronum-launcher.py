@@ -200,37 +200,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	# 	self.iwaddir_btn = FileDialogButton(dlg_parent=self)
 	# 	self.pwaddir_btn = FileDialogButton(dlg_parent=self)
 
-		# Widget initialization
-		self.exec_btn.set_default_file(app.default_exec_file)
-		self.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
-
-		self.iwaddir_btn.set_default_file(app.default_iwad_dir)
-		self.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
-
-		self.pwaddir_btn.set_default_file(app.default_pwad_dir)
-		self.pwaddir_btn.set_selected_file(app.main_config["zandronum"]["pwad_dir"])
-
-		self.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
-
-	@Gtk.Template.Callback()
-	def on_window_close(self, window):
-		app.main_config["zandronum"]["exec_file"] = self.exec_btn.get_selected_file()
-
-		iwad_dir = self.iwaddir_btn.get_selected_file()
-
-		if iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
-			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
-			app.main_window.populate_iwad_combo()
-
-		pwad_dir = self.pwaddir_btn.get_selected_file()
-
-		app.main_config["zandronum"]["pwad_dir"] = pwad_dir
-		app.main_window.pwad_btn.set_default_folder(pwad_dir)
-
-		app.main_config["zandronum"]["use_mods"] = self.mods_switch.get_active()
-
-		self.destroy()
-
 class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -242,6 +211,10 @@ class MainWindow(Adw.ApplicationWindow):
 		self.set_default_size(620, -1)
 		self.set_valign(Gtk.Align.CENTER)
 		self.set_title("Zandronum Launcher")
+
+		# Preferences window
+		self.prefs_window = PreferencesWindow(transient_for=self)
+		self.prefs_window.connect("close-request", self.on_prefs_window_close)
 
 		# Shortcut window
 		shortcut_builder = Gtk.Builder.new_from_file(os.path.join(app.app_dir, "ui/shortcutwindow.ui"))
@@ -364,6 +337,18 @@ class MainWindow(Adw.ApplicationWindow):
 		self.add_expandrow.set_enable_expansion(app.main_config["launcher"]["params_on"])
 		self.add_expandrow.set_expanded(app.main_config["launcher"]["params_on"])
 
+		# Preferences initialization
+		self.prefs_window.exec_btn.set_default_file(app.default_exec_file)
+		self.prefs_window.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
+
+		self.prefs_window.iwaddir_btn.set_default_file(app.default_iwad_dir)
+		self.prefs_window.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
+
+		self.prefs_window.pwaddir_btn.set_default_file(app.default_pwad_dir)
+		self.prefs_window.pwaddir_btn.set_selected_file(app.main_config["zandronum"]["pwad_dir"])
+
+		self.prefs_window.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
+
 	def populate_iwad_combo(self):
 		self.iwad_store.clear()
 
@@ -415,8 +400,23 @@ class MainWindow(Adw.ApplicationWindow):
 		self.add_expandrow.set_enable_expansion(False)
 
 	def on_menu_prefs_action(self, action, param):
-		prefs_window = PreferencesWindow(transient_for=self)
-		prefs_window.show()
+		self.prefs_window.show()
+
+	def on_prefs_window_close(self, window):
+		app.main_config["zandronum"]["exec_file"] = self.prefs_window.exec_btn.get_selected_file()
+
+		iwad_dir = self.prefs_window.iwaddir_btn.get_selected_file()
+
+		if iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
+			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
+			self.populate_iwad_combo()
+
+		pwad_dir = self.prefs_window.pwaddir_btn.get_selected_file()
+
+		app.main_config["zandronum"]["pwad_dir"] = pwad_dir
+		self.pwad_btn.set_default_folder(pwad_dir)
+
+		app.main_config["zandronum"]["use_mods"] = self.prefs_window.mods_switch.get_active()
 
 	def on_window_close(self, window):
 		error_status = False
@@ -437,6 +437,8 @@ class MainWindow(Adw.ApplicationWindow):
 			error_status = self.launch_zandronum(iwad_name, pwad_file, params, params_on)
 
 			if error_status == True: self.launch_flag = False
+
+		self.prefs_window.destroy()
 
 		if error_status == False:
 			app.main_config["launcher"]["iwad"] = iwad_name

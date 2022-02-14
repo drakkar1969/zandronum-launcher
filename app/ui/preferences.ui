@@ -5,8 +5,8 @@
 		<property name="default_height">-1</property>
 		<property name="title">Zandronum Preferences</property>
 		<property name="modal">True</property>
+		<property name="hide_on_close">True</property>
 		<property name="search_enabled">False</property>
-		<signal name="close-request" handler="on_window_close" swapped="no"/>
 		<child>
 			<object class="AdwPreferencesPage">
 				<child>

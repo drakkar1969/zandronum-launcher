@@ -191,7 +191,7 @@
 							</child>
 							<child>
 								<object class="GtkShortcutsShortcut">
-									<property name="accelerator">&lt;ctrl&gt;Return &lt;ctrl&gt;KP_Enter</property>
+									<property name="accelerator">&lt;ctrl&gt;Return</property>
 									<property name="title">Launch Zandronum</property>
 								</object>
 							</child>

@@ -292,8 +292,10 @@ class MainWindow(Adw.ApplicationWindow):
 		if self.iwad_combo.set_active_id(iwad_selected) == False:
 			self.iwad_combo.set_active(0)
 
-		self.launch_btn.set_sensitive(True if len(self.iwad_store) > 0 else False)
-		self.key_launch_action.set_enabled(True if len(self.iwad_store) > 0 else False)
+		n_wads = self.iwad_store.iter_n_children(None)
+
+		self.launch_btn.set_sensitive(True if n_wads > 0 else False)
+		self.key_launch_action.set_enabled(True if n_wads > 0 else False)
 
 	@Gtk.Template.Callback()
 	def on_params_entry_clear(self, pos, data):

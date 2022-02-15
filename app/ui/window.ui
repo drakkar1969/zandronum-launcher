@@ -4,7 +4,6 @@
 		<!-- MAIN WINDOW -->
 		<property name="default_width">620</property>
 		<property name="default_height">-1</property>
-		<property name="valign">center</property>
 		<property name="title">Zandronum Launcher</property>
 		<signal name="close-request" handler="on_window_close" swapped="no"/>
 		<property name="content">

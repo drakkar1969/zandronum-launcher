@@ -349,7 +349,7 @@ class MainWindow(Adw.ApplicationWindow):
 		if self.launch_flag == True:
 			error_status = self.launch_zandronum(iwad_name, pwad_file, params, params_on)
 
-			if error_status == True: self.launch_flag = False
+		self.launch_flag = False
 
 		self.prefs_window.destroy()
 

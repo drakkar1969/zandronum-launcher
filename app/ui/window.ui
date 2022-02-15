@@ -142,11 +142,11 @@
 			<section>
 				<item>
 					<attribute name="label">Reset to Defaults</attribute>
-					<attribute name="action">win.menu-reset</attribute>
+					<attribute name="action">win.reset-widgets</attribute>
 				</item>
 				<item>
 					<attribute name="label">Zandronum Preferences</attribute>
-					<attribute name="action">win.menu-prefs</attribute>
+					<attribute name="action">win.show-preferences</attribute>
 				</item>
 			</section>
 			<section>

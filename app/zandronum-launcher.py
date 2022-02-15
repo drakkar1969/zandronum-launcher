@@ -225,18 +225,18 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Actions
 		app_entries = [
-			[ "menu-reset", self.on_menu_reset_action ],
-			[ "menu-prefs", self.on_menu_prefs_action ],
-			[ "key-quit", self.on_key_quit_action ],
-			[ "key-launch", self.on_key_launch_action ]
+			[ "reset-widgets", self.on_reset_widgets_action ],
+			[ "show-preferences", self.on_show_preferences_action ],
+			[ "quit-app", self.on_quit_app_action ],
+			[ "launch-zandronum", self.on_launch_zandronum_action ]
 		]
 
 		self.add_action_entries(app_entries)
 
-		app.set_accels_for_action("win.menu-reset", ["<ctrl>r"])
-		app.set_accels_for_action("win.menu-prefs", ["<ctrl>comma"])
-		app.set_accels_for_action("win.key-quit", ["<ctrl>q"])
-		app.set_accels_for_action("win.key-launch", ["<ctrl>Return", "<ctrl>KP_Enter"])
+		app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
+		app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])
+		app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
+		app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
 		# Widget initialization
 		self.populate_iwad_combo(app.main_config["launcher"]["iwad"])
@@ -303,20 +303,20 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.close()
 
-	def on_key_launch_action(self, action, param, user_data):
+	def on_launch_zandronum_action(self, action, param, user_data):
 		if self.launch_btn.get_sensitive == True:
 			self.launch_btn.activate()
 
-	def on_key_quit_action(self, action, param, user_data):
+	def on_quit_app_action(self, action, param, user_data):
 		self.close()
 
-	def on_menu_reset_action(self, action, param, user_data):
+	def on_reset_widgets_action(self, action, param, user_data):
 		self.iwad_combo.set_active(0)
 		self.pwad_btn.set_selected_file("")
 		self.params_entry.set_text("")
 		self.expander_row.set_enable_expansion(False)
 
-	def on_menu_prefs_action(self, action, param, user_data):
+	def on_show_preferences_action(self, action, param, user_data):
 		self.prefs_window.show()
 
 	@Gtk.Template.Callback()

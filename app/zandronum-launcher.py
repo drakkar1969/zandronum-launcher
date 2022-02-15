@@ -221,6 +221,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Shortcut window
 		self.set_help_overlay(self.shortcut_window)
+		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
 		# Actions
 		self.menu_reset_action = Gio.SimpleAction.new("menu-reset", None)
@@ -242,8 +243,6 @@ class MainWindow(Adw.ApplicationWindow):
 		self.key_launch_action.connect("activate", self.on_key_launch_action)
 		self.add_action(self.key_launch_action)
 		app.set_accels_for_action("win.key-launch", ["<ctrl>Return", "<ctrl>KP_Enter"])
-
-		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
 		# Widget initialization
 		self.populate_iwad_combo(app.main_config["launcher"]["iwad"])

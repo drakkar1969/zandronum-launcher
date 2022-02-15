@@ -224,24 +224,18 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
 		# Actions
-		self.menu_reset_action = Gio.SimpleAction.new("menu-reset", None)
-		self.menu_reset_action.connect("activate", self.on_menu_reset_action)
-		self.add_action(self.menu_reset_action)
+		app_entries = [
+			[ "menu-reset", self.on_menu_reset_action ],
+			[ "menu-prefs", self.on_menu_prefs_action ],
+			[ "key-quit", self.on_key_quit_action ],
+			[ "key-launch", self.on_key_launch_action ]
+		]
+
+		self.add_action_entries(app_entries)
+
 		app.set_accels_for_action("win.menu-reset", ["<ctrl>r"])
-
-		self.menu_prefs_action = Gio.SimpleAction.new("menu-prefs", None)
-		self.menu_prefs_action.connect("activate", self.on_menu_prefs_action)
-		self.add_action(self.menu_prefs_action)
-		app.set_accels_for_action("win.menu-prefs", ["<ctrl>comma", "<ctrl>p"])
-
-		self.key_quit_action = Gio.SimpleAction.new("key-quit", None)
-		self.key_quit_action.connect("activate", self.on_key_quit_action)
-		self.add_action(self.key_quit_action)
+		app.set_accels_for_action("win.menu-prefs", ["<ctrl>comma"])
 		app.set_accels_for_action("win.key-quit", ["<ctrl>q"])
-
-		self.key_launch_action = Gio.SimpleAction.new("key-launch", None)
-		self.key_launch_action.connect("activate", self.on_key_launch_action)
-		self.add_action(self.key_launch_action)
 		app.set_accels_for_action("win.key-launch", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
 		# Widget initialization
@@ -298,7 +292,6 @@ class MainWindow(Adw.ApplicationWindow):
 		n_wads = self.iwad_store.iter_n_children(None)
 
 		self.launch_btn.set_sensitive(True if n_wads > 0 else False)
-		self.key_launch_action.set_enabled(True if n_wads > 0 else False)
 
 	@Gtk.Template.Callback()
 	def on_params_entry_clear(self, pos, data):
@@ -310,19 +303,20 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.close()
 
-	def on_key_launch_action(self, action, param):
-		self.launch_btn.activate()
+	def on_key_launch_action(self, action, param, user_data):
+		if self.launch_btn.get_sensitive == True:
+			self.launch_btn.activate()
 
-	def on_key_quit_action(self, action, param):
+	def on_key_quit_action(self, action, param, user_data):
 		self.close()
 
-	def on_menu_reset_action(self, action, param):
+	def on_menu_reset_action(self, action, param, user_data):
 		self.iwad_combo.set_active(0)
 		self.pwad_btn.set_selected_file("")
 		self.params_entry.set_text("")
 		self.expander_row.set_enable_expansion(False)
 
-	def on_menu_prefs_action(self, action, param):
+	def on_menu_prefs_action(self, action, param, user_data):
 		self.prefs_window.show()
 
 	@Gtk.Template.Callback()

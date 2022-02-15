@@ -285,10 +285,8 @@ class MainWindow(Adw.ApplicationWindow):
 			iwad_lc = iwad.lower()
 
 			if iwad_lc in doom_iwads:
-				iwad_iter = self.iwad_store.append()
-				self.iwad_store.set_value(iwad_iter, 0, doom_iwads[iwad_lc]["name"])
-				self.iwad_store.set_value(iwad_iter, 1, iwad_lc)
-				
+				self.iwad_store.insert_with_values(-1, [0, 1], [doom_iwads[iwad_lc]["name"], iwad_lc])
+
 		if self.iwad_combo.set_active_id(iwad_selected) == False:
 			self.iwad_combo.set_active(0)
 

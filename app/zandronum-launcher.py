@@ -278,7 +278,12 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.iwad_store.clear()
 
-		iwads = os.listdir(app.main_config["zandronum"]["iwad_dir"])
+		iwads = []
+
+		with os.scandir(app.main_config["zandronum"]["iwad_dir"]) as filelist:
+			for f in filelist:
+				iwads.append(f.name)
+
 		iwads.sort()
 
 		for iwad in iwads:

@@ -289,9 +289,7 @@ class MainWindow(Adw.ApplicationWindow):
 		if self.iwad_combo.set_active_id(iwad_selected) == False:
 			self.iwad_combo.set_active(0)
 
-		n_wads = self.iwad_store.iter_n_children(None)
-
-		self.launch_btn.set_sensitive(True if n_wads > 0 else False)
+		self.launch_btn.set_sensitive(True if self.iwad_combo.get_active_id() is not None else False)
 
 	@Gtk.Template.Callback()
 	def on_params_entry_clear(self, pos, data):
@@ -299,13 +297,13 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_launch_btn_clicked(self, button):
-		self.launch_flag = True
+		if self.iwad_combo.get_active_id() is not None:
+			self.launch_flag = True
 
-		self.close()
+			self.close()
 
 	def on_launch_zandronum_action(self, action, param, user_data):
-		if self.launch_btn.get_sensitive == True:
-			self.launch_btn.activate()
+		self.launch_btn.activate()
 
 	def on_quit_app_action(self, action, param, user_data):
 		self.close()

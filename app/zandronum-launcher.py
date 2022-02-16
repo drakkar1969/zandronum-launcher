@@ -227,8 +227,7 @@ class MainWindow(Adw.ApplicationWindow):
 		app_entries = [
 			[ "reset-widgets", self.on_reset_widgets_action ],
 			[ "show-preferences", self.on_show_preferences_action ],
-			[ "quit-app", self.on_quit_app_action ],
-			[ "launch-zandronum", self.on_launch_zandronum_action ]
+			[ "quit-app", self.on_quit_app_action ]
 		]
 
 		self.add_action_entries(app_entries)
@@ -236,7 +235,6 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
 		app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])
 		app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
-		app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
 		# Widget initialization
 		self.populate_iwad_combo(app.main_config["launcher"]["iwad"])
@@ -297,13 +295,9 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_launch_btn_clicked(self, button):
-		if self.iwad_combo.get_active_id() is not None:
-			self.launch_flag = True
+		self.launch_flag = True
 
-			self.close()
-
-	def on_launch_zandronum_action(self, action, param, user_data):
-		self.launch_btn.activate()
+		self.close()
 
 	def on_quit_app_action(self, action, param, user_data):
 		self.close()

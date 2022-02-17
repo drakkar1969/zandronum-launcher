@@ -415,9 +415,11 @@ class MainWindow(Adw.ApplicationWindow):
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
+		self.connect("startup", self.on_startup)
 		self.connect("activate", self.on_activate)
 		self.connect("shutdown", self.on_shutdown)
 
+	def on_startup(self, app):
 		# App dirs
 		self.patch_dir = os.path.join(app_dir, "patches")
 		self.mod_dir = os.path.join(app_dir, "mods")
@@ -478,7 +480,7 @@ class LauncherApp(Adw.Application):
 		self.main_window = MainWindow(application=app)
 		self.main_window.present()
 
-	def on_shutdown(self, user_data):
+	def on_shutdown(self, app):
 		# Write configuration file
 		parser = configparser.ConfigParser()
 		parser.read_dict(self.main_config)

@@ -17,7 +17,7 @@
 									<object class="GtkMenuButton">
 										<property name="icon_name">open-menu-symbolic</property>
 										<property name="primary">True</property>
-										<property name="popover">header_popover</property>
+										<property name="menu_model">header_menu</property>
 									</object>
 								</child>
 							</object>
@@ -144,10 +144,7 @@
 		<object class="PreferencesWindow" id="prefs_window">
 			<signal name="close-request" handler="on_prefs_window_close" swapped="no"/>
 		</object>
-		<!-- HEADER POPOVER MENU -->
-		<object class="GtkPopoverMenu" id="header_popover">
-			<property name="menu_model">header_menu</property>
-		</object>
+		<!-- HEADER MENU -->
 		<menu id="header_menu">
 			<section>
 				<item>

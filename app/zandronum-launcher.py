@@ -98,7 +98,7 @@ class FileDialogButton(Gtk.Box):
 		self.file_btn.activate()
 
 	@Gtk.Template.Callback()
-	def on_icon_name_notify(self, button, property):
+	def on_icon_name_notify(self, button, prop_name):
 		icon_name = self.icon_name
 
 		if icon_name == "":
@@ -116,26 +116,26 @@ class FileDialogButton(Gtk.Box):
 			self.reset_btn.set_sensitive(not self.default_file.equal(self.selected_file))
 
 	@Gtk.Template.Callback()
-	def on_can_clear_notify(self, button, property):
+	def on_can_clear_notify(self, button, prop_name):
 		self.clear_btn.set_visible(self.can_clear)
 
 		if self.can_clear == True: self.set_clear_btn_state()
 
 	@Gtk.Template.Callback()
-	def on_can_reset_notify(self, button, property):
+	def on_can_reset_notify(self, button, prop_name):
 		self.reset_btn.set_visible(self.can_reset)
 
 		if self.can_reset == True: self.set_reset_btn_state()
 
 	@Gtk.Template.Callback()
-	def on_selected_file_notify(self, button, property):
+	def on_selected_file_notify(self, button, prop_name):
 		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
 
 		if self.can_clear == True: self.set_clear_btn_state()
 		if self.can_reset == True: self.set_reset_btn_state()
 
 	@Gtk.Template.Callback()
-	def on_default_file_notify(self, button, property):
+	def on_default_file_notify(self, button, prop_name):
 		if self.can_reset == True: self.set_reset_btn_state()
 
 	@Gtk.Template.Callback()

@@ -19,14 +19,10 @@
 						<property name="hexpand">True</property>
 						<property name="spacing">6</property>
 						<child>
-							<object class="GtkImage" id="image">
-								<property name="icon_name">document-open-symbolic</property>
-							</object>
+							<object class="GtkImage" id="image"/>
 						</child>
 						<child>
-							<object class="GtkLabel" id="label">
-								<property name="label">(None)</property>
-							</object>
+							<object class="GtkLabel" id="label"/>
 						</child>
 					</object>
 				</child>

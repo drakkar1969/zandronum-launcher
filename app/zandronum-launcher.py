@@ -84,11 +84,14 @@ class FileDialogButton(Gtk.Box):
 			if self.can_reset == True: self.reset_btn.add_css_class("flat")
 
 		self.notify("icon-name")
-		self.notify("can-clear")
-		self.notify("can-reset")
 
-		self.notify("selected-file")
-		self.notify("default-file")
+		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
+
+		self.clear_btn.set_visible(self.can_clear)
+		self.reset_btn.set_visible(self.can_reset)
+
+		if self.can_clear == True: self.set_clear_btn_state()
+		if self.can_reset == True: self.set_reset_btn_state()
 
 	@Gtk.Template.Callback()
 	def on_activate(self, button, group_cycling):

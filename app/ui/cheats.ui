@@ -10,7 +10,7 @@
 		<child>
 			<object class="AdwPreferencesPage">
 				<property name="title">Switches</property>
-				<property name="icon_name"></property>
+				<property name="icon_name">utilities-terminal-symbolic</property>
 				<child>
 					<object class="GtkGrid" id="switches_grid">
 						<property name="margin_start">36</property>
@@ -26,6 +26,7 @@
 		<child>
 			<object class="AdwPreferencesPage">
 				<property name="title">Cheat Codes</property>
+				<property name="icon_name">view-reveal-symbolic</property>
 				<child>
 					<object class="GtkGrid" id="cheats_grid">
 						<property name="margin_start">36</property>

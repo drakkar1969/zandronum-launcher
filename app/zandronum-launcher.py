@@ -199,6 +199,72 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.iwaddir_btn.set_dialog_parent(self)
 		self.pwaddir_btn.set_dialog_parent(self)
 
+@Gtk.Template(filename=os.path.join(ui_dir, "cheats.ui"))
+class CheatsWindow(Adw.PreferencesWindow):
+	__gtype_name__ = "CheatsWindow"
+
+	switches_grid = Gtk.Template.Child()
+	cheats_grid = Gtk.Template.Child()
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+		doom_switches = {
+			"Switch": "Description",
+			"-fast": "Increases the speed and attack rate\nof monsters. Requires the -warp\nparameter to be effective.",
+			"-nomusic": "Disable background music",
+			"-nosfx": "Disable sound effects",
+			"-nosound": "Disable music and sound effects",
+			"-respawn": "Monsters return a few seconds after\nbeing killed, like in Nightmare mode.\nRequires the -warp parameter to be\neffective.",
+			"-skill <s>": "Select difficulty level <s> (1 to 5).\nThis parameter will warp to the first\nlevel of the game (if no other -warp\nparameter is specified).",
+			"-warp <m>\n-warp <e> <m>": "Start the game on level <m> (1 to 32).\nFor Doom, both episode <e> (1 to 4)\nand map <m> (1 to 9) must be specified,\nseparated by a space."
+		}
+
+		doom_cheats = {
+			"Cheat Code": "Effect",
+			"IDBEHOLDA": "Automap",
+			"IDBEHOLDI": "Temporary invisibility",
+			"IDBEHOLDL": "Light amplification goggles",
+			"IDBEHOLDR": "Radiation suit",
+			"IDBEHOLDS": "Berserk pack",
+			"IDBEHOLDV": "Temporary invulnerability",
+			"IDCHOPPERS": "Chainsaw",
+			"IDCLEV##": "Warp to episode #, map #",
+			"IDCLIP": "No clipping (walk through objects)",
+			"IDDQD": "God mode (invincibility)",
+			"IDDT": "Display entire map and enemies",
+			"IDFA": "All weapons and 200% armor",
+			"IDKFA": "All keys and weapons",
+			"IDMYPOS": "Display location",
+			"IDMUS##": "Change music (episode #, map #)"
+		}
+
+		row = 0
+
+		for switch in doom_switches:
+			param_label = Gtk.Label(label=switch, halign=Gtk.Align.START)
+			self.switches_grid.attach(param_label, 0, row, 1, 1)
+			if row == 0: param_label.add_css_class("heading")
+
+			desc_label = Gtk.Label(label=doom_switches[switch], halign=Gtk.Align.START)
+			self.switches_grid.attach(desc_label, 1, row, 1, 1)
+			if row == 0: desc_label.add_css_class("heading")
+
+			row += 1
+
+		row = 0
+
+		for cheat in doom_cheats:
+			cheat_label = Gtk.Label(label=cheat, halign=Gtk.Align.START)
+			self.cheats_grid.attach(cheat_label, 0, row, 1, 1)
+			if row == 0: cheat_label.add_css_class("heading")
+
+			effect_label = Gtk.Label(label=doom_cheats[cheat], halign=Gtk.Align.START)
+			self.cheats_grid.attach(effect_label, 1, row, 1, 1)
+			if row == 0: effect_label.add_css_class("heading")
+
+			row += 1
+
 @Gtk.Template(filename=os.path.join(ui_dir, "window.ui"))
 class MainWindow(Adw.ApplicationWindow):
 	__gtype_name__ = "MainWindow"
@@ -215,6 +281,7 @@ class MainWindow(Adw.ApplicationWindow):
 	launch_btn = Gtk.Template.Child()
 	toast_overlay = Gtk.Template.Child()
 	prefs_window = Gtk.Template.Child()
+	cheats_window = Gtk.Template.Child()
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -230,6 +297,7 @@ class MainWindow(Adw.ApplicationWindow):
 		app_entries = [
 			[ "reset-widgets", self.on_reset_widgets_action ],
 			[ "show-preferences", self.on_show_preferences_action ],
+			[ "show-cheats", self.on_show_cheats_action],
 			[ "quit-app", self.on_quit_app_action ]
 		]
 
@@ -237,6 +305,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
 		app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])
+		app.set_accels_for_action("win.show-cheats", ["F1"])
 		app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
 
 		# Widget initialization
@@ -267,6 +336,9 @@ class MainWindow(Adw.ApplicationWindow):
 		self.prefs_window.pwaddir_btn.set_selected_file(app.main_config["zandronum"]["pwad_dir"])
 
 		self.prefs_window.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
+
+		# Help initialization
+		self.cheats_window.set_transient_for(self)
 
 	def populate_iwad_combo(self, iwad_selected):
 		if iwad_selected is None: iwad_selected = ""
@@ -311,6 +383,9 @@ class MainWindow(Adw.ApplicationWindow):
 		self.params_entry.set_text("")
 		self.params_expandrow.set_enable_expansion(False)
 
+	def on_show_cheats_action(self, action, param, user_data):
+		self.cheats_window.show()
+
 	def on_show_preferences_action(self, action, param, user_data):
 		self.prefs_window.show()
 
@@ -349,6 +424,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_flag = False
 
 		self.prefs_window.destroy()
+		self.cheats_window.destroy()
 
 		if error_status == False:
 			app.main_config["launcher"]["iwad"] = iwad_name

@@ -144,6 +144,9 @@
 		<object class="PreferencesWindow" id="prefs_window">
 			<signal name="close-request" handler="on_prefs_window_close" swapped="no"/>
 		</object>
+		<!-- CHEATS WINDOW -->
+		<object class="CheatsWindow" id="cheats_window">
+		</object>
 		<!-- HEADER MENU -->
 		<menu id="header_menu">
 			<section>
@@ -160,6 +163,10 @@
 				<item>
 					<attribute name="label">Keyboard Shortcuts</attribute>
 					<attribute name="action">win.show-help-overlay</attribute>
+				</item>
+				<item>
+					<attribute name="label">Help</attribute>
+					<attribute name="action">win.show-cheats</attribute>
 				</item>
 			</section>
 		</menu>

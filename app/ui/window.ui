@@ -167,7 +167,7 @@
 					<attribute name="action">win.show-help-overlay</attribute>
 				</item>
 				<item>
-					<attribute name="label">Help</attribute>
+					<attribute name="label">Zandronum Help</attribute>
 					<attribute name="action">win.show-cheats</attribute>
 				</item>
 			</section>
@@ -203,6 +203,12 @@
 								<object class="GtkShortcutsShortcut">
 									<property name="accelerator">&lt;ctrl&gt;question</property>
 									<property name="title">Show Keyboard Shortcuts</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkShortcutsShortcut">
+									<property name="accelerator">F1</property>
+									<property name="title">Zandronum Help</property>
 								</object>
 							</child>
 							<child>

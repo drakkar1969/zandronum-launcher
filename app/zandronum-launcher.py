@@ -235,8 +235,8 @@ class CheatsWindow(Adw.PreferencesWindow):
 			"IDDT": "Display entire map and enemies",
 			"IDFA": "All weapons and 200% armor",
 			"IDKFA": "All keys and weapons",
-			"IDMYPOS": "Display location",
-			"IDMUS##": "Change music (episode #, map #)"
+			"IDMUS##": "Change music (episode #, map #)",
+			"IDMYPOS": "Display location"
 		}
 
 		row = 0

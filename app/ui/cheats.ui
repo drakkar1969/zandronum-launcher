@@ -5,6 +5,7 @@
 		<property name="default_height">-1</property>
 		<property name="title">Zandronum help</property>
 		<property name="modal">True</property>
+		<property name="resizable">False</property>
 		<property name="hide_on_close">True</property>
 		<property name="search_enabled">False</property>
 		<child>
@@ -12,27 +13,23 @@
 				<property name="title">Switches</property>
 				<property name="icon_name">utilities-terminal-symbolic</property>
 				<child>
-					<object class="AdwClamp">
+					<object class="GtkBox">
+						<property name="orientation">vertical</property>
+						<property name="margin_start">24</property>
+						<property name="margin_end">24</property>
+						<property name="margin_top">24</property>
+						<property name="margin_bottom">28</property>
+						<style>
+							<class name="card"/>
+						</style>
 						<child>
-							<object class="GtkBox">
-								<property name="orientation">vertical</property>
-								<property name="margin_start">24</property>
-								<property name="margin_end">24</property>
+							<object class="GtkGrid" id="switches_grid">
+								<property name="margin_start">30</property>
+								<property name="margin_end">30</property>
 								<property name="margin_top">24</property>
-								<property name="margin_bottom">28</property>
-								<style>
-									<class name="card"/>
-								</style>
-								<child>
-									<object class="GtkGrid" id="switches_grid">
-										<property name="margin_start">30</property>
-										<property name="margin_end">30</property>
-										<property name="margin_top">24</property>
-										<property name="margin_bottom">24</property>
-										<property name="row_spacing">14</property>
-										<property name="column_spacing">64</property>
-									</object>
-								</child>
+								<property name="margin_bottom">24</property>
+								<property name="row_spacing">14</property>
+								<property name="column_spacing">64</property>
 							</object>
 						</child>
 					</object>
@@ -44,27 +41,23 @@
 				<property name="title">Cheat Codes</property>
 				<property name="icon_name">view-reveal-symbolic</property>
 				<child>
-					<object class="AdwClamp">
+					<object class="GtkBox">
+						<property name="orientation">vertical</property>
+						<property name="margin_start">24</property>
+						<property name="margin_end">24</property>
+						<property name="margin_top">24</property>
+						<property name="margin_bottom">28</property>
+						<style>
+							<class name="card"/>
+						</style>
 						<child>
-							<object class="GtkBox">
-								<property name="orientation">vertical</property>
-								<property name="margin_start">24</property>
-								<property name="margin_end">24</property>
+							<object class="GtkGrid" id="cheats_grid">
+								<property name="margin_start">30</property>
+								<property name="margin_end">30</property>
 								<property name="margin_top">24</property>
-								<property name="margin_bottom">28</property>
-								<style>
-									<class name="card"/>
-								</style>
-								<child>
-									<object class="GtkGrid" id="cheats_grid">
-										<property name="margin_start">30</property>
-										<property name="margin_end">30</property>
-										<property name="margin_top">24</property>
-										<property name="margin_bottom">24</property>
-										<property name="row_spacing">14</property>
-										<property name="column_spacing">64</property>
-									</object>
-								</child>
+								<property name="margin_bottom">24</property>
+								<property name="row_spacing">14</property>
+								<property name="column_spacing">64</property>
 							</object>
 						</child>
 					</object>

@@ -217,7 +217,7 @@ class CheatsWindow(Adw.PreferencesWindow):
 			"-nosound": "Disable music and sound effects",
 			"-respawn": "Monsters return a few seconds after\nbeing killed, like in Nightmare mode.\nRequires the -warp parameter to be\neffective.",
 			"-skill <s>": "Select difficulty level <s> (1 to 5).\nThis parameter will warp to the first\nlevel of the game (if no other -warp\nparameter is specified).",
-			"-warp <m>\n-warp <e> <m>": "Start the game on level <m> (1 to 32).\nFor Doom, both episode <e> (1 to 4)\nand map <m> (1 to 9) must be specified,\nseparated by a space."
+			"-warp <m>\n-warp <e> <m>": "Start the game on level <m> (1 to 32).\nFor Ultimate Doom, both episode <e>\n(1 to 4) and map <m> (1 to 9) must be\nspecified, separated by a space."
 		}
 
 		doom_cheats = {

@@ -474,7 +474,7 @@ class MainWindow(Adw.ApplicationWindow):
 				if mod_name != "":
 					mod_file = os.path.join(app.mod_dir, mod_name)
 
-					if os.path.exists(mod_file): cmdline += ' -file "{:s}"'.format(mod_file)
+					if os.path.exists(mod_file): cmdline += ' -optfile "{:s}"'.format(mod_file)
 
 		# Add PWAD file if present
 		if pwad_file != "" and os.path.exists(pwad_file): cmdline += ' -file "{:s}"'.format(pwad_file)

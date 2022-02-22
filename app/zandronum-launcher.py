@@ -212,6 +212,7 @@ class CheatsWindow(Adw.PreferencesWindow):
 		doom_switches = {
 			"Switch": "Description",
 			"-fast": "Increases the speed and attack rate\nof monsters. Requires the -warp\nparameter to be effective.",
+			"-nomonsters": "Disable spawning of monsters. Requires\nthe -warp parameter to be effective.",
 			"-nomusic": "Disable background music",
 			"-nosfx": "Disable sound effects",
 			"-nosound": "Disable music and sound effects",

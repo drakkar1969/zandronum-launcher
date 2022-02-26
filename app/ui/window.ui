@@ -69,6 +69,7 @@
 														<property name="margin_start">20</property>
 														<property name="can_clear">True</property>
 														<property name="dlg_title">Open WAD File</property>
+														<property name="dlg_filter">pwad_file_filter</property>
 													</object>
 												</child>
 											</object>

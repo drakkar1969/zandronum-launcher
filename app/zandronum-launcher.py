@@ -61,6 +61,8 @@ class FileDialogButton(Gtk.Box):
 
 	# Dialog properties
 	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
+	dlg_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)
+	dlg_filter = GObject.Property(type=Gtk.FileFilter, default=None, flags=GObject.ParamFlags.READWRITE)
 
 	# Class widget variables
 	image = Gtk.Template.Child()
@@ -68,9 +70,6 @@ class FileDialogButton(Gtk.Box):
 	file_btn = Gtk.Template.Child()
 	clear_btn = Gtk.Template.Child()
 	reset_btn = Gtk.Template.Child()
-
-	# Dialog variable
-	dialog = Gtk.Template.Child()
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -140,8 +139,12 @@ class FileDialogButton(Gtk.Box):
 
 	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
-		self.dialog.set_title(self.dlg_title)
-		self.dialog.set_action(Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
+		self.dialog = Gtk.FileChooserNative(title=self.dlg_title, transient_for=self.dlg_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
+
+		self.dialog.set_modal(True)
+
+		if self.dlg_filter is not None:
+			self.dialog.add_filter(self.dlg_filter)
 
 		if self.selected_file is not None:
 			self.dialog.set_file(self.selected_file)
@@ -149,12 +152,15 @@ class FileDialogButton(Gtk.Box):
 			if self.default_folder is not None:
 				self.dialog.set_current_folder(self.default_folder)
 
+		self.dialog.connect("response", self.on_dialog_response)
+
 		self.dialog.show()
 
-	@Gtk.Template.Callback()
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
 			self.selected_file = dialog.get_file()
+
+		self.dialog = None
 
 	@Gtk.Template.Callback()
 	def on_clear_btn_clicked(self, button):
@@ -165,10 +171,7 @@ class FileDialogButton(Gtk.Box):
 		self.selected_file = self.default_file
 
 	def set_dialog_parent(self, parent):
-		self.dialog.set_transient_for(parent)
-
-	def add_file_filter(self, file_filter):
-		self.dialog.add_filter(file_filter)
+		self.dlg_parent = parent
 
 	def set_default_folder(self, def_folder):
 		self.default_folder = Gio.File.new_for_path(def_folder) if def_folder != "" else None
@@ -275,7 +278,6 @@ class MainWindow(Adw.ApplicationWindow):
 	iwad_store = Gtk.Template.Child()
 	iwad_combo = Gtk.Template.Child()
 	iwad_listrow = Gtk.Template.Child()
-	pwad_file_filter = Gtk.Template.Child()
 	pwad_btn = Gtk.Template.Child()
 	params_expandrow = Gtk.Template.Child()
 	params_entry = Gtk.Template.Child()
@@ -313,7 +315,6 @@ class MainWindow(Adw.ApplicationWindow):
 		self.populate_iwad_combo(app.main_config["launcher"]["iwad"])
 
 		self.pwad_btn.set_dialog_parent(self)
-		self.pwad_btn.add_file_filter(self.pwad_file_filter)
 		self.pwad_btn.set_default_folder(app.main_config["zandronum"]["pwad_dir"])
 		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
 

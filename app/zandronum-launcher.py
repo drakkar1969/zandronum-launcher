@@ -496,8 +496,7 @@ class MainWindow(Adw.ApplicationWindow):
 		return(False)
 
 	def show_toast(self, toast_title):
-		toast = Adw.Toast(title=toast_title, priority=Adw.ToastPriority.HIGH)
-		self.toast_overlay.add_toast(toast)
+		self.toast_overlay.add_toast(Adw.Toast(title=toast_title, priority=Adw.ToastPriority.HIGH))
 
 class LauncherApp(Adw.Application):
 	def __init__(self, **kwargs):

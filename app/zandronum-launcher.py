@@ -47,6 +47,10 @@ ui_dir = os.path.join(app_dir, "ui")
 class FileDialogButton(Gtk.Box):
 	__gtype_name__ = "FileDialogButton"
 
+	__gsignals__ = {
+		"file-changed": (GObject.SignalFlags.RUN_FIRST, None, ())
+	}
+
 	# Button properties
 	icon_name = GObject.Property(type=str, default="", flags=GObject.ParamFlags.READWRITE)
 	folder_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
@@ -132,6 +136,8 @@ class FileDialogButton(Gtk.Box):
 
 		if self.can_clear == True: self.set_clear_btn_state()
 		if self.can_reset == True: self.set_reset_btn_state()
+
+		self.emit("file-changed")
 
 	@Gtk.Template.Callback()
 	def on_default_file_notify(self, button, prop_name):

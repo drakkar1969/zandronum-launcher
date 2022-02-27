@@ -335,10 +335,10 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_btn.set_default_folder(app.main_config["zandronum"]["pwad_dir"])
 		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
 
-		self.params_entry.set_text(app.main_config["launcher"]["params"])
-
 		self.params_expandrow.set_enable_expansion(app.main_config["launcher"]["params_on"])
 		self.params_expandrow.set_expanded(app.main_config["launcher"]["params_on"])
+
+		self.params_entry.set_text(app.main_config["launcher"]["params"])
 
 		self.set_focus(self.iwad_listrow)
 
@@ -401,8 +401,7 @@ class MainWindow(Adw.ApplicationWindow):
 	def on_params_entry_changed(self, entry):
 		app.main_config["launcher"]["params"] = entry.get_text()
 
-		if app.main_config["launcher"]["params"] == "":
-			app.main_config["launcher"]["params_on"] = False
+		app.main_config["launcher"]["params_on"] = (self.params_expandrow.get_enable_expansion() and app.main_config["launcher"]["params"] != "")
 
 	@Gtk.Template.Callback()
 	def on_params_entry_clear(self, entry, icon):

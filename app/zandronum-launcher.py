@@ -183,7 +183,14 @@ class FileDialogButton(Gtk.Box):
 		self.default_folder = Gio.File.new_for_path(folder_path) if folder_path != "" else None
 		
 	def set_selected_file(self, file_path):
-		self.selected_file = Gio.File.new_for_path(file_path) if file_path != "" else None
+		if file_path == "":
+			if self.selected_file is not None: self.selected_file = None 
+		else:
+			new_file = Gio.File.new_for_path(file_path)
+
+			if self.selected_file is None: self.selected_file = new_file
+			else:
+				if not self.selected_file.equal(new_file): self.selected_file = new_file 
 
 	def get_selected_file(self):
 		return(self.selected_file.get_path() if self.selected_file is not None else "")

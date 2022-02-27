@@ -384,6 +384,27 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_btn.set_sensitive(True if self.iwad_combo.get_active_id() is not None else False)
 
 	@Gtk.Template.Callback()
+	def on_iwad_combo_changed(self, combo):
+		app.main_config["launcher"]["iwad"] = combo.get_active_id()
+
+		if app.main_config["launcher"]["iwad"] is None: app.main_config["launcher"]["iwad"] = ""
+
+	@Gtk.Template.Callback()
+	def on_pwad_btn_file_changed(self, button):
+		app.main_config["launcher"]["file"] = button.get_selected_file()
+
+	@Gtk.Template.Callback()
+	def on_params_row_enabled(self, exprow, prop_name):
+		app.main_config["launcher"]["params_on"] = (exprow.get_enable_expansion() and app.main_config["launcher"]["params"] != "")
+
+	@Gtk.Template.Callback()
+	def on_params_entry_changed(self, entry):
+		app.main_config["launcher"]["params"] = entry.get_text()
+
+		if app.main_config["launcher"]["params"] == "":
+			app.main_config["launcher"]["params_on"] = False
+
+	@Gtk.Template.Callback()
 	def on_params_entry_clear(self, entry, icon):
 		self.params_entry.set_text("")
 

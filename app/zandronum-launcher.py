@@ -179,17 +179,17 @@ class FileDialogButton(Gtk.Box):
 	def set_dialog_parent(self, parent):
 		self.dlg_parent = parent
 
-	def set_default_folder(self, def_folder):
-		self.default_folder = Gio.File.new_for_path(def_folder) if def_folder != "" else None
+	def set_default_folder(self, folder_path):
+		self.default_folder = Gio.File.new_for_path(folder_path) if folder_path != "" else None
 		
-	def set_selected_file(self, sel_file):
-		self.selected_file = Gio.File.new_for_path(sel_file) if sel_file != "" else None
+	def set_selected_file(self, file_path):
+		self.selected_file = Gio.File.new_for_path(file_path) if file_path != "" else None
 
 	def get_selected_file(self):
 		return(self.selected_file.get_path() if self.selected_file is not None else "")
 
-	def set_default_file(self, def_file):
-		self.default_file = Gio.File.new_for_path(def_file) if def_file != "" else None
+	def set_default_file(self, file_path):
+		self.default_file = Gio.File.new_for_path(file_path) if file_path != "" else None
 
 @Gtk.Template(filename=os.path.join(ui_dir, "preferences.ui"))
 class PreferencesWindow(Adw.PreferencesWindow):

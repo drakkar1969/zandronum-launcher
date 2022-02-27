@@ -306,9 +306,6 @@ class MainWindow(Adw.ApplicationWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		# Zandronum launch flag
-		self.launch_flag = False
-
 		# Shortcut window
 		self.set_help_overlay(self.shortcut_window)
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
@@ -409,9 +406,8 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_launch_btn_clicked(self, button):
-		self.launch_flag = True
-
-		self.close()
+		if self.launch_zandronum() == True:
+			self.close()
 
 	def on_quit_app_action(self, action, param, user_data):
 		self.close()
@@ -447,23 +443,14 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_window_close(self, window):
-		error_status = False
-
-		if self.launch_flag == True:
-			error_status = self.launch_zandronum()
-
-		self.launch_flag = False
-
 		self.prefs_window.destroy()
 		self.cheats_window.destroy()
-
-		return(error_status)
 
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
 		if os.path.exists(app.main_config["zandronum"]["exec_file"]) == False:
 			self.show_toast("ERROR: Zandronum executable not found")
-			return(True)
+			return(False)
 
 		# Initialize Zandronum command line with executable
 		cmdline = app.main_config["zandronum"]["exec_file"]
@@ -471,14 +458,14 @@ class MainWindow(Adw.ApplicationWindow):
 		# Return with error if IWAD name is empty
 		if app.main_config["launcher"]["iwad"] == "":
 			self.show_toast("ERROR: No IWAD file specified")
-			return(True)
+			return(False)
 
 		iwad_file = os.path.join(app.main_config["zandronum"]["iwad_dir"], app.main_config["launcher"]["iwad"])
 
 		# Return with error if IWAD file does not exist
 		if os.path.exists(iwad_file) == False:
 			self.show_toast("ERROR: IWAD file {:s} not found".format(app.main_config["launcher"]["iwad"]))
-			return(True)
+			return(False)
 
 		# Add IWAD file
 		cmdline += ' -iwad "{:s}"'.format(iwad_file)
@@ -511,7 +498,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# Launch Zandronum
 		subprocess.Popen(shlex.split(cmdline))
 
-		return(False)
+		return(True)
 
 	def show_toast(self, toast_title):
 		self.toast_overlay.add_toast(Adw.Toast(title=toast_title, priority=Adw.ToastPriority.HIGH))

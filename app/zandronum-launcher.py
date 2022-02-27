@@ -406,8 +406,10 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_launch_btn_clicked(self, button):
-		if self.launch_zandronum() == True:
-			self.close()
+		self.set_sensitive(False)
+
+		if self.launch_zandronum() == True: self.close()
+		else: self.set_sensitive(True)
 
 	def on_quit_app_action(self, action, param, user_data):
 		self.close()

@@ -423,7 +423,7 @@ class MainWindow(Adw.ApplicationWindow):
 		if self.iwad_combo.set_active_id(iwad_selected) == False:
 			self.iwad_combo.set_active(0)
 
-		self.launch_btn.set_sensitive(True if self.iwad_combo.get_active_id() is not None else False)
+		self.launch_btn.set_sensitive(self.iwad_combo.get_active_id() is not None)
 
 	@Gtk.Template.Callback()
 	def on_iwad_combo_changed(self, combo):

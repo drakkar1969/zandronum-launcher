@@ -54,24 +54,12 @@ doom_iwads = {
 	"freedoom1.wad": {
 		"name": "Freedoom Phase 1",
 		"patch": "",
-		"mods": {
-			"textures": [],
-			"objects": [],
-			"monsters": [],
-			"menus": [],
-			"hud": []
-		}
+		"mods": {}
 	},
 	"freedoom2.wad": {
 		"name": "Freedoom Phase 2",
 		"patch": "",
-		"mods": {
-			"textures": [],
-			"objects": [],
-			"monsters": [],
-			"menus": [],
-			"hud": []
-		}
+		"mods": {}
 	}
 }
 

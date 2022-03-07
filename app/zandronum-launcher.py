@@ -572,7 +572,7 @@ class LauncherApp(Adw.Application):
 		# Default paths
 		self.default_exec_file = "/usr/bin/zandronum"
 		self.default_iwad_dir = os.path.join(app_dir, "iwads")
-		self.default_pwad_dir = self.config_dir
+		self.default_pwad_dir = os.path.join(self.config_dir, "WADs")
 
 		# Parse configuration file
 		self.launcher_config_file = os.path.join(self.config_dir, "launcher.conf")

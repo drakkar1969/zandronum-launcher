@@ -329,7 +329,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.populate_iwad_combo(app.main_config["launcher"]["iwad"])
 
 		self.pwad_btn.set_dialog_parent(self)
-		self.pwad_btn.set_default_folder(app.main_config["zandronum"]["pwad_dir"])
+		self.pwad_btn.set_default_folder(app.main_config["paths"]["pwad_dir"])
 		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
 
 		self.params_expandrow.set_enable_expansion(app.main_config["launcher"]["params_on"])
@@ -343,13 +343,13 @@ class MainWindow(Adw.ApplicationWindow):
 		self.prefs_window.set_transient_for(self)
 
 		self.prefs_window.exec_btn.set_default_file(app.default_exec_file)
-		self.prefs_window.exec_btn.set_selected_file(app.main_config["zandronum"]["exec_file"])
+		self.prefs_window.exec_btn.set_selected_file(app.main_config["paths"]["exec_file"])
 
 		self.prefs_window.iwaddir_btn.set_default_file(app.default_iwad_dir)
-		self.prefs_window.iwaddir_btn.set_selected_file(app.main_config["zandronum"]["iwad_dir"])
+		self.prefs_window.iwaddir_btn.set_selected_file(app.main_config["paths"]["iwad_dir"])
 
 		self.prefs_window.pwaddir_btn.set_default_file(app.default_pwad_dir)
-		self.prefs_window.pwaddir_btn.set_selected_file(app.main_config["zandronum"]["pwad_dir"])
+		self.prefs_window.pwaddir_btn.set_selected_file(app.main_config["paths"]["pwad_dir"])
 
 		self.prefs_window.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
 
@@ -363,7 +363,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		iwads = []
 
-		with os.scandir(app.main_config["zandronum"]["iwad_dir"]) as filelist:
+		with os.scandir(app.main_config["paths"]["iwad_dir"]) as filelist:
 			for f in filelist:
 				iwads.append(f.name)
 
@@ -428,17 +428,17 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_prefs_window_close(self, window):
-		app.main_config["zandronum"]["exec_file"] = self.prefs_window.exec_btn.get_selected_file()
+		app.main_config["paths"]["exec_file"] = self.prefs_window.exec_btn.get_selected_file()
 
 		iwad_dir = self.prefs_window.iwaddir_btn.get_selected_file()
 
-		if iwad_dir != app.main_config["zandronum"]["iwad_dir"]:
-			app.main_config["zandronum"]["iwad_dir"] = iwad_dir
+		if iwad_dir != app.main_config["paths"]["iwad_dir"]:
+			app.main_config["paths"]["iwad_dir"] = iwad_dir
 			self.populate_iwad_combo(self.iwad_combo.get_active_id())
 
 		pwad_dir = self.prefs_window.pwaddir_btn.get_selected_file()
 
-		app.main_config["zandronum"]["pwad_dir"] = pwad_dir
+		app.main_config["paths"]["pwad_dir"] = pwad_dir
 		self.pwad_btn.set_default_folder(pwad_dir)
 
 		app.main_config["zandronum"]["use_mods"] = self.prefs_window.mods_switch.get_active()
@@ -450,19 +450,19 @@ class MainWindow(Adw.ApplicationWindow):
 
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
-		if os.path.exists(app.main_config["zandronum"]["exec_file"]) == False:
+		if os.path.exists(app.main_config["paths"]["exec_file"]) == False:
 			self.show_toast("ERROR: Zandronum executable not found")
 			return(False)
 
 		# Initialize Zandronum command line with executable
-		cmdline = app.main_config["zandronum"]["exec_file"]
+		cmdline = app.main_config["paths"]["exec_file"]
 
 		# Return with error if IWAD name is empty
 		if app.main_config["launcher"]["iwad"] == "":
 			self.show_toast("ERROR: No IWAD file specified")
 			return(False)
 
-		iwad_file = os.path.join(app.main_config["zandronum"]["iwad_dir"], app.main_config["launcher"]["iwad"])
+		iwad_file = os.path.join(app.main_config["paths"]["iwad_dir"], app.main_config["launcher"]["iwad"])
 
 		# Return with error if IWAD file does not exist
 		if os.path.exists(iwad_file) == False:
@@ -542,7 +542,7 @@ class LauncherApp(Adw.Application):
 		parser = configparser.ConfigParser()
 		parser.read(self.launcher_config_file)
 
-		self.main_config = { "launcher": {}, "zandronum": {} }
+		self.main_config = { "launcher": {}, "paths": {}, "zandronum": {} }
 
 		self.main_config["launcher"]["iwad"] = parser.get("launcher", "iwad", fallback="")
 		self.main_config["launcher"]["file"] = parser.get("launcher", "file", fallback="")
@@ -552,22 +552,22 @@ class LauncherApp(Adw.Application):
 		except:
 			self.main_config["launcher"]["params_on"] = False
 
-		self.main_config["zandronum"]["exec_file"] = parser.get("zandronum", "exec_file", fallback=self.default_exec_file)
-		self.main_config["zandronum"]["iwad_dir"] = parser.get("zandronum", "iwad_dir", fallback=self.default_iwad_dir)
-		self.main_config["zandronum"]["pwad_dir"] = parser.get("zandronum", "pwad_dir", fallback=self.default_pwad_dir)
+		self.main_config["paths"]["exec_file"] = parser.get("zandronum", "exec_file", fallback=self.default_exec_file)
+		self.main_config["paths"]["iwad_dir"] = parser.get("zandronum", "iwad_dir", fallback=self.default_iwad_dir)
+		self.main_config["paths"]["pwad_dir"] = parser.get("zandronum", "pwad_dir", fallback=self.default_pwad_dir)
 		try:
 			self.main_config["zandronum"]["use_mods"] = parser.getboolean("zandronum", "use_mods", fallback=True)
 		except:
 			self.main_config["zandronum"]["use_mods"] = True
 
-		if self.main_config["zandronum"]["exec_file"] == "" or os.path.exists(self.main_config["zandronum"]["exec_file"]) == False:
-			self.main_config["zandronum"]["exec_file"] = self.default_exec_file
+		if self.main_config["paths"]["exec_file"] == "" or os.path.exists(self.main_config["paths"]["exec_file"]) == False:
+			self.main_config["paths"]["exec_file"] = self.default_exec_file
 
-		if self.main_config["zandronum"]["iwad_dir"] == "" or os.path.exists(self.main_config["zandronum"]["iwad_dir"]) == False:
-			self.main_config["zandronum"]["iwad_dir"] = self.default_iwad_dir
+		if self.main_config["paths"]["iwad_dir"] == "" or os.path.exists(self.main_config["paths"]["iwad_dir"]) == False:
+			self.main_config["paths"]["iwad_dir"] = self.default_iwad_dir
 
-		if self.main_config["zandronum"]["pwad_dir"] == "" or os.path.exists(self.main_config["zandronum"]["pwad_dir"]) == False:
-			self.main_config["zandronum"]["pwad_dir"] = self.default_pwad_dir
+		if self.main_config["paths"]["pwad_dir"] == "" or os.path.exists(self.main_config["paths"]["pwad_dir"]) == False:
+			self.main_config["paths"]["pwad_dir"] = self.default_pwad_dir
 
 	def on_activate(self, app):
 		self.main_window = MainWindow(application=app)

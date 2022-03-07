@@ -332,8 +332,9 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_btn.set_default_folder(app.main_config["paths"]["pwad_dir"])
 		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
 
-		self.params_expandrow.set_enable_expansion(app.main_config["launcher"]["params_on"])
-		self.params_expandrow.set_expanded(app.main_config["launcher"]["params_on"])
+		enable_params = app.main_config["launcher"].getboolean("params_on")
+		self.params_expandrow.set_enable_expansion(enable_params)
+		self.params_expandrow.set_expanded(enable_params)
 
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
 
@@ -351,7 +352,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.prefs_window.pwaddir_btn.set_default_file(app.default_pwad_dir)
 		self.prefs_window.pwaddir_btn.set_selected_file(app.main_config["paths"]["pwad_dir"])
 
-		self.prefs_window.mods_switch.set_active(app.main_config["mods"]["use_mods"])
+		self.prefs_window.mods_switch.set_active(app.main_config["mods"].getboolean("use_mods"))
 
 		# Help initialization
 		self.cheats_window.set_transient_for(self)
@@ -382,9 +383,9 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_iwad_combo_changed(self, combo):
-		app.main_config["launcher"]["iwad"] = combo.get_active_id()
+		iwad_selected = combo.get_active_id()
 
-		if app.main_config["launcher"]["iwad"] is None: app.main_config["launcher"]["iwad"] = ""
+		app.main_config["launcher"]["iwad"] = iwad_selected if iwad_selected is not None else ""
 
 	@Gtk.Template.Callback()
 	def on_pwad_btn_file_changed(self, button):
@@ -392,13 +393,13 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_params_row_enabled(self, exprow, prop_name):
-		app.main_config["launcher"]["params_on"] = (exprow.get_enable_expansion() and app.main_config["launcher"]["params"] != "")
+		app.main_config["launcher"]["params_on"] = str(exprow.get_enable_expansion() and app.main_config["launcher"]["params"] != "")
 
 	@Gtk.Template.Callback()
 	def on_params_entry_changed(self, entry):
 		app.main_config["launcher"]["params"] = entry.get_text()
 
-		app.main_config["launcher"]["params_on"] = (self.params_expandrow.get_enable_expansion() and app.main_config["launcher"]["params"] != "")
+		app.main_config["launcher"]["params_on"] = str(self.params_expandrow.get_enable_expansion() and app.main_config["launcher"]["params"] != "")
 
 	@Gtk.Template.Callback()
 	def on_params_entry_clear(self, entry, icon):
@@ -441,7 +442,7 @@ class MainWindow(Adw.ApplicationWindow):
 		app.main_config["paths"]["pwad_dir"] = pwad_dir
 		self.pwad_btn.set_default_folder(pwad_dir)
 
-		app.main_config["mods"]["use_mods"] = self.prefs_window.mods_switch.get_active()
+		app.main_config["mods"]["use_mods"] = str(self.prefs_window.mods_switch.get_active())
 
 	@Gtk.Template.Callback()
 	def on_window_close(self, window):
@@ -480,7 +481,7 @@ class MainWindow(Adw.ApplicationWindow):
 			if os.path.exists(patch_file): cmdline += ' -file "{:s}"'.format(patch_file)
 
 		# Add mod files if use hi-res graphics option is true
-		if app.main_config["mods"]["use_mods"] == True:
+		if app.main_config["mods"].getboolean("use_mods") == True:
 			mod_list = doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
 
 			for mod_name in mod_list:
@@ -494,7 +495,7 @@ class MainWindow(Adw.ApplicationWindow):
 			cmdline += ' -file "{:s}"'.format(app.main_config["launcher"]["file"])
 
 		# Add extra params if present and enabled
-		if app.main_config["launcher"]["params_on"] == True and app.main_config["launcher"]["params"] != "":
+		if app.main_config["launcher"].getboolean("params_on") == True and app.main_config["launcher"]["params"] != "":
 				cmdline += ' {:s}'.format(app.main_config["launcher"]["params"])
 
 		# Launch Zandronum
@@ -531,7 +532,7 @@ class LauncherApp(Adw.Application):
 
 			shutil.copyfile(zandronum_ini_src, zandronum_ini_file)
 
-		# Default settings
+		# Default paths
 		self.default_exec_file = "/usr/bin/zandronum"
 		self.default_iwad_dir = os.path.join(app_dir, "iwads")
 		self.default_pwad_dir = self.config_dir
@@ -539,35 +540,26 @@ class LauncherApp(Adw.Application):
 		# Parse configuration file
 		self.launcher_config_file = os.path.join(self.config_dir, "launcher.conf")
 
-		parser = configparser.ConfigParser()
-		parser.read(self.launcher_config_file)
+		self.main_config = configparser.ConfigParser()
 
-		self.main_config = { "launcher": {}, "paths": {}, "mods": {} }
+		self.main_config.read_dict({
+			"launcher": {
+				"iwad": "",
+				"file": "",
+				"params": "",
+				"params_on": "False"
+			},
+			"paths": {
+				"exec_file": self.default_exec_file,
+				"iwad_dir": self.default_iwad_dir,
+				"pwad_dir": self.default_pwad_dir
+			},
+			"mods": {
+				"use_mods": "True"
+			}
+		})
 
-		self.main_config["launcher"]["iwad"] = parser.get("launcher", "iwad", fallback="")
-		self.main_config["launcher"]["file"] = parser.get("launcher", "file", fallback="")
-		self.main_config["launcher"]["params"] = parser.get("launcher", "params", fallback="")
-		try:
-			self.main_config["launcher"]["params_on"] = parser.getboolean("launcher", "params_on", fallback=False)
-		except:
-			self.main_config["launcher"]["params_on"] = False
-
-		self.main_config["paths"]["exec_file"] = parser.get("zandronum", "exec_file", fallback=self.default_exec_file)
-		self.main_config["paths"]["iwad_dir"] = parser.get("zandronum", "iwad_dir", fallback=self.default_iwad_dir)
-		self.main_config["paths"]["pwad_dir"] = parser.get("zandronum", "pwad_dir", fallback=self.default_pwad_dir)
-		try:
-			self.main_config["mods"]["use_mods"] = parser.getboolean("zandronum", "use_mods", fallback=True)
-		except:
-			self.main_config["mods"]["use_mods"] = True
-
-		if self.main_config["paths"]["exec_file"] == "" or os.path.exists(self.main_config["paths"]["exec_file"]) == False:
-			self.main_config["paths"]["exec_file"] = self.default_exec_file
-
-		if self.main_config["paths"]["iwad_dir"] == "" or os.path.exists(self.main_config["paths"]["iwad_dir"]) == False:
-			self.main_config["paths"]["iwad_dir"] = self.default_iwad_dir
-
-		if self.main_config["paths"]["pwad_dir"] == "" or os.path.exists(self.main_config["paths"]["pwad_dir"]) == False:
-			self.main_config["paths"]["pwad_dir"] = self.default_pwad_dir
+		self.main_config.read(self.launcher_config_file)
 
 	def on_activate(self, app):
 		self.main_window = MainWindow(application=app)
@@ -575,11 +567,8 @@ class LauncherApp(Adw.Application):
 
 	def on_shutdown(self, app):
 		# Write configuration file
-		parser = configparser.ConfigParser()
-		parser.read_dict(self.main_config)
-
 		with open(self.launcher_config_file, "w") as configfile:
-			parser.write(configfile)
+			self.main_config.write(configfile)
 
 		# Destroy main window
 		app.main_window.destroy()

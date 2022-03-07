@@ -10,32 +10,68 @@ doom_iwads = {
 	"doom.wad": {
 		"name": "The Ultimate Doom",
 		"patch": "",
-		"mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "jfo-udoom.pk3"]
+		"mods": {
+			"textures": ["textures-1.pk3", "textures-2.pk3"],
+			"objects": ["objects.pk3"],
+			"monsters": ["monsters.pk3"],
+			"menus": ["jfo-udoom.pk3"],
+			"hud": ["hud-stuff.pk3"]
+		}
 	},
 	"doom2.wad": {
 		"name": "Doom II: Hell on Earth",
 		"patch": "",
-		"mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "jfo-doom2.pk3"]
+		"mods": {
+			"textures": ["textures-1.pk3", "textures-2.pk3", "textures-doom2.pk3"],
+			"objects": ["objects.pk3"],
+			"monsters": ["monsters.pk3"],
+			"menus": ["jfo-doom2.pk3"],
+			"hud": ["hud-stuff.pk3"]
+		}
 	},
 	"plutonia.wad": {
 		"name": "Final Doom - The Plutonia Experiment",
 		"patch": "",
-		"mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-plut.pk3", "jfo-plut.pk3"]
+		"mods": {
+			"textures": ["textures-1.pk3", "textures-2.pk3", "textures-doom2.pk3", "textures-plut.pk3"],
+			"objects": ["objects.pk3"],
+			"monsters": ["monsters.pk3"],
+			"menus": ["jfo-plut.pk3"],
+			"hud": ["hud-stuff.pk3"]
+		}
 	},
 	"tnt.wad": {
 		"name": "Final Doom - TNT: Evilution",
 		"patch": "tnt31-patch.wad",
-		"mods": ["hud-stuff.pk3", "zdoom-1.pk3", "zdoom-2.pk3", "zdoom-doom2.pk3", "zdoom-tnt.pk3", "jfo-tnt.pk3"]
+		"mods": {
+			"textures": ["textures-1.pk3", "textures-2.pk3", "textures-doom2.pk3", "textures-tnt.pk3"],
+			"objects": ["objects.pk3"],
+			"monsters": ["monsters.pk3"],
+			"menus": ["jfo-tnt.pk3"],
+			"hud": ["hud-stuff.pk3"]
+		}
 	},
 	"freedoom1.wad": {
 		"name": "Freedoom Phase 1",
 		"patch": "",
-		"mods": []
+		"mods": {
+			"textures": [],
+			"objects": [],
+			"monsters": [],
+			"menus": [],
+			"hud": []
+		}
 	},
 	"freedoom2.wad": {
 		"name": "Freedoom Phase 2",
 		"patch": "",
-		"mods": []
+		"mods": {
+			"textures": [],
+			"objects": [],
+			"monsters": [],
+			"menus": [],
+			"hud": []
+		}
 	}
 }
 
@@ -210,7 +246,11 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	exec_btn = Gtk.Template.Child()
 	iwaddir_btn = Gtk.Template.Child()
 	pwaddir_btn = Gtk.Template.Child()
-	mods_switch = Gtk.Template.Child()
+	texture_switch = Gtk.Template.Child()
+	object_switch = Gtk.Template.Child()
+	monster_switch = Gtk.Template.Child()
+	menu_switch = Gtk.Template.Child()
+	hud_switch = Gtk.Template.Child()
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -352,7 +392,11 @@ class MainWindow(Adw.ApplicationWindow):
 		self.prefs_window.pwaddir_btn.set_default_file(app.default_pwad_dir)
 		self.prefs_window.pwaddir_btn.set_selected_file(app.main_config["paths"]["pwad_dir"])
 
-		self.prefs_window.mods_switch.set_active(app.main_config["mods"].getboolean("use_mods"))
+		self.prefs_window.texture_switch.set_active(app.main_config["mods"].getboolean("textures"))
+		self.prefs_window.object_switch.set_active(app.main_config["mods"].getboolean("objects"))
+		self.prefs_window.monster_switch.set_active(app.main_config["mods"].getboolean("monsters"))
+		self.prefs_window.menu_switch.set_active(app.main_config["mods"].getboolean("menus"))
+		self.prefs_window.hud_switch.set_active(app.main_config["mods"].getboolean("hud"))
 
 		# Help initialization
 		self.cheats_window.set_transient_for(self)
@@ -442,7 +486,11 @@ class MainWindow(Adw.ApplicationWindow):
 		app.main_config["paths"]["pwad_dir"] = pwad_dir
 		self.pwad_btn.set_default_folder(pwad_dir)
 
-		app.main_config["mods"]["use_mods"] = str(self.prefs_window.mods_switch.get_active())
+		app.main_config["mods"]["textures"] = str(self.prefs_window.texture_switch.get_active())
+		app.main_config["mods"]["objects"] = str(self.prefs_window.object_switch.get_active())
+		app.main_config["mods"]["monsters"] = str(self.prefs_window.monster_switch.get_active())
+		app.main_config["mods"]["menus"] = str(self.prefs_window.menu_switch.get_active())
+		app.main_config["mods"]["hud"] = str(self.prefs_window.hud_switch.get_active())
 
 	@Gtk.Template.Callback()
 	def on_window_close(self, window):
@@ -480,15 +528,16 @@ class MainWindow(Adw.ApplicationWindow):
 
 			if os.path.exists(patch_file): cmdline += ' -file "{:s}"'.format(patch_file)
 
-		# Add mod files if use hi-res graphics option is true
-		if app.main_config["mods"].getboolean("use_mods") == True:
-			mod_list = doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
+		# Add hi-res graphics if options are true
+		mod_dict = doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
 
-			for mod_name in mod_list:
-				if mod_name != "":
-					mod_file = os.path.join(app.mod_dir, mod_name)
+		for mod in mod_dict:
+			if app.main_config["mods"].getboolean(mod) == True:
+				for mod_name in mod_dict[mod]:
+					if mod_name != "":
+						mod_file = os.path.join(app.mod_dir, mod_name)
 
-					if os.path.exists(mod_file): cmdline += ' -optfile "{:s}"'.format(mod_file)
+						if os.path.exists(mod_file): cmdline += ' -file "{:s}"'.format(mod_file)
 
 		# Add PWAD file if present
 		if app.main_config["launcher"]["file"] != "" and os.path.exists(app.main_config["launcher"]["file"]):
@@ -555,7 +604,11 @@ class LauncherApp(Adw.Application):
 				"pwad_dir": self.default_pwad_dir
 			},
 			"mods": {
-				"use_mods": "True"
+				"textures": "True",
+				"objects": "True",
+				"monsters": True,
+				"menus": "True",
+				"hud": "True"
 			}
 		})
 

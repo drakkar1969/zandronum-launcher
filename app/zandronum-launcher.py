@@ -259,14 +259,14 @@ class CheatsWindow(Adw.PreferencesWindow):
 
 		doom_switches = {
 			"Switch": "Description",
-			"-fast": "Increases the speed and attack rate\nof monsters. Requires the -warp\nparameter to be effective.",
-			"-nomonsters": "Disable spawning of monsters. Requires\nthe -warp parameter to be effective.",
+			"-fast": "Increases the speed and attack rate\nof monsters. Requires the -warp\nparameter.",
+			"-nomonsters": "Disable spawning of monsters. Requires\nthe -warp parameter.",
 			"-nomusic": "Disable background music",
 			"-nosfx": "Disable sound effects",
 			"-nosound": "Disable music and sound effects",
-			"-respawn": "Monsters return a few seconds after\nbeing killed, like in Nightmare mode.\nRequires the -warp parameter to be\neffective.",
+			"-respawn": "Monsters return a few seconds after\nbeing killed, like in Nightmare mode.\nRequires the -warp parameter.",
 			"-skill <s>": "Select difficulty level <s> (1 to 5).\nThis parameter will warp to the first\nlevel of the game (if no other -warp\nparameter is specified).",
-			"-warp <m>\n-warp <e> <m>": "Start the game on level <m> (1 to 32).\nFor Ultimate Doom, both episode <e>\n(1 to 4) and map <m> (1 to 9) must be\nspecified, separated by a space."
+			"-warp <m>\n-warp <e> <m>": "Start the game on level <m> (1 to 32).\nFor Ultimate Doom and Freedoom Phase\n1 both episode <e> (1 to 4) and map <m>\n(1 to 9) must be specified, separated by\na space."
 		}
 
 		doom_cheats = {
@@ -281,7 +281,7 @@ class CheatsWindow(Adw.PreferencesWindow):
 			"IDCLEV##": "Warp to episode #, map #",
 			"IDCLIP": "No clipping (walk through objects)",
 			"IDDQD": "God mode (invincibility)",
-			"IDDT": "Display entire map and enemies",
+			"IDDT": "Display entire map and enemies (toggle)",
 			"IDFA": "All weapons and 200% armor",
 			"IDKFA": "All keys and weapons",
 			"IDMUS##": "Change music (episode #, map #)",

@@ -351,7 +351,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.prefs_window.pwaddir_btn.set_default_file(app.default_pwad_dir)
 		self.prefs_window.pwaddir_btn.set_selected_file(app.main_config["paths"]["pwad_dir"])
 
-		self.prefs_window.mods_switch.set_active(app.main_config["zandronum"]["use_mods"])
+		self.prefs_window.mods_switch.set_active(app.main_config["mods"]["use_mods"])
 
 		# Help initialization
 		self.cheats_window.set_transient_for(self)
@@ -441,7 +441,7 @@ class MainWindow(Adw.ApplicationWindow):
 		app.main_config["paths"]["pwad_dir"] = pwad_dir
 		self.pwad_btn.set_default_folder(pwad_dir)
 
-		app.main_config["zandronum"]["use_mods"] = self.prefs_window.mods_switch.get_active()
+		app.main_config["mods"]["use_mods"] = self.prefs_window.mods_switch.get_active()
 
 	@Gtk.Template.Callback()
 	def on_window_close(self, window):
@@ -480,7 +480,7 @@ class MainWindow(Adw.ApplicationWindow):
 			if os.path.exists(patch_file): cmdline += ' -file "{:s}"'.format(patch_file)
 
 		# Add mod files if use hi-res graphics option is true
-		if app.main_config["zandronum"]["use_mods"] == True:
+		if app.main_config["mods"]["use_mods"] == True:
 			mod_list = doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
 
 			for mod_name in mod_list:
@@ -542,7 +542,7 @@ class LauncherApp(Adw.Application):
 		parser = configparser.ConfigParser()
 		parser.read(self.launcher_config_file)
 
-		self.main_config = { "launcher": {}, "paths": {}, "zandronum": {} }
+		self.main_config = { "launcher": {}, "paths": {}, "mods": {} }
 
 		self.main_config["launcher"]["iwad"] = parser.get("launcher", "iwad", fallback="")
 		self.main_config["launcher"]["file"] = parser.get("launcher", "file", fallback="")
@@ -556,9 +556,9 @@ class LauncherApp(Adw.Application):
 		self.main_config["paths"]["iwad_dir"] = parser.get("zandronum", "iwad_dir", fallback=self.default_iwad_dir)
 		self.main_config["paths"]["pwad_dir"] = parser.get("zandronum", "pwad_dir", fallback=self.default_pwad_dir)
 		try:
-			self.main_config["zandronum"]["use_mods"] = parser.getboolean("zandronum", "use_mods", fallback=True)
+			self.main_config["mods"]["use_mods"] = parser.getboolean("zandronum", "use_mods", fallback=True)
 		except:
-			self.main_config["zandronum"]["use_mods"] = True
+			self.main_config["mods"]["use_mods"] = True
 
 		if self.main_config["paths"]["exec_file"] == "" or os.path.exists(self.main_config["paths"]["exec_file"]) == False:
 			self.main_config["paths"]["exec_file"] = self.default_exec_file

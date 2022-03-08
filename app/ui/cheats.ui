@@ -24,12 +24,12 @@
 						</style>
 						<child>
 							<object class="GtkGrid" id="switches_grid">
-								<property name="margin_start">30</property>
-								<property name="margin_end">30</property>
+								<property name="margin_start">24</property>
+								<property name="margin_end">24</property>
 								<property name="margin_top">24</property>
 								<property name="margin_bottom">24</property>
 								<property name="row_spacing">14</property>
-								<property name="column_spacing">64</property>
+								<property name="column_spacing">56</property>
 							</object>
 						</child>
 					</object>
@@ -52,12 +52,12 @@
 						</style>
 						<child>
 							<object class="GtkGrid" id="cheats_grid">
-								<property name="margin_start">30</property>
-								<property name="margin_end">30</property>
+								<property name="margin_start">24</property>
+								<property name="margin_end">24</property>
 								<property name="margin_top">24</property>
 								<property name="margin_bottom">24</property>
 								<property name="row_spacing">14</property>
-								<property name="column_spacing">64</property>
+								<property name="column_spacing">56</property>
 							</object>
 						</child>
 					</object>

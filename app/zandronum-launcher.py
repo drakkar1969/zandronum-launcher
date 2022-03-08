@@ -10,7 +10,7 @@ doom_iwads = {
 	"doom.wad": {
 		"name": "The Ultimate Doom",
 		"mods": {
-			"textures": ["textures-1.pk3", "textures-2.pk3"],
+			"textures": ["hires-doom-a.pk3", "hires-doom-b.pk3"],
 			"objects": ["objects.pk3"],
 			"monsters": ["monsters.pk3"],
 			"menus": ["jfo-udoom.pk3"],
@@ -20,7 +20,7 @@ doom_iwads = {
 	"doom2.wad": {
 		"name": "Doom II: Hell on Earth",
 		"mods": {
-			"textures": ["textures-1.pk3", "textures-2.pk3", "textures-doom2.pk3"],
+			"textures": ["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3"],
 			"objects": ["objects.pk3"],
 			"monsters": ["monsters.pk3"],
 			"menus": ["jfo-doom2.pk3"],
@@ -30,7 +30,7 @@ doom_iwads = {
 	"plutonia.wad": {
 		"name": "Final Doom - The Plutonia Experiment",
 		"mods": {
-			"textures": ["textures-1.pk3", "textures-2.pk3", "textures-doom2.pk3", "textures-plut.pk3"],
+			"textures": ["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-plut.pk3"],
 			"objects": ["objects.pk3"],
 			"monsters": ["monsters.pk3"],
 			"menus": ["jfo-plut.pk3"],
@@ -40,7 +40,7 @@ doom_iwads = {
 	"tnt.wad": {
 		"name": "Final Doom - TNT: Evilution",
 		"mods": {
-			"textures": ["textures-1.pk3", "textures-2.pk3", "textures-doom2.pk3", "textures-tnt.pk3"],
+			"textures": ["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-tnt.pk3"],
 			"objects": ["objects.pk3"],
 			"monsters": ["monsters.pk3"],
 			"menus": ["jfo-tnt.pk3"],
@@ -58,13 +58,13 @@ doom_iwads = {
 	"heretic.wad": {
 		"name": "Heretic",
 		"mods": {
-			"textures": ["heretic-hires.pk3"],
+			"textures": ["hires-heretic.pk3"],
 		}
 	},
 	"hexen.wad": {
 		"name": "Hexen",
 		"mods": {
-			"textures": ["hexen-hires.pk3"],
+			"textures": ["hires-hexen.pk3"],
 		}
 	},
 }

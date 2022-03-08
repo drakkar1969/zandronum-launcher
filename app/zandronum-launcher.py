@@ -57,7 +57,9 @@ doom_iwads = {
 	},
 	"heretic.wad": {
 		"name": "Heretic",
-		"mods": {}
+		"mods": {
+			"textures": ["heretic-hires.pk3"],
+		}
 	},
 	"hexen.wad": {
 		"name": "Hexen",

@@ -402,21 +402,18 @@ class MainWindow(Adw.ApplicationWindow):
 	def populate_iwad_combo(self, iwad_selected):
 		if iwad_selected is None: iwad_selected = ""
 
-		self.iwad_store.clear()
+		self.iwad_store.set_sort_column_id(Gtk.TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, Gtk.SortType.ASCENDING)
 
-		iwads = []
+		self.iwad_store.clear()
 
 		with os.scandir(app.main_config["paths"]["iwad_dir"]) as filelist:
 			for f in filelist:
-				iwads.append(f.name)
+				iwad_lc = f.name.lower()
 
-		iwads.sort()
+				if iwad_lc in doom_iwads:
+					self.iwad_store.insert_with_values(-1, [0, 1], [doom_iwads[iwad_lc]["name"], iwad_lc])
 
-		for iwad in iwads:
-			iwad_lc = iwad.lower()
-
-			if iwad_lc in doom_iwads:
-				self.iwad_store.insert_with_values(-1, [0, 1], [doom_iwads[iwad_lc]["name"], iwad_lc])
+		self.iwad_store.set_sort_column_id(0, Gtk.SortType.ASCENDING)
 
 		if self.iwad_combo.set_active_id(iwad_selected) == False:
 			self.iwad_combo.set_active(0)

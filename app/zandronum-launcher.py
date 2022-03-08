@@ -543,9 +543,6 @@ class LauncherApp(Adw.Application):
 		self.connect("shutdown", self.on_shutdown)
 
 	def on_startup(self, app):
-		# App dirs
-		self.mod_dir = os.path.join(app_dir, "mods")
-
 		# Config dir
 		self.config_dir = os.path.join(os.getenv("HOME"), ".config/zandronum")
 
@@ -561,6 +558,8 @@ class LauncherApp(Adw.Application):
 			shutil.copyfile(zandronum_ini_src, zandronum_ini_file)
 
 		# Default paths
+		self.mod_dir = os.path.join(app_dir, "mods")
+
 		self.default_exec_file = "/usr/bin/zandronum"
 		self.default_iwad_dir = os.path.join(app_dir, "iwads")
 		self.default_pwad_dir = os.path.join(self.config_dir, "WADs")

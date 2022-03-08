@@ -328,7 +328,6 @@ class MainWindow(Adw.ApplicationWindow):
 	shortcut_window = Gtk.Template.Child()
 	iwad_store = Gtk.Template.Child()
 	iwad_combo = Gtk.Template.Child()
-	iwad_listrow = Gtk.Template.Child()
 	pwad_btn = Gtk.Template.Child()
 	params_expandrow = Gtk.Template.Child()
 	params_entry = Gtk.Template.Child()
@@ -372,7 +371,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
 
-		self.set_focus(self.iwad_listrow)
+		self.set_focus(self.iwad_combo)
 
 		# Preferences initialization
 		self.prefs_window.set_transient_for(self)

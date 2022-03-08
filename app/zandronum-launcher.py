@@ -60,7 +60,17 @@ doom_iwads = {
 		"name": "Freedoom Phase 2",
 		"patch": "",
 		"mods": {}
-	}
+	},
+	"heretic.wad": {
+		"name": "Heretic",
+		"patch": "",
+		"mods": {}
+	},
+	"hexen.wad": {
+		"name": "Hexen",
+		"patch": "",
+		"mods": {}
+	},
 }
 
 # Global path variables

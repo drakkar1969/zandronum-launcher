@@ -9,7 +9,6 @@ from gi.repository import Gtk, Adw, Gio, GObject, Gdk
 doom_iwads = {
 	"doom.wad": {
 		"name": "The Ultimate Doom",
-		"patch": "",
 		"mods": {
 			"textures": ["textures-1.pk3", "textures-2.pk3"],
 			"objects": ["objects.pk3"],
@@ -20,7 +19,6 @@ doom_iwads = {
 	},
 	"doom2.wad": {
 		"name": "Doom II: Hell on Earth",
-		"patch": "",
 		"mods": {
 			"textures": ["textures-1.pk3", "textures-2.pk3", "textures-doom2.pk3"],
 			"objects": ["objects.pk3"],
@@ -31,7 +29,6 @@ doom_iwads = {
 	},
 	"plutonia.wad": {
 		"name": "Final Doom - The Plutonia Experiment",
-		"patch": "",
 		"mods": {
 			"textures": ["textures-1.pk3", "textures-2.pk3", "textures-doom2.pk3", "textures-plut.pk3"],
 			"objects": ["objects.pk3"],
@@ -42,7 +39,6 @@ doom_iwads = {
 	},
 	"tnt.wad": {
 		"name": "Final Doom - TNT: Evilution",
-		"patch": "tnt31-patch.wad",
 		"mods": {
 			"textures": ["textures-1.pk3", "textures-2.pk3", "textures-doom2.pk3", "textures-tnt.pk3"],
 			"objects": ["objects.pk3"],
@@ -53,22 +49,18 @@ doom_iwads = {
 	},
 	"freedoom1.wad": {
 		"name": "Freedoom Phase 1",
-		"patch": "",
 		"mods": {}
 	},
 	"freedoom2.wad": {
 		"name": "Freedoom Phase 2",
-		"patch": "",
 		"mods": {}
 	},
 	"heretic.wad": {
 		"name": "Heretic",
-		"patch": "",
 		"mods": {}
 	},
 	"hexen.wad": {
 		"name": "Hexen",
-		"patch": "",
 		"mods": {}
 	},
 }
@@ -516,13 +508,6 @@ class MainWindow(Adw.ApplicationWindow):
 		# Add IWAD file
 		cmdline += ' -iwad "{:s}"'.format(iwad_file)
 
-		# Add patch file if present
-		patch_name = doom_iwads[app.main_config["launcher"]["iwad"]]["patch"]
-		if patch_name != "":
-			patch_file = os.path.join(app.patch_dir, patch_name)
-
-			if os.path.exists(patch_file): cmdline += ' -file "{:s}"'.format(patch_file)
-
 		# Add hi-res graphics if options are true
 		mod_dict = doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
 
@@ -559,7 +544,6 @@ class LauncherApp(Adw.Application):
 
 	def on_startup(self, app):
 		# App dirs
-		self.patch_dir = os.path.join(app_dir, "patches")
 		self.mod_dir = os.path.join(app_dir, "mods")
 
 		# Config dir

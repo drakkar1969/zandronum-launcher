@@ -3,6 +3,9 @@
 	<template class="FileDialogButton" parent="GtkBox">
 		<property name="orientation">horizontal</property>
 		<property name="hexpand">False</property>
+		<style>
+			<class name="linked"/>
+		</style>
 		<signal name="mnemonic-activate" handler="on_activate" swapped="no"/>
 		<signal name="notify::icon-name" handler="on_icon_name_notify" swapped="no"/>
 		<signal name="notify::folder-select" handler="on_icon_name_notify" swapped="no"/>

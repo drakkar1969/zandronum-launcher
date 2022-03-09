@@ -86,7 +86,6 @@ class FileDialogButton(Gtk.Box):
 	folder_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 	can_clear = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 	can_reset = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
-	is_linked = GObject.Property(type=bool, default=True, flags=(GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY))
 
 	# File properties
 	default_folder = GObject.Property(type=Gio.File, default=None, flags=GObject.ParamFlags.READWRITE)
@@ -109,13 +108,6 @@ class FileDialogButton(Gtk.Box):
 		super().__init__(*args, **kwargs)
 
 		# Update widget state
-		if self.is_linked == True:
-			self.add_css_class("linked")
-		else: 
-			self.set_spacing(6)
-			if self.can_clear == True: self.clear_btn.add_css_class("flat")
-			if self.can_reset == True: self.reset_btn.add_css_class("flat")
-
 		self.notify("icon-name")
 
 		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")

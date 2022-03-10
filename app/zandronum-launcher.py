@@ -9,6 +9,9 @@ from gi.repository import Gtk, Adw, Gio, GObject, Gdk
 app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
 ui_dir = os.path.join(app_dir, "ui")
 
+#------------------------------------------------------------------------------
+#-- CLASS: FILEDIALOGBUTTON
+#------------------------------------------------------------------------------
 @Gtk.Template(filename=os.path.join(ui_dir, "filedialogbutton.ui"))
 class FileDialogButton(Gtk.Box):
 	__gtype_name__ = "FileDialogButton"
@@ -17,17 +20,22 @@ class FileDialogButton(Gtk.Box):
 		"file-changed": (GObject.SignalFlags.RUN_FIRST, None, ())
 	}
 
+	#-----------------------------------
 	# Dialog properties
+	#-----------------------------------
 	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
 	dlg_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)
 	dlg_filter = GObject.Property(type=Gtk.FileFilter, default=None, flags=GObject.ParamFlags.READWRITE)
 
+	#-----------------------------------
 	# Button properties
+	#-----------------------------------
 	_icon_name = "document-open-symbolic"
 	_folder_select = False
 	_can_clear = False
 	_can_reset = False
 
+	# icon_name property
 	@GObject.Property(type=str, default="")
 	def icon_name(self):
 		if self._icon_name == "document-open-symbolic" or self._icon_name == "folder-symbolic":
@@ -36,77 +44,85 @@ class FileDialogButton(Gtk.Box):
 			return(self._icon_name)
 
 	@icon_name.setter
-	def icon_name(self, new_icon):
-		self._icon_name = new_icon
+	def icon_name(self, value):
+		self._icon_name = value
 
 		if self._icon_name == "":
 			self._icon_name = "folder-symbolic" if self._folder_select == True else "document-open-symbolic"
 
 		self.image.set_from_icon_name(self._icon_name)
 
+	# folder_select property
 	@GObject.Property(type=bool, default=False)
 	def folder_select(self):
 		return(self._folder_select)
 
 	@folder_select.setter
-	def folder_select(self, do_folders):
-		self._folder_select = do_folders
+	def folder_select(self, value):
+		self._folder_select = value
 
 		if self._icon_name == "document-open-symbolic" or self._icon_name == "folder-symbolic":
 			self._icon_name = "folder-symbolic" if self._folder_select == True else "document-open-symbolic"
 
 			self.image.set_from_icon_name(self._icon_name)
 
+	# can_clear property
 	@GObject.Property(type=bool, default=False)
 	def can_clear(self):
 		return(self._can_clear)
 
 	@can_clear.setter
-	def can_clear(self, has_clear):
-		self._can_clear = has_clear
+	def can_clear(self, value):
+		self._can_clear = value
 
 		self.clear_btn.set_visible(self._can_clear)
 
+	# can_reset property
 	@GObject.Property(type=bool, default=False)
 	def can_reset(self):
 		return(self._can_reset)
 
 	@can_reset.setter
-	def can_reset(self, has_reset):
-		self._can_reset = has_reset
+	def can_reset(self, value):
+		self._can_reset = value
 
 		self.reset_btn.set_visible(self._can_reset)
 
+	#-----------------------------------
 	# File properties
+	#-----------------------------------
 	_gfile_default_folder = None
 	_gfile_default_file = None
 	_gfile_selected_file = None
 
+	# default_folder property
 	@GObject.Property(type=str, default="")
 	def default_folder(self):
 		return(self._gfile_default_folder.get_path() if self._gfile_default_folder is not None else "")
 
 	@default_folder.setter
-	def default_folder(self, folder_path):
-		self._gfile_default_folder = Gio.File.new_for_path(folder_path) if folder_path != "" else None
+	def default_folder(self, value):
+		self._gfile_default_folder = Gio.File.new_for_path(value) if value != "" else None
 
+	# default_file property
 	@GObject.Property(type=str, default="")
 	def default_file(self):
 		return(self._gfile_default_file.get_path() if self._gfile_default_file is not None else "")
 
 	@default_file.setter
-	def default_file(self, file_path):
-		self._gfile_default_file = Gio.File.new_for_path(file_path) if file_path != "" else None
+	def default_file(self, value):
+		self._gfile_default_file = Gio.File.new_for_path(value) if value != "" else None
 
 		self.set_reset_btn_state()
 
+	# selected_file property
 	@GObject.Property(type=str, default="")
 	def selected_file(self):
 		return(self._gfile_selected_file.get_path() if self._gfile_selected_file is not None else "")
 
 	@selected_file.setter
-	def selected_file(self, file_path):
-		self._gfile_selected_file = Gio.File.new_for_path(file_path) if file_path != "" else None
+	def selected_file(self, value):
+		self._gfile_selected_file = Gio.File.new_for_path(value) if value != "" else None
 
 		self.label.set_text(self._gfile_selected_file.get_basename() if self._gfile_selected_file is not None else "(None)")
 
@@ -115,20 +131,7 @@ class FileDialogButton(Gtk.Box):
 
 		self.emit("file-changed")
 
-	# Class widget variables
-	image = Gtk.Template.Child()
-	label = Gtk.Template.Child()
-	file_btn = Gtk.Template.Child()
-	clear_btn = Gtk.Template.Child()
-	reset_btn = Gtk.Template.Child()
-
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-
-	@Gtk.Template.Callback()
-	def on_activate(self, button, group_cycling):
-		self.file_btn.activate()
-
+	# helper functions
 	def set_clear_btn_state(self):
 		self.clear_btn.set_sensitive(self._gfile_selected_file is not None)
 
@@ -137,6 +140,28 @@ class FileDialogButton(Gtk.Box):
 			self.reset_btn.set_sensitive(self._gfile_default_file is not None)
 		else:
 			self.reset_btn.set_sensitive(not self._gfile_default_file.equal(self._gfile_selected_file))
+
+	#-----------------------------------
+	# Class widget variables
+	#-----------------------------------
+	image = Gtk.Template.Child()
+	label = Gtk.Template.Child()
+	file_btn = Gtk.Template.Child()
+	clear_btn = Gtk.Template.Child()
+	reset_btn = Gtk.Template.Child()
+
+	#-----------------------------------
+	# Init function
+	#-----------------------------------
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+	#-----------------------------------
+	# Signal handlers
+	#-----------------------------------
+	@Gtk.Template.Callback()
+	def on_activate(self, button, group_cycling):
+		self.file_btn.activate()
 
 	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
@@ -173,20 +198,23 @@ class FileDialogButton(Gtk.Box):
 	def on_reset_btn_clicked(self, button):
 		self.selected_file = self.default_file
 
+	#-----------------------------------
+	# Property helper functions
+	#-----------------------------------
 	def set_dialog_parent(self, parent):
 		self.dlg_parent = parent
 
-	def set_default_folder(self, folder_path):
-		if self.default_folder != folder_path: self.default_folder = folder_path
+	def set_default_folder(self, value):
+		if self.default_folder != value: self.default_folder = value
 		
-	def set_selected_file(self, file_path):
-		if self.selected_file != file_path: self.selected_file = file_path
+	def set_selected_file(self, value):
+		if self.selected_file != value: self.selected_file = value
 
 	def get_selected_file(self):
 		return(self.selected_file)
 
-	def set_default_file(self, file_path):
-		if self.default_file != file_path: self.default_file = file_path
+	def set_default_file(self, value):
+		if self.default_file != value: self.default_file = value
 
 @Gtk.Template(filename=os.path.join(ui_dir, "preferences.ui"))
 class PreferencesWindow(Adw.PreferencesWindow):

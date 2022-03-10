@@ -10,7 +10,7 @@
 		<child>
 			<object class="GtkButton" id="file_btn">
 				<signal name="clicked" handler="on_file_btn_clicked" swapped="no"/>
-				<child>
+				<property name="child">
 					<object class="GtkBox">
 						<property name="orientation">horizontal</property>
 						<property name="hexpand">True</property>
@@ -26,7 +26,7 @@
 							</object>
 						</child>
 					</object>
-				</child>
+				</property>
 			</object>
 		</child>
 		<child>

@@ -17,16 +17,103 @@ class FileDialogButton(Gtk.Box):
 		"file-changed": (GObject.SignalFlags.RUN_FIRST, None, ())
 	}
 
-	# Button properties
-	icon_name = GObject.Property(type=str, default="", flags=GObject.ParamFlags.READWRITE)
-	folder_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
-	can_clear = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
-	can_reset = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
-
 	# Dialog properties
 	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
 	dlg_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)
 	dlg_filter = GObject.Property(type=Gtk.FileFilter, default=None, flags=GObject.ParamFlags.READWRITE)
+
+	# Button properties
+	_icon_name = "document-open-symbolic"
+	_folder_select = False
+	_can_clear = False
+	_can_reset = False
+
+	@GObject.Property(type=str, default="")
+	def icon_name(self):
+		if self._icon_name == "document-open-symbolic" or self._icon_name == "folder-symbolic":
+			return("")
+		else:
+			return(self._icon_name)
+
+	@icon_name.setter
+	def icon_name(self, new_icon):
+		self._icon_name = new_icon
+
+		if self._icon_name == "":
+			self._icon_name = "folder-symbolic" if self._folder_select == True else "document-open-symbolic"
+
+		self.image.set_from_icon_name(self._icon_name)
+
+	@GObject.Property(type=bool, default=False)
+	def folder_select(self):
+		return(self._folder_select)
+
+	@folder_select.setter
+	def folder_select(self, do_folders):
+		self._folder_select = do_folders
+
+		if self._icon_name == "document-open-symbolic" or self._icon_name == "folder-symbolic":
+			self._icon_name = "folder-symbolic" if self._folder_select == True else "document-open-symbolic"
+
+			self.image.set_from_icon_name(self._icon_name)
+
+	@GObject.Property(type=bool, default=False)
+	def can_clear(self):
+		return(self._can_clear)
+
+	@can_clear.setter
+	def can_clear(self, has_clear):
+		self._can_clear = has_clear
+
+		self.clear_btn.set_visible(self._can_clear)
+
+	@GObject.Property(type=bool, default=False)
+	def can_reset(self):
+		return(self._can_reset)
+
+	@can_reset.setter
+	def can_reset(self, has_reset):
+		self._can_reset = has_reset
+
+		self.reset_btn.set_visible(self._can_reset)
+
+	# File properties
+	_gfile_default_folder = None
+	_gfile_default_file = None
+	_gfile_selected_file = None
+
+	@GObject.Property(type=str, default="")
+	def default_folder(self):
+		return(self._gfile_default_folder.get_path() if self._gfile_default_folder is not None else "")
+
+	@default_folder.setter
+	def default_folder(self, folder_path):
+		self._gfile_default_folder = Gio.File.new_for_path(folder_path) if folder_path != "" else None
+
+	@GObject.Property(type=str, default="")
+	def default_file(self):
+		return(self._gfile_default_file.get_path() if self._gfile_default_file is not None else "")
+
+	@default_file.setter
+	def default_file(self, file_path):
+		self._gfile_default_file = Gio.File.new_for_path(file_path) if file_path != "" else None
+
+		self.set_reset_btn_state()
+
+	@GObject.Property(type=str, default="")
+	def selected_file(self):
+		return(self._gfile_selected_file.get_path() if self._gfile_selected_file is not None else "")
+
+	@selected_file.setter
+	def selected_file(self, file_path):
+		self._gfile_selected_file = Gio.File.new_for_path(file_path) if file_path != "" else None
+
+		self.label.set_text(self._gfile_selected_file.get_basename() if self._gfile_selected_file is not None else "(None)")
+
+		self.set_clear_btn_state()
+		self.set_reset_btn_state()
+
+		self.emit("file-changed")
 
 	# Class widget variables
 	image = Gtk.Template.Child()
@@ -35,50 +122,12 @@ class FileDialogButton(Gtk.Box):
 	clear_btn = Gtk.Template.Child()
 	reset_btn = Gtk.Template.Child()
 
-	# File properties
-	_gfile_default_folder = None
-	_gfile_default_file = None
-	_gfile_selected_file = None
-
-	@GObject.Property(type=str)
-	def default_folder(self):
-		return(self._gfile_default_folder.get_path() if self._gfile_default_folder is not None else "")
-
-	@default_folder.setter
-	def default_folder(self, folder_path):
-		self._gfile_default_folder = Gio.File.new_for_path(folder_path) if folder_path != "" else None
-
-	@GObject.Property(type=str)
-	def default_file(self):
-		return(self._gfile_default_file.get_path() if self._gfile_default_file is not None else "")
-
-	@default_file.setter
-	def default_file(self, file_path):
-		self._gfile_default_file = Gio.File.new_for_path(file_path) if file_path != "" else None
-
-	@GObject.Property(type=str)
-	def selected_file(self):
-		return(self._gfile_selected_file.get_path() if self._gfile_selected_file is not None else "")
-
-	@selected_file.setter
-	def selected_file(self, file_path):
-		self._gfile_selected_file = Gio.File.new_for_path(file_path) if file_path != "" else None
-
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
 	@Gtk.Template.Callback()
 	def on_activate(self, button, group_cycling):
 		self.file_btn.activate()
-
-	@Gtk.Template.Callback()
-	def on_icon_name_notify(self, button, prop_name):
-		icon_name = self.icon_name
-
-		if icon_name == "":
-			icon_name = "folder-symbolic" if self.folder_select == True else "document-open-symbolic"
-
-		self.image.set_from_icon_name(icon_name)
 
 	def set_clear_btn_state(self):
 		self.clear_btn.set_sensitive(self._gfile_selected_file is not None)
@@ -90,33 +139,8 @@ class FileDialogButton(Gtk.Box):
 			self.reset_btn.set_sensitive(not self._gfile_default_file.equal(self._gfile_selected_file))
 
 	@Gtk.Template.Callback()
-	def on_can_clear_notify(self, button, prop_name):
-		self.clear_btn.set_visible(self.can_clear)
-
-		if self.can_clear == True: self.set_clear_btn_state()
-
-	@Gtk.Template.Callback()
-	def on_can_reset_notify(self, button, prop_name):
-		self.reset_btn.set_visible(self.can_reset)
-
-		if self.can_reset == True: self.set_reset_btn_state()
-
-	@Gtk.Template.Callback()
-	def on_selected_file_notify(self, button, prop_name):
-		self.label.set_text(self._gfile_selected_file.get_basename() if self._gfile_selected_file is not None else "(None)")
-
-		if self.can_clear == True: self.set_clear_btn_state()
-		if self.can_reset == True: self.set_reset_btn_state()
-
-		self.emit("file-changed")
-
-	@Gtk.Template.Callback()
-	def on_default_file_notify(self, button, prop_name):
-		if self.can_reset == True: self.set_reset_btn_state()
-
-	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
-		self.dialog = Gtk.FileChooserNative(title=self.dlg_title, transient_for=self.dlg_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self.folder_select == True else Gtk.FileChooserAction.OPEN)
+		self.dialog = Gtk.FileChooserNative(title=self.dlg_title, transient_for=self.dlg_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN)
 
 		self.dialog.set_modal(True)
 

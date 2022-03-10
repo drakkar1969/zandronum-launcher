@@ -7,12 +7,6 @@
 			<class name="linked"/>
 		</style>
 		<signal name="mnemonic-activate" handler="on_activate" swapped="no"/>
-		<signal name="notify::icon-name" handler="on_icon_name_notify" swapped="no"/>
-		<signal name="notify::folder-select" handler="on_icon_name_notify" swapped="no"/>
-		<signal name="notify::can-clear" handler="on_can_clear_notify" swapped="no"/>
-		<signal name="notify::can-reset" handler="on_can_reset_notify" swapped="no"/>
-		<signal name="notify::selected-file" handler="on_selected_file_notify" swapped="no"/>
-		<signal name="notify::default-file" handler="on_default_file_notify" swapped="no"/>
 		<child>
 			<object class="GtkButton" id="file_btn">
 				<signal name="clicked" handler="on_file_btn_clicked" swapped="no"/>

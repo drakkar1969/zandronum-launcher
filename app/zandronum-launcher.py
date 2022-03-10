@@ -67,17 +67,6 @@ class FileDialogButton(Gtk.Box):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		# Update widget state
-		self.notify("icon-name")
-
-		self.label.set_text(self._gfile_selected_file.get_basename() if self._gfile_selected_file is not None else "(None)")
-
-		self.clear_btn.set_visible(self.can_clear)
-		self.reset_btn.set_visible(self.can_reset)
-
-		if self.can_clear == True: self.set_clear_btn_state()
-		if self.can_reset == True: self.set_reset_btn_state()
-
 	@Gtk.Template.Callback()
 	def on_activate(self, button, group_cycling):
 		self.file_btn.activate()

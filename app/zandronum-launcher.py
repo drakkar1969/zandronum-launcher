@@ -1,73 +1,9 @@
 #!/usr/bin/env python
 
-import gi, sys, os, configparser, subprocess, shlex
+import gi, sys, os, configparser, subprocess, shlex, json
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw, Gio, GObject, Gdk
-
-# IWAD filenames/descriptions/mod files
-doom_iwads = {
-	"doom.wad": {
-		"name": "The Ultimate Doom",
-		"mods": {
-			"textures": ["hires-doom-a.pk3", "hires-doom-b.pk3"],
-			"objects": ["objects.pk3"],
-			"monsters": ["monsters.pk3"],
-			"menus": ["jfo-udoom.pk3"],
-			"hud": ["hud-stuff.pk3"]
-		}
-	},
-	"doom2.wad": {
-		"name": "Doom II: Hell on Earth",
-		"mods": {
-			"textures": ["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3"],
-			"objects": ["objects.pk3"],
-			"monsters": ["monsters.pk3"],
-			"menus": ["jfo-doom2.pk3"],
-			"hud": ["hud-stuff.pk3"]
-		}
-	},
-	"plutonia.wad": {
-		"name": "Final Doom - The Plutonia Experiment",
-		"mods": {
-			"textures": ["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-plut.pk3"],
-			"objects": ["objects.pk3"],
-			"monsters": ["monsters.pk3"],
-			"menus": ["jfo-plut.pk3"],
-			"hud": ["hud-stuff.pk3"]
-		}
-	},
-	"tnt.wad": {
-		"name": "Final Doom - TNT: Evilution",
-		"mods": {
-			"textures": ["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-tnt.pk3"],
-			"objects": ["objects.pk3"],
-			"monsters": ["monsters.pk3"],
-			"menus": ["jfo-tnt.pk3"],
-			"hud": ["hud-stuff.pk3"]
-		}
-	},
-	"freedoom1.wad": {
-		"name": "Freedoom Phase 1",
-		"mods": {}
-	},
-	"freedoom2.wad": {
-		"name": "Freedoom Phase 2",
-		"mods": {}
-	},
-	"heretic.wad": {
-		"name": "Heretic",
-		"mods": {
-			"textures": ["hires-heretic.pk3"],
-		}
-	},
-	"hexen.wad": {
-		"name": "Hexen",
-		"mods": {
-			"textures": ["hires-hexen.pk3"],
-		}
-	},
-}
 
 # Global path variables
 app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -396,8 +332,8 @@ class MainWindow(Adw.ApplicationWindow):
 			for f in filelist:
 				iwad_lc = f.name.lower()
 
-				if iwad_lc in doom_iwads:
-					self.iwad_store.insert_with_values(-1, [0, 1], [doom_iwads[iwad_lc]["name"], iwad_lc])
+				if iwad_lc in app.doom_iwads:
+					self.iwad_store.insert_with_values(-1, [0, 1], [app.doom_iwads[iwad_lc]["name"], iwad_lc])
 
 		self.iwad_store.set_sort_column_id(0, Gtk.SortType.ASCENDING)
 
@@ -503,7 +439,7 @@ class MainWindow(Adw.ApplicationWindow):
 		cmdline += ' -iwad "{:s}"'.format(iwad_file)
 
 		# Add hi-res graphics if options are true
-		mod_dict = doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
+		mod_dict = app.doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
 
 		for mod in mod_dict:
 			if app.main_config["mods"].getboolean(mod) == True:
@@ -557,6 +493,10 @@ class LauncherApp(Adw.Application):
 		self.default_exec_file = "/usr/bin/zandronum"
 		self.default_iwad_dir = os.path.join(app_dir, "iwads")
 		self.default_pwad_dir = os.path.join(self.config_dir, "WADs")
+
+		# Read IWAD json file
+		with open(os.path.join(app_dir, "iwads.json"), "r") as wadfile:
+			self.doom_iwads = json.load(wadfile)
 
 		# Parse configuration file
 		self.launcher_config_file = os.path.join(self.config_dir, "launcher.conf")

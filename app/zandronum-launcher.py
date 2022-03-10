@@ -23,11 +23,6 @@ class FileDialogButton(Gtk.Box):
 	can_clear = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 	can_reset = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 
-	# File properties
-	default_folder = GObject.Property(type=Gio.File, default=None, flags=GObject.ParamFlags.READWRITE)
-	selected_file = GObject.Property(type=Gio.File, default=None, flags=GObject.ParamFlags.READWRITE)
-	default_file = GObject.Property(type=Gio.File, default=None, flags=GObject.ParamFlags.READWRITE)
-
 	# Dialog properties
 	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
 	dlg_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)
@@ -40,13 +35,42 @@ class FileDialogButton(Gtk.Box):
 	clear_btn = Gtk.Template.Child()
 	reset_btn = Gtk.Template.Child()
 
+	# File properties
+	_gfile_default_folder = None
+	_gfile_default_file = None
+	_gfile_selected_file = None
+
+	@GObject.Property(type=str)
+	def default_folder(self):
+		return(self._gfile_default_folder.get_path() if self._gfile_default_folder is not None else "")
+
+	@default_folder.setter
+	def default_folder(self, folder_path):
+		self._gfile_default_folder = Gio.File.new_for_path(folder_path) if folder_path != "" else None
+
+	@GObject.Property(type=str)
+	def default_file(self):
+		return(self._gfile_default_file.get_path() if self._gfile_default_file is not None else "")
+
+	@default_file.setter
+	def default_file(self, file_path):
+		self._gfile_default_file = Gio.File.new_for_path(file_path) if file_path != "" else None
+
+	@GObject.Property(type=str)
+	def selected_file(self):
+		return(self._gfile_selected_file.get_path() if self._gfile_selected_file is not None else "")
+
+	@selected_file.setter
+	def selected_file(self, file_path):
+		self._gfile_selected_file = Gio.File.new_for_path(file_path) if file_path != "" else None
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
 		# Update widget state
 		self.notify("icon-name")
 
-		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
+		self.label.set_text(self._gfile_selected_file.get_basename() if self._gfile_selected_file is not None else "(None)")
 
 		self.clear_btn.set_visible(self.can_clear)
 		self.reset_btn.set_visible(self.can_reset)
@@ -68,13 +92,13 @@ class FileDialogButton(Gtk.Box):
 		self.image.set_from_icon_name(icon_name)
 
 	def set_clear_btn_state(self):
-		self.clear_btn.set_sensitive(self.selected_file is not None)
+		self.clear_btn.set_sensitive(self._gfile_selected_file is not None)
 
 	def set_reset_btn_state(self):
-		if self.default_file is None or self.selected_file is None:
-			self.reset_btn.set_sensitive(self.default_file is not None)
+		if self._gfile_default_file is None or self._gfile_selected_file is None:
+			self.reset_btn.set_sensitive(self._gfile_default_file is not None)
 		else:
-			self.reset_btn.set_sensitive(not self.default_file.equal(self.selected_file))
+			self.reset_btn.set_sensitive(not self._gfile_default_file.equal(self._gfile_selected_file))
 
 	@Gtk.Template.Callback()
 	def on_can_clear_notify(self, button, prop_name):
@@ -90,7 +114,7 @@ class FileDialogButton(Gtk.Box):
 
 	@Gtk.Template.Callback()
 	def on_selected_file_notify(self, button, prop_name):
-		self.label.set_text(self.selected_file.get_basename() if self.selected_file is not None else "(None)")
+		self.label.set_text(self._gfile_selected_file.get_basename() if self._gfile_selected_file is not None else "(None)")
 
 		if self.can_clear == True: self.set_clear_btn_state()
 		if self.can_reset == True: self.set_reset_btn_state()
@@ -110,11 +134,11 @@ class FileDialogButton(Gtk.Box):
 		if self.dlg_filter is not None:
 			self.dialog.add_filter(self.dlg_filter)
 
-		if self.selected_file is not None:
-			self.dialog.set_file(self.selected_file)
+		if self._gfile_selected_file is not None:
+			self.dialog.set_file(self._gfile_selected_file)
 		else:
-			if self.default_folder is not None:
-				self.dialog.set_current_folder(self.default_folder)
+			if self._gfile_default_folder is not None:
+				self.dialog.set_current_folder(self._gfile_default_folder)
 
 		self.dialog.connect("response", self.on_dialog_response)
 
@@ -122,17 +146,15 @@ class FileDialogButton(Gtk.Box):
 
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
-			new_file = dialog.get_file()
+			new_file = dialog.get_file().get_path()
 
-			if self.selected_file is None: self.selected_file = new_file
-			else:
-				if not self.selected_file.equal(new_file): self.selected_file = new_file
+			if self.selected_file != new_file: self.selected_file = new_file
 
 		self.dialog = None
 
 	@Gtk.Template.Callback()
 	def on_clear_btn_clicked(self, button):
-		self.selected_file = None
+		self.selected_file = ""
 
 	@Gtk.Template.Callback()
 	def on_reset_btn_clicked(self, button):
@@ -142,23 +164,16 @@ class FileDialogButton(Gtk.Box):
 		self.dlg_parent = parent
 
 	def set_default_folder(self, folder_path):
-		self.default_folder = Gio.File.new_for_path(folder_path) if folder_path != "" else None
+		if self.default_folder != folder_path: self.default_folder = folder_path
 		
 	def set_selected_file(self, file_path):
-		if file_path == "":
-			if self.selected_file is not None: self.selected_file = None 
-		else:
-			new_file = Gio.File.new_for_path(file_path)
-
-			if self.selected_file is None: self.selected_file = new_file
-			else:
-				if not self.selected_file.equal(new_file): self.selected_file = new_file 
+		if self.selected_file != file_path: self.selected_file = file_path
 
 	def get_selected_file(self):
-		return(self.selected_file.get_path() if self.selected_file is not None else "")
+		return(self.selected_file)
 
 	def set_default_file(self, file_path):
-		self.default_file = Gio.File.new_for_path(file_path) if file_path != "" else None
+		if self.default_file != file_path: self.default_file = file_path
 
 @Gtk.Template(filename=os.path.join(ui_dir, "preferences.ui"))
 class PreferencesWindow(Adw.PreferencesWindow):

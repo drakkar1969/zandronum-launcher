@@ -216,11 +216,16 @@ class FileDialogButton(Gtk.Box):
 	def set_default_file(self, value):
 		if self.default_file != value: self.default_file = value
 
+#------------------------------------------------------------------------------
+#-- CLASS: PREFERENCESWINDOW
+#------------------------------------------------------------------------------
 @Gtk.Template(filename=os.path.join(ui_dir, "preferences.ui"))
 class PreferencesWindow(Adw.PreferencesWindow):
 	__gtype_name__ = "PreferencesWindow"
 
+	#-----------------------------------
 	# Class widget variables
+	#-----------------------------------
 	exec_btn = Gtk.Template.Child()
 	iwaddir_btn = Gtk.Template.Child()
 	pwaddir_btn = Gtk.Template.Child()
@@ -230,6 +235,9 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	menu_switch = Gtk.Template.Child()
 	hud_switch = Gtk.Template.Child()
 
+	#-----------------------------------
+	# Init function
+	#-----------------------------------
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
@@ -237,13 +245,22 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.iwaddir_btn.set_dialog_parent(self)
 		self.pwaddir_btn.set_dialog_parent(self)
 
+#------------------------------------------------------------------------------
+#-- CLASS: CHEATSWINDOW
+#------------------------------------------------------------------------------
 @Gtk.Template(filename=os.path.join(ui_dir, "cheats.ui"))
 class CheatsWindow(Adw.PreferencesWindow):
 	__gtype_name__ = "CheatsWindow"
 
+	#-----------------------------------
+	# Class widget variables
+	#-----------------------------------
 	switches_grid = Gtk.Template.Child()
 	cheats_grid = Gtk.Template.Child()
 
+	#-----------------------------------
+	# Init function
+	#-----------------------------------
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
@@ -303,11 +320,16 @@ class CheatsWindow(Adw.PreferencesWindow):
 
 			row += 1
 
+#------------------------------------------------------------------------------
+#-- CLASS: MAINWINDOW
+#------------------------------------------------------------------------------
 @Gtk.Template(filename=os.path.join(ui_dir, "window.ui"))
 class MainWindow(Adw.ApplicationWindow):
 	__gtype_name__ = "MainWindow"
 
+	#-----------------------------------
 	# Class widget variables
+	#-----------------------------------
 	shortcut_window = Gtk.Template.Child()
 	iwad_store = Gtk.Template.Child()
 	iwad_combo = Gtk.Template.Child()
@@ -319,6 +341,9 @@ class MainWindow(Adw.ApplicationWindow):
 	prefs_window = Gtk.Template.Child()
 	cheats_window = Gtk.Template.Child()
 
+	#-----------------------------------
+	# Init function
+	#-----------------------------------
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
@@ -398,6 +423,9 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.launch_btn.set_sensitive(self.iwad_combo.get_active_id() is not None)
 
+	#-----------------------------------
+	# Signal/action handlers
+	#-----------------------------------
 	@Gtk.Template.Callback()
 	def on_iwad_combo_changed(self, combo):
 		iwad_selected = combo.get_active_id()
@@ -470,6 +498,9 @@ class MainWindow(Adw.ApplicationWindow):
 		self.prefs_window.destroy()
 		self.cheats_window.destroy()
 
+	#-----------------------------------
+	# Launch Zandronum function
+	#-----------------------------------
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
 		if os.path.exists(app.main_config["paths"]["exec_file"]) == False:
@@ -521,13 +552,22 @@ class MainWindow(Adw.ApplicationWindow):
 	def show_toast(self, toast_title):
 		self.toast_overlay.add_toast(Adw.Toast(title=toast_title, priority=Adw.ToastPriority.HIGH))
 
+#------------------------------------------------------------------------------
+#-- CLASS: LAUNCHERAPP
+#------------------------------------------------------------------------------
 class LauncherApp(Adw.Application):
+	#-----------------------------------
+	# Init function
+	#-----------------------------------
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 		self.connect("startup", self.on_startup)
 		self.connect("activate", self.on_activate)
 		self.connect("shutdown", self.on_shutdown)
 
+	#-----------------------------------
+	# Signal handlers
+	#-----------------------------------
 	def on_startup(self, app):
 		# Config dir
 		self.config_dir = os.path.join(os.getenv("HOME"), ".config/zandronum")
@@ -594,6 +634,8 @@ class LauncherApp(Adw.Application):
 		# Destroy main window
 		app.main_window.destroy()
 
-# Main app
+#------------------------------------------------------------------------------
+#-- MAIN APP
+#------------------------------------------------------------------------------
 app = LauncherApp(application_id="com.github.zandronumlauncher")
 app.run(sys.argv)

@@ -30,7 +30,7 @@ class FileDialogButton(Gtk.Box):
 	#-----------------------------------
 	# Button properties
 	#-----------------------------------
-	_icon_name = "document-open-symbolic"
+	_icon_name = ""
 	_folder_select = False
 	_can_clear = False
 	_can_reset = False
@@ -38,19 +38,16 @@ class FileDialogButton(Gtk.Box):
 	# icon_name property
 	@GObject.Property(type=str, default="")
 	def icon_name(self):
-		if self._icon_name == "document-open-symbolic" or self._icon_name == "folder-symbolic":
-			return("")
-		else:
-			return(self._icon_name)
+		return(self._icon_name)
 
 	@icon_name.setter
 	def icon_name(self, value):
 		self._icon_name = value
 
 		if self._icon_name == "":
-			self._icon_name = "folder-symbolic" if self._folder_select == True else "document-open-symbolic"
-
-		self.image.set_from_icon_name(self._icon_name)
+			self.image.set_from_icon_name("folder-symbolic" if self._folder_select == True else "document-open-symbolic")
+		else:
+			self.image.set_from_icon_name(self._icon_name)
 
 	# folder_select property
 	@GObject.Property(type=bool, default=False)
@@ -61,10 +58,8 @@ class FileDialogButton(Gtk.Box):
 	def folder_select(self, value):
 		self._folder_select = value
 
-		if self._icon_name == "document-open-symbolic" or self._icon_name == "folder-symbolic":
-			self._icon_name = "folder-symbolic" if self._folder_select == True else "document-open-symbolic"
-
-			self.image.set_from_icon_name(self._icon_name)
+		if self._icon_name == "":
+			self.image.set_from_icon_name("folder-symbolic" if self._folder_select == True else "document-open-symbolic")
 
 	# can_clear property
 	@GObject.Property(type=bool, default=False)

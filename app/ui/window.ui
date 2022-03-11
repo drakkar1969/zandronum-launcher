@@ -70,7 +70,16 @@
 														<property name="margin_start">20</property>
 														<property name="can_clear">True</property>
 														<property name="dlg_title">Open WAD File</property>
-														<property name="dlg_filter">pwad_file_filter</property>
+														<property name="dlg_filter">
+															<object class="GtkFileFilter">
+																<property name="name">WAD files</property>
+																<mime-types>
+																	<mime-type>application/x-doom-wad</mime-type>
+																	<mime-type>application/zip</mime-type>
+																	<mime-type>application/x-7z-compressed</mime-type>
+																</mime-types>
+															</object>
+														</property>
 														<signal name="file-changed" handler="on_pwad_btn_file_changed" swapped="no"/>
 													</object>
 												</child>
@@ -137,15 +146,6 @@
 				<column type="gchararray"/>
 				<column type="gchararray"/>
 			</columns>
-		</object>
-		<!-- PWAD FILEFILTER -->
-		<object class="GtkFileFilter" id="pwad_file_filter">
-			<property name="name">WAD files</property>
-			<mime-types>
-				<mime-type>application/x-doom-wad</mime-type>
-				<mime-type>application/zip</mime-type>
-				<mime-type>application/x-7z-compressed</mime-type>
-			</mime-types>
 		</object>
 		<!-- PREFERENCES WINDOW -->
 		<object class="PreferencesWindow" id="prefs_window">

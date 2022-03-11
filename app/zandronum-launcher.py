@@ -485,8 +485,9 @@ class MainWindow(Adw.ApplicationWindow):
 
 		pwad_dir = self.prefs_window.pwaddir_btn.get_selected_file()
 
-		app.main_config["paths"]["pwad_dir"] = pwad_dir
-		self.pwad_btn.set_default_folder(pwad_dir)
+		if pwad_dir != app.main_config["paths"]["pwad_dir"]:
+			app.main_config["paths"]["pwad_dir"] = pwad_dir
+			self.pwad_btn.set_default_folder(pwad_dir)
 
 		app.main_config["mods"]["textures"] = str(self.prefs_window.texture_switch.get_active())
 		app.main_config["mods"]["objects"] = str(self.prefs_window.object_switch.get_active())

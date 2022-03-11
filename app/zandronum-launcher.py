@@ -510,7 +510,7 @@ class MainWindow(Adw.ApplicationWindow):
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
 		if os.path.exists(app.main_config["paths"]["exec_file"]) == False:
-			self.show_toast("ERROR: Zandronum executable not found")
+			self.show_toast('ERROR: Zandronum executable not found')
 			return(False)
 
 		# Initialize Zandronum command line with executable
@@ -518,18 +518,18 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Return with error if IWAD name is empty
 		if app.main_config["launcher"]["iwad"] == "":
-			self.show_toast("ERROR: No IWAD file specified")
+			self.show_toast('ERROR: No IWAD file specified')
 			return(False)
 
 		iwad_file = os.path.join(app.main_config["paths"]["iwad_dir"], app.main_config["launcher"]["iwad"])
 
 		# Return with error if IWAD file does not exist
 		if os.path.exists(iwad_file) == False:
-			self.show_toast("ERROR: IWAD file {:s} not found".format(app.main_config["launcher"]["iwad"]))
+			self.show_toast(f'ERROR: IWAD file {app.main_config["launcher"]["iwad"]} not found')
 			return(False)
 
 		# Add IWAD file
-		cmdline += ' -iwad "{:s}"'.format(iwad_file)
+		cmdline += f' -iwad "{iwad_file}"'
 
 		# Add hi-res graphics if options are true
 		mod_dict = app.doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
@@ -540,15 +540,15 @@ class MainWindow(Adw.ApplicationWindow):
 					if mod_name != "":
 						mod_file = os.path.join(app.mod_dir, mod_name)
 
-						if os.path.exists(mod_file): cmdline += ' -file "{:s}"'.format(mod_file)
+						if os.path.exists(mod_file): cmdline += f' -file "{mod_file}"'
 
 		# Add PWAD file if present
 		if app.main_config["launcher"]["file"] != "" and os.path.exists(app.main_config["launcher"]["file"]):
-			cmdline += ' -file "{:s}"'.format(app.main_config["launcher"]["file"])
+			cmdline += f' -file "{app.main_config["launcher"]["file"]}"'
 
 		# Add extra params if present and enabled
 		if app.main_config["launcher"].getboolean("params_on") == True and app.main_config["launcher"]["params"] != "":
-				cmdline += ' {:s}'.format(app.main_config["launcher"]["params"])
+				cmdline += f' {app.main_config["launcher"]["params"]}'
 
 		# Launch Zandronum
 		subprocess.Popen(shlex.split(cmdline))

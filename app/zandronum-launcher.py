@@ -400,6 +400,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# Help initialization
 		self.cheats_window.set_transient_for(self)
 
+	# Add IWADs to combo
 	def populate_iwad_combo(self, iwad_selected):
 		if iwad_selected is None: iwad_selected = ""
 

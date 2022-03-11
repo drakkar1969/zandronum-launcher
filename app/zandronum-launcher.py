@@ -422,7 +422,25 @@ class MainWindow(Adw.ApplicationWindow):
 		self.launch_btn.set_sensitive(self.iwad_combo.get_active_id() is not None)
 
 	#-----------------------------------
-	# Signal/action handlers
+	# Action handlers
+	#-----------------------------------
+	def on_reset_widgets_action(self, action, param, user_data):
+		self.iwad_combo.set_active(0)
+		self.pwad_btn.set_selected_file("")
+		self.params_entry.set_text("")
+		self.params_expandrow.set_enable_expansion(False)
+
+	def on_show_preferences_action(self, action, param, user_data):
+		self.prefs_window.show()
+
+	def on_show_cheats_action(self, action, param, user_data):
+		self.cheats_window.show()
+
+	def on_quit_app_action(self, action, param, user_data):
+		self.close()
+
+	#-----------------------------------
+	# Signal handlers
 	#-----------------------------------
 	@Gtk.Template.Callback()
 	def on_iwad_combo_changed(self, combo):
@@ -454,21 +472,6 @@ class MainWindow(Adw.ApplicationWindow):
 
 		if self.launch_zandronum() == True: self.close()
 		else: self.set_sensitive(True)
-
-	def on_quit_app_action(self, action, param, user_data):
-		self.close()
-
-	def on_reset_widgets_action(self, action, param, user_data):
-		self.iwad_combo.set_active(0)
-		self.pwad_btn.set_selected_file("")
-		self.params_entry.set_text("")
-		self.params_expandrow.set_enable_expansion(False)
-
-	def on_show_cheats_action(self, action, param, user_data):
-		self.cheats_window.show()
-
-	def on_show_preferences_action(self, action, param, user_data):
-		self.prefs_window.show()
 
 	@Gtk.Template.Callback()
 	def on_prefs_window_close(self, window):

@@ -353,14 +353,14 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
 		# Actions
-		app_entries = [
+		action_list = [
 			[ "reset-widgets", self.on_reset_widgets_action ],
 			[ "show-preferences", self.on_show_preferences_action ],
 			[ "show-cheats", self.on_show_cheats_action],
 			[ "quit-app", self.on_quit_app_action ]
 		]
 
-		self.add_action_entries(app_entries)
+		self.add_action_entries(action_list)
 
 		app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
 		app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])

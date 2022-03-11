@@ -179,9 +179,12 @@ class FileDialogButton(Gtk.Box):
 
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
-			new_file = dialog.get_file().get_path()
+			dialog_gfile = dialog.get_file()
 
-			if self.selected_file != new_file: self.selected_file = new_file
+			if dialog_gfile is not None:
+				new_file = dialog_gfile.get_path()
+
+				if self.selected_file != new_file: self.selected_file = new_file
 
 		self.dialog = None
 

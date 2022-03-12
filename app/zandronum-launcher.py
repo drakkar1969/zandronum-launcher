@@ -499,11 +499,6 @@ class MainWindow(Adw.ApplicationWindow):
 		app.main_config["mods"]["menus"] = str(self.prefs_window.menu_switch.get_active())
 		app.main_config["mods"]["hud"] = str(self.prefs_window.hud_switch.get_active())
 
-	@Gtk.Template.Callback()
-	def on_window_close(self, window):
-		self.prefs_window.destroy()
-		self.cheats_window.destroy()
-
 	#-----------------------------------
 	# Launch Zandronum function
 	#-----------------------------------
@@ -636,9 +631,6 @@ class LauncherApp(Adw.Application):
 		# Write configuration file
 		with open(self.launcher_config_file, "w") as configfile:
 			self.main_config.write(configfile)
-
-		# Destroy main window
-		app.main_window.destroy()
 
 #------------------------------------------------------------------------------
 #-- MAIN APP

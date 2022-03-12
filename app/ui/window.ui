@@ -7,7 +7,6 @@
 		<property name="resizable">False</property>
 		<property name="valign">center</property>
 		<property name="title">Zandronum Launcher</property>
-		<signal name="close-request" handler="on_window_close" swapped="no"/>
 		<property name="content">
 			<object class="AdwToastOverlay" id="toast_overlay">
 				<property name="child">

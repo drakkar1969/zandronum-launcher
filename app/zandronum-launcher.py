@@ -600,7 +600,7 @@ class LauncherApp(Adw.Application):
 
 		self.main_config = configparser.ConfigParser()
 
-		self.main_config.read_dict({
+		default_config = {
 			"launcher": {
 				"iwad": "",
 				"file": "",
@@ -615,40 +615,20 @@ class LauncherApp(Adw.Application):
 			"mods": {
 				"textures": "True",
 				"objects": "True",
-				"monsters": True,
+				"monsters": "True",
 				"menus": "True",
 				"hud": "True"
 			}
-		})
+		}
+
+		self.main_config.read_dict(default_config)
 
 		self.main_config.read(self.launcher_config_file)
 
-		if self.main_config["launcher"]["params_on"] == "":
-			self.main_config["launcher"]["params_on"] = "False"
-
-		if self.main_config["paths"]["exec_file"] == "":
-			self.main_config["paths"]["exec_file"] = self.default_exec_file
-
-		if self.main_config["paths"]["iwad_dir"] == "":
-			self.main_config["paths"]["iwad_dir"] = self.default_iwad_dir
-
-		if self.main_config["paths"]["pwad_dir"] == "":
-			self.main_config["paths"]["pwad_dir"] = self.default_pwad_dir
-
-		if self.main_config["mods"]["textures"] == "":
-			self.main_config["mods"]["textures"] = "True"
-
-		if self.main_config["mods"]["objects"] == "":
-			self.main_config["mods"]["objects"] = "True"
-
-		if self.main_config["mods"]["monsters"] == "":
-			self.main_config["mods"]["monsters"] = "True"
-
-		if self.main_config["mods"]["menus"] == "":
-			self.main_config["mods"]["menus"] = "True"
-
-		if self.main_config["mods"]["hud"] == "":
-			self.main_config["mods"]["hud"] = "True"
+		for section in self.main_config.sections():
+			for key, value in self.main_config.items(section):
+				if value == "" and default_config[section][key] != "":
+					self.main_config[section][key] = default_config[section][key]
 
 	def on_activate(self, app):
 		self.main_window = MainWindow(application=app)

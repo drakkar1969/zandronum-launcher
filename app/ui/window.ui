@@ -106,6 +106,7 @@
 															<object class="GtkEntry" id="params_entry">
 																<property name="valign">center</property>
 																<property name="width_request">350</property>
+																<property name="placeholder_text">e.g. -warp 7 -skill 3</property>
 																<property name="secondary_icon_name">edit-clear-symbolic</property>
 																<signal name="changed" handler="on_params_entry_changed" swapped="no"/>
 																<signal name="icon-press" handler="on_params_entry_clear" swapped="no"/>

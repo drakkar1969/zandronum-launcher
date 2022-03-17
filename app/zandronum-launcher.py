@@ -34,6 +34,8 @@ class FileDialogButton(Gtk.Box):
 	_folder_select = False
 	_can_clear = False
 	_can_reset = False
+	_is_linked = True
+
 
 	# icon_name property
 	@GObject.Property(type=str, default="")
@@ -82,6 +84,26 @@ class FileDialogButton(Gtk.Box):
 		self._can_reset = value
 
 		self.reset_btn.set_visible(self._can_reset)
+
+	# is_linked property
+	@GObject.Property(type=bool, default=True)
+	def is_linked(self):
+		return(self._is_linked)
+
+	@is_linked.setter
+	def is_linked(self, value):
+		self._is_linked = value
+
+		if self._is_linked == True:
+			self.add_css_class("linked")
+			self.set_spacing(0)
+			self.clear_btn.remove_css_class("flat")
+			self.reset_btn.remove_css_class("flat")
+		else:
+			self.remove_css_class("linked")
+			self.set_spacing(6)
+			self.clear_btn.add_css_class("flat")
+			self.reset_btn.add_css_class("flat")
 
 	#-----------------------------------
 	# File properties

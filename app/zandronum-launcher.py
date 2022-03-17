@@ -3,7 +3,7 @@
 import gi, sys, os, configparser, subprocess, shlex, json
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw, Gio, GObject, Gdk
+from gi.repository import Gtk, Adw, Gio, GObject
 
 # Global path variables
 app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))

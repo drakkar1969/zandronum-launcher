@@ -43,7 +43,7 @@
 													<object class="GtkComboBox" id="iwad_combo">
 														<property name="valign">center</property>
 														<property name="width_request">350</property>
-														<property name="margin_start">20</property>
+														<property name="margin_start">16</property>
 														<property name="id_column">1</property>
 														<property name="model">
 															<object class="GtkListStore" id="iwad_store">
@@ -73,7 +73,7 @@
 													<object class="FileDialogButton" id="pwad_btn">
 														<property name="valign">center</property>
 														<property name="width_request">350</property>
-														<property name="margin_start">20</property>
+														<property name="margin_start">16</property>
 														<property name="can_clear">True</property>
 														<property name="dlg_title">Open WAD File</property>
 														<property name="dlg_filter">

@@ -323,6 +323,7 @@ class CheatsWindow(Adw.PreferencesWindow):
 			param_label = Gtk.Label(label=switch, halign=Gtk.Align.START)
 			self.switches_grid.attach(param_label, 0, row, 1, 1)
 			if row == 0: param_label.add_css_class("heading")
+			else: param_label.set_selectable(True)
 
 			desc_label = Gtk.Label(label=doom_switches[switch], halign=Gtk.Align.START)
 			self.switches_grid.attach(desc_label, 1, row, 1, 1)

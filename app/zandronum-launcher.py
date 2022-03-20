@@ -196,7 +196,7 @@ class FileDialogButton(Gtk.Box):
 				self.dialog.set_current_folder(self._gfile_default_folder)
 
 		if self._folder_select == True:
-			self.dialog.set_accept_label("Select")
+			self.dialog.set_accept_label("_Select")
 
 		self.dialog.connect("response", self.on_dialog_response)
 

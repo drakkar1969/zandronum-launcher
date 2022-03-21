@@ -66,7 +66,7 @@
 										</child>
 										<child>
 											<object class="AdwActionRow" id="pwad_listrow">
-												<property name="title">Optional WAD _File</property>
+												<property name="title">Optional WAD _Files</property>
 												<property name="use_underline">True</property>
 												<property name="activatable_widget">pwad_btn</property>
 												<child>
@@ -75,6 +75,7 @@
 														<property name="width_request">350</property>
 														<property name="margin_start">16</property>
 														<property name="can_clear">True</property>
+														<property name="multi_select">True</property>
 														<property name="dlg_title">Open WAD File</property>
 														<property name="dlg_filter">
 															<object class="GtkFileFilter">

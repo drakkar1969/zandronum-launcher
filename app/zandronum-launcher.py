@@ -36,6 +36,7 @@ class FileDialogButton(Gtk.Box):
 	_can_reset = False
 	_is_linked = True
 
+	multi_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
 
 	# icon_name property
 	@GObject.Property(type=str, default="")
@@ -110,7 +111,7 @@ class FileDialogButton(Gtk.Box):
 	#-----------------------------------
 	_gfile_default_folder = None
 	_gfile_default_file = None
-	_gfile_selected_file = None
+	_gstore_selected_files = None
 
 	# default_folder property
 	@GObject.Property(type=str, default="")
@@ -132,16 +133,40 @@ class FileDialogButton(Gtk.Box):
 
 		self.set_reset_btn_state()
 
-	# selected_file property
+	# selected_files property
 	@GObject.Property(type=str, default="")
-	def selected_file(self):
-		return(self._gfile_selected_file.get_path() if self._gfile_selected_file is not None else "")
+	def selected_files(self):
+		filelist = []
 
-	@selected_file.setter
-	def selected_file(self, value):
-		self._gfile_selected_file = Gio.File.new_for_path(value) if value != "" else None
+		for i in range(self._gstore_selected_files.get_n_items()):
+			gfile = self._gstore_selected_files.get_item(i)
 
-		self.label.set_text(self._gfile_selected_file.get_basename() if self._gfile_selected_file is not None else "(None)")
+			if gfile is not None:
+				filelist.append(gfile.get_path())
+
+		return(",".join(filelist))
+
+	@selected_files.setter
+	def selected_files(self, value):
+		self._gstore_selected_files.remove_all()
+
+		if value != "":
+			filelist = value.split(",")
+
+			for f in filelist:
+				if f != "":
+					self._gstore_selected_files.append(Gio.File.new_for_path(f))
+
+		n_files = self._gstore_selected_files.get_n_items()
+
+		if n_files == 0:
+			self.label.set_text("(None)")
+		else:
+			if n_files == 1:
+				gfile = self._gstore_selected_files.get_item(0)
+				self.label.set_text(gfile.get_basename() if gfile is not None else "(None)")
+			else:
+				self.label.set_text(f"({n_files} files)")
 
 		self.set_clear_btn_state()
 		self.set_reset_btn_state()
@@ -150,13 +175,13 @@ class FileDialogButton(Gtk.Box):
 
 	# helper functions
 	def set_clear_btn_state(self):
-		self.clear_btn.set_sensitive(self._gfile_selected_file is not None)
+		self.clear_btn.set_sensitive(self._gstore_selected_files.get_n_items() != 0)
 
 	def set_reset_btn_state(self):
-		if self._gfile_default_file is None or self._gfile_selected_file is None:
+		if self._gfile_default_file is None or self._gstore_selected_files.get_n_items() == 0:
 			self.reset_btn.set_sensitive(self._gfile_default_file is not None)
 		else:
-			self.reset_btn.set_sensitive(not self._gfile_default_file.equal(self._gfile_selected_file))
+			self.reset_btn.set_sensitive(self.default_file != self.selected_files)
 
 	#-----------------------------------
 	# Class widget variables
@@ -173,6 +198,8 @@ class FileDialogButton(Gtk.Box):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
+		self._gstore_selected_files = Gio.ListStore()
+
 	#-----------------------------------
 	# Signal handlers
 	#-----------------------------------
@@ -186,11 +213,13 @@ class FileDialogButton(Gtk.Box):
 
 		self.dialog.set_modal(True)
 
+		self.dialog.set_select_multiple(self.multi_select)
+
 		if self.dlg_filter is not None:
 			self.dialog.add_filter(self.dlg_filter)
 
-		if self._gfile_selected_file is not None:
-			self.dialog.set_file(self._gfile_selected_file)
+		if self._gstore_selected_files.get_n_items() != 0:
+			self.dialog.set_file(self._gstore_selected_files.get_item(0))
 		else:
 			if self._gfile_default_folder is not None:
 				self.dialog.set_current_folder(self._gfile_default_folder)
@@ -204,22 +233,31 @@ class FileDialogButton(Gtk.Box):
 
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
-			dialog_gfile = dialog.get_file()
+			gfiles = dialog.get_files()
 
-			if dialog_gfile is not None:
-				new_file = dialog_gfile.get_path()
+			if gfiles is not None:
+				filelist = []
 
-				if self.selected_file != new_file: self.selected_file = new_file
+				for i in range(gfiles.get_n_items()):
+					gfile = gfiles.get_item(i)
+
+					if gfile is not None:
+						filelist.append(gfile.get_path())
+
+				if len(filelist) == 0:
+					self.selected_files = ""
+				else:
+					self.selected_files = ",".join(filelist)
 
 		self.dialog = None
 
 	@Gtk.Template.Callback()
 	def on_clear_btn_clicked(self, button):
-		self.selected_file = ""
+		self.selected_files = ""
 
 	@Gtk.Template.Callback()
 	def on_reset_btn_clicked(self, button):
-		self.selected_file = self.default_file
+		self.selected_files = self.default_file
 
 	#-----------------------------------
 	# Property helper functions
@@ -230,11 +268,11 @@ class FileDialogButton(Gtk.Box):
 	def set_default_folder(self, value):
 		if self.default_folder != value: self.default_folder = value
 		
-	def set_selected_file(self, value):
-		if self.selected_file != value: self.selected_file = value
+	def set_selected_files(self, value):
+		if self.selected_files != value: self.selected_files = value
 
-	def get_selected_file(self):
-		return(self.selected_file)
+	def get_selected_files(self):
+		return(self.selected_files)
 
 	def set_default_file(self, value):
 		if self.default_file != value: self.default_file = value
@@ -395,7 +433,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.pwad_btn.set_dialog_parent(self)
 		self.pwad_btn.set_default_folder(app.main_config["paths"]["pwad_dir"])
-		self.pwad_btn.set_selected_file(app.main_config["launcher"]["file"])
+		self.pwad_btn.set_selected_files(app.main_config["launcher"]["file"])
 
 		enable_params = app.main_config["launcher"].getboolean("params_on")
 		self.params_expandrow.set_enable_expansion(enable_params)
@@ -409,13 +447,13 @@ class MainWindow(Adw.ApplicationWindow):
 		self.prefs_window.set_transient_for(self)
 
 		self.prefs_window.exec_btn.set_default_file(app.default_exec_file)
-		self.prefs_window.exec_btn.set_selected_file(app.main_config["paths"]["exec_file"])
+		self.prefs_window.exec_btn.set_selected_files(app.main_config["paths"]["exec_file"])
 
 		self.prefs_window.iwaddir_btn.set_default_file(app.default_iwad_dir)
-		self.prefs_window.iwaddir_btn.set_selected_file(app.main_config["paths"]["iwad_dir"])
+		self.prefs_window.iwaddir_btn.set_selected_files(app.main_config["paths"]["iwad_dir"])
 
 		self.prefs_window.pwaddir_btn.set_default_file(app.default_pwad_dir)
-		self.prefs_window.pwaddir_btn.set_selected_file(app.main_config["paths"]["pwad_dir"])
+		self.prefs_window.pwaddir_btn.set_selected_files(app.main_config["paths"]["pwad_dir"])
 
 		self.prefs_window.texture_switch.set_active(app.main_config["mods"].getboolean("textures"))
 		self.prefs_window.object_switch.set_active(app.main_config["mods"].getboolean("objects"))
@@ -453,7 +491,7 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	def on_reset_widgets_action(self, action, param, user_data):
 		self.iwad_combo.set_active(0)
-		self.pwad_btn.set_selected_file("")
+		self.pwad_btn.set_selected_files("")
 		self.params_entry.set_text("")
 		self.params_expandrow.set_enable_expansion(False)
 
@@ -477,7 +515,8 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_pwad_btn_file_changed(self, button):
-		app.main_config["launcher"]["file"] = button.get_selected_file()
+		app.main_config["launcher"]["file"] = button.get_selected_files()
+		pass
 
 	@Gtk.Template.Callback()
 	def on_params_row_enabled(self, exprow, prop_name):
@@ -502,15 +541,15 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_prefs_window_close(self, window):
-		app.main_config["paths"]["exec_file"] = self.prefs_window.exec_btn.get_selected_file()
+		app.main_config["paths"]["exec_file"] = self.prefs_window.exec_btn.get_selected_files()
 
-		iwad_dir = self.prefs_window.iwaddir_btn.get_selected_file()
+		iwad_dir = self.prefs_window.iwaddir_btn.get_selected_files()
 
 		if iwad_dir != app.main_config["paths"]["iwad_dir"]:
 			app.main_config["paths"]["iwad_dir"] = iwad_dir
 			self.populate_iwad_combo(self.iwad_combo.get_active_id())
 
-		pwad_dir = self.prefs_window.pwaddir_btn.get_selected_file()
+		pwad_dir = self.prefs_window.pwaddir_btn.get_selected_files()
 
 		if pwad_dir != app.main_config["paths"]["pwad_dir"]:
 			app.main_config["paths"]["pwad_dir"] = pwad_dir
@@ -560,9 +599,10 @@ class MainWindow(Adw.ApplicationWindow):
 
 						if os.path.exists(mod_file): cmdline += f' -file "{mod_file}"'
 
-		# Add PWAD file if present
-		if app.main_config["launcher"]["file"] != "" and os.path.exists(app.main_config["launcher"]["file"]):
-			cmdline += f' -file "{app.main_config["launcher"]["file"]}"'
+		# Add PWAD files if present
+		for wad_file in app.main_config["launcher"]["file"].split(","):
+			if wad_file != "" and os.path.exists(wad_file):
+				cmdline += f' -file "{wad_file}"'
 
 		# Add extra params if present and enabled
 		if app.main_config["launcher"].getboolean("params_on") == True and app.main_config["launcher"]["params"] != "":

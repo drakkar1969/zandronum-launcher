@@ -568,9 +568,9 @@ class MainWindow(Adw.ApplicationWindow):
 			self.show_toast('ERROR: No IWAD file specified')
 			return(False)
 
+		# Return with error if IWAD file does not exist
 		iwad_file = os.path.join(app.main_config["paths"]["iwad_dir"], app.main_config["launcher"]["iwad"])
 
-		# Return with error if IWAD file does not exist
 		if os.path.exists(iwad_file) == False:
 			self.show_toast(f'ERROR: IWAD file {app.main_config["launcher"]["iwad"]} not found')
 			return(False)
@@ -581,9 +581,9 @@ class MainWindow(Adw.ApplicationWindow):
 		# Add hi-res graphics if options are true
 		mod_dict = app.doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
 
-		for mod in mod_dict:
-			if app.main_config["mods"].getboolean(mod) == True:
-				for mod_name in mod_dict[mod]:
+		for key, modlist in mod_dict.items():
+			if app.main_config["mods"].getboolean(key) == True:
+				for mod_name in modlist:
 					if mod_name != "":
 						mod_file = os.path.join(app.mod_dir, mod_name)
 
@@ -596,7 +596,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Add extra params if present and enabled
 		if app.main_config["launcher"].getboolean("params_on") == True and app.main_config["launcher"]["params"] != "":
-				cmdline += f' {app.main_config["launcher"]["params"]}'
+			cmdline += f' {app.main_config["launcher"]["params"]}'
 
 		# Launch Zandronum
 		subprocess.Popen(shlex.split(cmdline))

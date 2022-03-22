@@ -386,13 +386,13 @@ class CheatsWindow(Adw.PreferencesWindow):
 
 		row = 0
 
-		for switch in doom_switches:
-			param_label = Gtk.Label(label=switch, halign=Gtk.Align.START)
+		for key, value in doom_switches.items():
+			param_label = Gtk.Label(label=key, halign=Gtk.Align.START)
 			self.switches_grid.attach(param_label, 0, row, 1, 1)
 			if row == 0: param_label.add_css_class("heading")
 			else: param_label.set_selectable(True)
 
-			desc_label = Gtk.Label(label=doom_switches[switch], halign=Gtk.Align.START)
+			desc_label = Gtk.Label(label=value, halign=Gtk.Align.START)
 			self.switches_grid.attach(desc_label, 1, row, 1, 1)
 			if row == 0: desc_label.add_css_class("heading")
 
@@ -400,12 +400,12 @@ class CheatsWindow(Adw.PreferencesWindow):
 
 		row = 0
 
-		for cheat in doom_cheats:
-			cheat_label = Gtk.Label(label=cheat, halign=Gtk.Align.START)
+		for key, value in doom_cheats.items():
+			cheat_label = Gtk.Label(label=key, halign=Gtk.Align.START)
 			self.cheats_grid.attach(cheat_label, 0, row, 1, 1)
 			if row == 0: cheat_label.add_css_class("heading")
 
-			effect_label = Gtk.Label(label=doom_cheats[cheat], halign=Gtk.Align.START)
+			effect_label = Gtk.Label(label=value, halign=Gtk.Align.START)
 			self.cheats_grid.attach(effect_label, 1, row, 1, 1)
 			if row == 0: effect_label.add_css_class("heading")
 

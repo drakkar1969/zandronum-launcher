@@ -179,6 +179,12 @@
 					<attribute name="action">win.show-cheats</attribute>
 				</item>
 			</section>
+			<section>
+				<item>
+					<attribute name="label">About Zandronum Launcher</attribute>
+					<attribute name="action">win.show-about</attribute>
+				</item>
+			</section>
 		</menu>
 		<!-- SHORTCUT WINDOW -->
 		<object class="GtkShortcutsWindow" id="shortcut_window">

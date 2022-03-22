@@ -446,7 +446,8 @@ class MainWindow(Adw.ApplicationWindow):
 		action_list = [
 			[ "reset-widgets", self.on_reset_widgets_action ],
 			[ "show-preferences", self.on_show_preferences_action ],
-			[ "show-cheats", self.on_show_cheats_action],
+			[ "show-cheats", self.on_show_cheats_action ],
+			[ "show-about", self.on_show_about_action ],
 			[ "quit-app", self.on_quit_app_action ]
 		]
 
@@ -529,6 +530,19 @@ class MainWindow(Adw.ApplicationWindow):
 
 	def on_show_cheats_action(self, action, param, user_data):
 		self.cheats_window.show()
+
+	def on_show_about_action(self, action, param, user_data):
+		about_dialog = Gtk.AboutDialog(
+			logo_icon_name="zandronum",
+			program_name="Zandronum Launcher",
+			comments="Custom launcher for Zandronum with\nWAD selection and hi-res graphics",
+			copyright="@2022 drakkar1969",
+			license_type=Gtk.License.GPL_3_0,
+			authors=["drakkar1969"],
+			artists=["drakkar1969"],
+			transient_for=self,
+			modal=True)
+		about_dialog.show()
 
 	def on_quit_app_action(self, action, param, user_data):
 		self.close()

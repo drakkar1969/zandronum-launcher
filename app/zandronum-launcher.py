@@ -645,8 +645,8 @@ class LauncherApp(Adw.Application):
 		self.default_pwad_dir = os.path.join(self.config_dir, "WADs")
 
 		# Read IWAD json file
-		with open(os.path.join(app_dir, "iwads.json"), "r") as wadfile:
-			self.doom_iwads = json.load(wadfile)
+		with open(os.path.join(app_dir, "iwads.json"), "r") as iwad_file:
+			self.doom_iwads = json.load(iwad_file)
 
 		# Parse configuration file
 		self.launcher_config_file = os.path.join(self.config_dir, "launcher.conf")

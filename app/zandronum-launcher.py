@@ -20,7 +20,7 @@ class FileDialogButton(Gtk.Box):
 	# Button signals
 	#-----------------------------------
 	__gsignals__ = {
-		"file-changed": (GObject.SignalFlags.RUN_FIRST, None, ())
+		"files-changed": (GObject.SignalFlags.RUN_FIRST, None, ())
 	}
 
 	#-----------------------------------
@@ -167,7 +167,7 @@ class FileDialogButton(Gtk.Box):
 		self.set_clear_btn_state()
 		self.set_reset_btn_state()
 
-		self.emit("file-changed")
+		self.emit("files-changed")
 
 	# Helper functions
 	def set_clear_btn_state(self):
@@ -504,7 +504,7 @@ class MainWindow(Adw.ApplicationWindow):
 		app.main_config["launcher"]["iwad"] = iwad_selected if iwad_selected is not None else ""
 
 	@Gtk.Template.Callback()
-	def on_pwad_btn_file_changed(self, button):
+	def on_pwad_btn_files_changed(self, button):
 		app.main_config["launcher"]["file"] = button.get_selected_files()
 		pass
 

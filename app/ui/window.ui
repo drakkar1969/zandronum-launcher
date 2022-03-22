@@ -87,7 +87,7 @@
 																</mime-types>
 															</object>
 														</property>
-														<signal name="file-changed" handler="on_pwad_btn_file_changed" swapped="no"/>
+														<signal name="files-changed" handler="on_pwad_btn_files_changed" swapped="no"/>
 													</object>
 												</child>
 											</object>

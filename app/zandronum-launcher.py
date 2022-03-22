@@ -33,7 +33,7 @@ class FileDialogButton(Gtk.Box):
 	_is_linked = True
 
 	# Simple properties
-	parent = GObject.Property(type=Gtk.Window, default=None)
+	dialog_parent = GObject.Property(type=Gtk.Window, default=None)
 	title = GObject.Property(type=str, default="Open File")
 	file_filter = GObject.Property(type=Gtk.FileFilter, default=None)
 	multi_select = GObject.Property(type=bool, default=False)
@@ -205,7 +205,7 @@ class FileDialogButton(Gtk.Box):
 
 	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
-		self.dialog = Gtk.FileChooserNative(title=self.title, transient_for=self.parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN)
+		self.dialog = Gtk.FileChooserNative(title=self.title, transient_for=self.dialog_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN)
 
 		self.dialog.set_modal(True)
 
@@ -253,7 +253,7 @@ class FileDialogButton(Gtk.Box):
 	# Property helper functions
 	#-----------------------------------
 	def set_dialog_parent(self, value):
-		self.parent = value
+		self.dialog_parent = value
 
 	def set_default_folder(self, value):
 		if self.default_folder != value: self.default_folder = value

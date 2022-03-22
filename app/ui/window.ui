@@ -76,8 +76,8 @@
 														<property name="margin_start">16</property>
 														<property name="can_clear">True</property>
 														<property name="multi_select">True</property>
-														<property name="dlg_title">Open WAD File</property>
-														<property name="dlg_filter">
+														<property name="title">Open WAD File</property>
+														<property name="file_filter">
 															<object class="GtkFileFilter">
 																<property name="name">WAD files</property>
 																<mime-types>

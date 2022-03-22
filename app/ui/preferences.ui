@@ -24,7 +24,7 @@
 										<property name="margin_start">16</property>
 										<property name="icon_name">application-x-executable-symbolic</property>
 										<property name="can_reset">True</property>
-										<property name="dlg_title">Select Zandronum Executable</property>
+										<property name="title">Select Zandronum Executable</property>
 									</object>
 								</child>
 							</object>
@@ -41,7 +41,7 @@
 										<property name="margin_start">16</property>
 										<property name="folder_select">True</property>
 										<property name="can_reset">True</property>
-										<property name="dlg_title">Select IWAD Folder</property>
+										<property name="title">Select IWAD Folder</property>
 									</object>
 								</child>
 							</object>
@@ -58,7 +58,7 @@
 										<property name="margin_start">16</property>
 										<property name="folder_select">True</property>
 										<property name="can_reset">True</property>
-										<property name="dlg_title">Select Default WAD Folder</property>
+										<property name="title">Select Default WAD Folder</property>
 									</object>
 								</child>
 							</object>

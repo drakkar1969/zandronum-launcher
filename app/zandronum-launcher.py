@@ -16,16 +16,12 @@ ui_dir = os.path.join(app_dir, "ui")
 class FileDialogButton(Gtk.Box):
 	__gtype_name__ = "FileDialogButton"
 
+	#-----------------------------------
+	# Button signals
+	#-----------------------------------
 	__gsignals__ = {
 		"file-changed": (GObject.SignalFlags.RUN_FIRST, None, ())
 	}
-
-	#-----------------------------------
-	# Dialog properties
-	#-----------------------------------
-	dlg_title = GObject.Property(type=str, default="Open File", flags=GObject.ParamFlags.READWRITE)
-	dlg_parent = GObject.Property(type=Gtk.Window, default=None, flags=GObject.ParamFlags.READWRITE)
-	dlg_filter = GObject.Property(type=Gtk.FileFilter, default=None, flags=GObject.ParamFlags.READWRITE)
 
 	#-----------------------------------
 	# Button properties
@@ -36,7 +32,11 @@ class FileDialogButton(Gtk.Box):
 	_can_reset = False
 	_is_linked = True
 
-	multi_select = GObject.Property(type=bool, default=False, flags=GObject.ParamFlags.READWRITE)
+	# Simple properties
+	parent = GObject.Property(type=Gtk.Window, default=None)
+	title = GObject.Property(type=str, default="Open File")
+	file_filter = GObject.Property(type=Gtk.FileFilter, default=None)
+	multi_select = GObject.Property(type=bool, default=False)
 
 	# icon_name property
 	@GObject.Property(type=str, default="")
@@ -141,8 +141,7 @@ class FileDialogButton(Gtk.Box):
 		for i in range(self._gstore_selected_files.get_n_items()):
 			gfile = self._gstore_selected_files.get_item(i)
 
-			if gfile is not None:
-				filelist.append(gfile.get_path())
+			if gfile is not None: filelist.append(gfile.get_path())
 
 		return(",".join(filelist))
 
@@ -151,11 +150,8 @@ class FileDialogButton(Gtk.Box):
 		self._gstore_selected_files.remove_all()
 
 		if value != "":
-			filelist = value.split(",")
-
-			for f in filelist:
-				if f != "":
-					self._gstore_selected_files.append(Gio.File.new_for_path(f))
+			for f in value.split(","):
+				if f != "": self._gstore_selected_files.append(Gio.File.new_for_path(f))
 
 		n_files = self._gstore_selected_files.get_n_items()
 
@@ -173,13 +169,13 @@ class FileDialogButton(Gtk.Box):
 
 		self.emit("file-changed")
 
-	# helper functions
+	# Helper functions
 	def set_clear_btn_state(self):
 		self.clear_btn.set_sensitive(self._gstore_selected_files.get_n_items() != 0)
 
 	def set_reset_btn_state(self):
-		if self._gfile_default_file is None or self._gstore_selected_files.get_n_items() == 0:
-			self.reset_btn.set_sensitive(self._gfile_default_file is not None)
+		if self._gfile_default_file is None:
+			self.reset_btn.set_sensitive(False)
 		else:
 			self.reset_btn.set_sensitive(self.default_file != self.selected_files)
 
@@ -209,14 +205,13 @@ class FileDialogButton(Gtk.Box):
 
 	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
-		self.dialog = Gtk.FileChooserNative(title=self.dlg_title, transient_for=self.dlg_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN)
+		self.dialog = Gtk.FileChooserNative(title=self.title, transient_for=self.parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN)
 
 		self.dialog.set_modal(True)
 
 		self.dialog.set_select_multiple(self.multi_select)
 
-		if self.dlg_filter is not None:
-			self.dialog.add_filter(self.dlg_filter)
+		if self.file_filter is not None: self.dialog.add_filter(self.file_filter)
 
 		if self._gstore_selected_files.get_n_items() != 0:
 			self.dialog.set_file(self._gstore_selected_files.get_item(0))
@@ -224,8 +219,7 @@ class FileDialogButton(Gtk.Box):
 			if self._gfile_default_folder is not None:
 				self.dialog.set_current_folder(self._gfile_default_folder)
 
-		if self._folder_select == True:
-			self.dialog.set_accept_label("_Select")
+		if self._folder_select == True: self.dialog.set_accept_label("_Select")
 
 		self.dialog.connect("response", self.on_dialog_response)
 
@@ -241,13 +235,9 @@ class FileDialogButton(Gtk.Box):
 				for i in range(gfiles.get_n_items()):
 					gfile = gfiles.get_item(i)
 
-					if gfile is not None:
-						filelist.append(gfile.get_path())
+					if gfile is not None: filelist.append(gfile.get_path())
 
-				if len(filelist) == 0:
-					self.selected_files = ""
-				else:
-					self.selected_files = ",".join(filelist)
+				self.selected_files = ",".join(filelist)
 
 		self.dialog = None
 
@@ -262,8 +252,8 @@ class FileDialogButton(Gtk.Box):
 	#-----------------------------------
 	# Property helper functions
 	#-----------------------------------
-	def set_dialog_parent(self, parent):
-		self.dlg_parent = parent
+	def set_dialog_parent(self, value):
+		self.parent = value
 
 	def set_default_folder(self, value):
 		if self.default_folder != value: self.default_folder = value

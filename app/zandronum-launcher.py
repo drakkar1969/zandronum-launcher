@@ -280,11 +280,11 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	exec_btn = Gtk.Template.Child()
 	iwaddir_btn = Gtk.Template.Child()
 	pwaddir_btn = Gtk.Template.Child()
-	texture_switch = Gtk.Template.Child()
-	object_switch = Gtk.Template.Child()
-	monster_switch = Gtk.Template.Child()
-	menu_switch = Gtk.Template.Child()
-	hud_switch = Gtk.Template.Child()
+	texture_checkbtn = Gtk.Template.Child()
+	object_checkbtn = Gtk.Template.Child()
+	monster_checkbtn = Gtk.Template.Child()
+	menu_checkbtn = Gtk.Template.Child()
+	hud_checkbtn = Gtk.Template.Child()
 
 	#-----------------------------------
 	# Init function
@@ -445,11 +445,11 @@ class MainWindow(Adw.ApplicationWindow):
 		self.prefs_window.pwaddir_btn.set_default_file(app.default_pwad_dir)
 		self.prefs_window.pwaddir_btn.set_selected_files(app.main_config["paths"]["pwad_dir"])
 
-		self.prefs_window.texture_switch.set_active(app.main_config["mods"].getboolean("textures"))
-		self.prefs_window.object_switch.set_active(app.main_config["mods"].getboolean("objects"))
-		self.prefs_window.monster_switch.set_active(app.main_config["mods"].getboolean("monsters"))
-		self.prefs_window.menu_switch.set_active(app.main_config["mods"].getboolean("menus"))
-		self.prefs_window.hud_switch.set_active(app.main_config["mods"].getboolean("hud"))
+		self.prefs_window.texture_checkbtn.set_active(app.main_config["mods"].getboolean("textures"))
+		self.prefs_window.object_checkbtn.set_active(app.main_config["mods"].getboolean("objects"))
+		self.prefs_window.monster_checkbtn.set_active(app.main_config["mods"].getboolean("monsters"))
+		self.prefs_window.menu_checkbtn.set_active(app.main_config["mods"].getboolean("menus"))
+		self.prefs_window.hud_checkbtn.set_active(app.main_config["mods"].getboolean("hud"))
 
 		# Help initialization
 		self.cheats_window.set_transient_for(self)
@@ -545,11 +545,11 @@ class MainWindow(Adw.ApplicationWindow):
 			app.main_config["paths"]["pwad_dir"] = pwad_dir
 			self.pwad_btn.set_default_folder(pwad_dir)
 
-		app.main_config["mods"]["textures"] = str(self.prefs_window.texture_switch.get_active())
-		app.main_config["mods"]["objects"] = str(self.prefs_window.object_switch.get_active())
-		app.main_config["mods"]["monsters"] = str(self.prefs_window.monster_switch.get_active())
-		app.main_config["mods"]["menus"] = str(self.prefs_window.menu_switch.get_active())
-		app.main_config["mods"]["hud"] = str(self.prefs_window.hud_switch.get_active())
+		app.main_config["mods"]["textures"] = str(self.prefs_window.texture_checkbtn.get_active())
+		app.main_config["mods"]["objects"] = str(self.prefs_window.object_checkbtn.get_active())
+		app.main_config["mods"]["monsters"] = str(self.prefs_window.monster_checkbtn.get_active())
+		app.main_config["mods"]["menus"] = str(self.prefs_window.menu_checkbtn.get_active())
+		app.main_config["mods"]["hud"] = str(self.prefs_window.hud_checkbtn.get_active())
 
 	#-----------------------------------
 	# Launch Zandronum function

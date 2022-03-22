@@ -280,6 +280,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	exec_btn = Gtk.Template.Child()
 	iwaddir_btn = Gtk.Template.Child()
 	pwaddir_btn = Gtk.Template.Child()
+	modgroup_checkbtn = Gtk.Template.Child()
 	texture_checkbtn = Gtk.Template.Child()
 	object_checkbtn = Gtk.Template.Child()
 	monster_checkbtn = Gtk.Template.Child()
@@ -295,6 +296,44 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.exec_btn.set_dialog_parent(self)
 		self.iwaddir_btn.set_dialog_parent(self)
 		self.pwaddir_btn.set_dialog_parent(self)
+
+		# Flags for check button toggle handlers
+		self.mod_is_changing = False
+		self.modgroup_is_changing = False
+
+	#-----------------------------------
+	# Signal handlers
+	#-----------------------------------
+	@Gtk.Template.Callback()
+	def on_modgroup_checkbtn_toggled(self, checkbutton):
+		if self.mod_is_changing == False:
+			self.modgroup_is_changing = True
+
+			self.modgroup_checkbtn.set_inconsistent(False)
+
+			self.texture_checkbtn.set_active(checkbutton.get_active())
+			self.object_checkbtn.set_active(checkbutton.get_active())
+			self.monster_checkbtn.set_active(checkbutton.get_active())
+			self.menu_checkbtn.set_active(checkbutton.get_active())
+			self.hud_checkbtn.set_active(checkbutton.get_active())
+
+			self.modgroup_is_changing = False
+
+	@Gtk.Template.Callback()
+	def on_mod_checkbtn_toggled(self, checkbutton):
+		if self.modgroup_is_changing == False:
+			btn_list = [self.texture_checkbtn, self.object_checkbtn, self.monster_checkbtn, self.menu_checkbtn, self.hud_checkbtn]
+			n_active = 0
+
+			for btn in btn_list:
+				if btn.get_active(): n_active += 1
+
+			self.mod_is_changing = True
+
+			self.modgroup_checkbtn.set_active(n_active == len(btn_list))
+			self.modgroup_checkbtn.set_inconsistent(n_active != 0 and n_active != len(btn_list))
+
+			self.mod_is_changing = False
 
 #------------------------------------------------------------------------------
 #-- CLASS: CHEATSWINDOW

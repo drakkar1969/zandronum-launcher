@@ -69,76 +69,96 @@
 					<object class="AdwPreferencesGroup">
 						<property name="title">Hi-Res Graphics</property>
 						<child>
-							<object class="AdwActionRow">
-								<property name="title">_Textures</property>
+							<object class="AdwExpanderRow">
+								<property name="title">Enable High Resolution _Graphics</property>
 								<property name="use_underline">True</property>
-								<property name="activatable_widget">texture_checkbtn</property>
-								<child>
-									<object class="GtkCheckButton" id="texture_checkbtn">
+								<child type="action">
+									<object class="GtkCheckButton" id="modgroup_checkbtn">
 										<property name="valign">center</property>
 										<style>
 											<class name="selection-mode"/>
 										</style>
+										<signal name="toggled" handler="on_modgroup_checkbtn_toggled" swapped="no"/>
 									</object>
 								</child>
-							</object>
-						</child>
-						<child>
-							<object class="AdwActionRow">
-								<property name="title">_Objects and Weapons</property>
-								<property name="use_underline">True</property>
-								<property name="activatable_widget">object_checkbtn</property>
 								<child>
-									<object class="GtkCheckButton" id="object_checkbtn">
-										<property name="valign">center</property>
-										<style>
-											<class name="selection-mode"/>
-										</style>
+									<object class="AdwActionRow">
+										<property name="title">_Textures</property>
+										<property name="use_underline">True</property>
+										<property name="activatable_widget">texture_checkbtn</property>
+										<child>
+											<object class="GtkCheckButton" id="texture_checkbtn">
+												<property name="valign">center</property>
+												<style>
+													<class name="selection-mode"/>
+												</style>
+												<signal name="toggled" handler="on_mod_checkbtn_toggled" swapped="no"/>
+											</object>
+										</child>
 									</object>
 								</child>
-							</object>
-						</child>
-						<child>
-							<object class="AdwActionRow">
-								<property name="title">_Monsters</property>
-								<property name="use_underline">True</property>
-								<property name="activatable_widget">monster_checkbtn</property>
 								<child>
-									<object class="GtkCheckButton" id="monster_checkbtn">
-										<property name="valign">center</property>
-										<style>
-											<class name="selection-mode"/>
-										</style>
+									<object class="AdwActionRow">
+										<property name="title">_Objects and Weapons</property>
+										<property name="use_underline">True</property>
+										<property name="activatable_widget">object_checkbtn</property>
+										<child>
+											<object class="GtkCheckButton" id="object_checkbtn">
+												<property name="valign">center</property>
+												<style>
+													<class name="selection-mode"/>
+												</style>
+												<signal name="toggled" handler="on_mod_checkbtn_toggled" swapped="no"/>
+											</object>
+										</child>
 									</object>
 								</child>
-							</object>
-						</child>
-						<child>
-							<object class="AdwActionRow">
-								<property name="title">_Screens and Menus</property>
-								<property name="use_underline">True</property>
-								<property name="activatable_widget">menu_checkbtn</property>
 								<child>
-									<object class="GtkCheckButton" id="menu_checkbtn">
-										<property name="valign">center</property>
-										<style>
-											<class name="selection-mode"/>
-										</style>
+									<object class="AdwActionRow">
+										<property name="title">_Monsters</property>
+										<property name="use_underline">True</property>
+										<property name="activatable_widget">monster_checkbtn</property>
+										<child>
+											<object class="GtkCheckButton" id="monster_checkbtn">
+												<property name="valign">center</property>
+												<style>
+													<class name="selection-mode"/>
+												</style>
+												<signal name="toggled" handler="on_mod_checkbtn_toggled" swapped="no"/>
+											</object>
+										</child>
 									</object>
 								</child>
-							</object>
-						</child>
-						<child>
-							<object class="AdwActionRow">
-								<property name="title">_HUD</property>
-								<property name="use_underline">True</property>
-								<property name="activatable_widget">hud_checkbtn</property>
 								<child>
-									<object class="GtkCheckButton" id="hud_checkbtn">
-										<property name="valign">center</property>
-										<style>
-											<class name="selection-mode"/>
-										</style>
+									<object class="AdwActionRow">
+										<property name="title">_Screens and Menus</property>
+										<property name="use_underline">True</property>
+										<property name="activatable_widget">menu_checkbtn</property>
+										<child>
+											<object class="GtkCheckButton" id="menu_checkbtn">
+												<property name="valign">center</property>
+												<style>
+													<class name="selection-mode"/>
+												</style>
+												<signal name="toggled" handler="on_mod_checkbtn_toggled" swapped="no"/>
+											</object>
+										</child>
+									</object>
+								</child>
+								<child>
+									<object class="AdwActionRow">
+										<property name="title">_HUD</property>
+										<property name="use_underline">True</property>
+										<property name="activatable_widget">hud_checkbtn</property>
+										<child>
+											<object class="GtkCheckButton" id="hud_checkbtn">
+												<property name="valign">center</property>
+												<style>
+													<class name="selection-mode"/>
+												</style>
+												<signal name="toggled" handler="on_mod_checkbtn_toggled" swapped="no"/>
+											</object>
+										</child>
 									</object>
 								</child>
 							</object>

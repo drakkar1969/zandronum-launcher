@@ -569,13 +569,11 @@ class MainWindow(Adw.ApplicationWindow):
 		if widget == self.params_switch:
 			self.params_expandrow.set_expanded(self.params_switch.get_active())
 
-		app.main_config["launcher"]["params_on"] = str(self.params_switch.get_active() and app.main_config["launcher"]["params"] != "")
+		app.main_config["launcher"]["params_on"] = str(self.params_switch.get_active())
 
 	@Gtk.Template.Callback()
 	def on_params_entry_changed(self, entry):
 		app.main_config["launcher"]["params"] = entry.get_text()
-
-		app.main_config["launcher"]["params_on"] = str(self.params_switch.get_active() and app.main_config["launcher"]["params"] != "")
 
 	@Gtk.Template.Callback()
 	def on_params_entry_clear(self, entry, icon):

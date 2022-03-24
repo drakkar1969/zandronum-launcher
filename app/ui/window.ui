@@ -94,7 +94,7 @@
 										</child>
 										<child>
 											<object class="AdwExpanderRow" id="params_expandrow">
-												<property name="title">_Additional Parameters</property>
+												<property name="title">Additional _Parameters</property>
 												<property name="use_underline">True</property>
 												<signal name="notify::expanded" handler="on_params_row_expanded" swapped="no"/>
 												<child type="action">

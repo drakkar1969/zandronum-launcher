@@ -100,7 +100,7 @@
 												<child type="action">
 													<object class="GtkSwitch" id="params_switch">
 														<property name="valign">center</property>
-														<signal name="notify::set_state" handler="on_params_row_expanded" swapped="no"/>
+														<signal name="notify::active" handler="on_params_row_expanded" swapped="no"/>
 													</object>
 												</child>
 												<child>

@@ -96,8 +96,13 @@
 											<object class="AdwExpanderRow" id="params_expandrow">
 												<property name="title">_Additional Parameters</property>
 												<property name="use_underline">True</property>
-												<property name="show_enable_switch">True</property>
-												<signal name="notify::enable-expansion" handler="on_params_row_enabled" swapped="no"/>
+												<signal name="notify::expanded" handler="on_params_row_expanded" swapped="no"/>
+												<child type="action">
+													<object class="GtkSwitch" id="params_switch">
+														<property name="valign">center</property>
+														<signal name="notify::set_state" handler="on_params_row_expanded" swapped="no"/>
+													</object>
+												</child>
 												<child>
 													<object class="AdwActionRow" id="params_listrow">
 														<property name="title">_Custom Switches</property>

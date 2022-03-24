@@ -427,6 +427,7 @@ class MainWindow(Adw.ApplicationWindow):
 	iwad_combo = Gtk.Template.Child()
 	pwad_btn = Gtk.Template.Child()
 	params_expandrow = Gtk.Template.Child()
+	params_switch = Gtk.Template.Child()
 	params_entry = Gtk.Template.Child()
 	launch_btn = Gtk.Template.Child()
 	toast_overlay = Gtk.Template.Child()
@@ -466,9 +467,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_btn.set_default_folder(app.main_config["paths"]["pwad_dir"])
 		self.pwad_btn.set_selected_files(app.main_config["launcher"]["file"])
 
-		enable_params = app.main_config["launcher"].getboolean("params_on")
-		self.params_expandrow.set_enable_expansion(enable_params)
-		self.params_expandrow.set_expanded(enable_params)
+		self.params_switch.set_active(app.main_config["launcher"].getboolean("params_on"))
 
 		self.params_entry.set_text(app.main_config["launcher"]["params"])
 
@@ -524,7 +523,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.iwad_combo.set_active(0)
 		self.pwad_btn.set_selected_files("")
 		self.params_entry.set_text("")
-		self.params_expandrow.set_enable_expansion(False)
+		self.params_switch.set_active(False)
 
 	def on_show_preferences_action(self, action, param, user_data):
 		self.prefs_window.show()
@@ -563,14 +562,20 @@ class MainWindow(Adw.ApplicationWindow):
 		pass
 
 	@Gtk.Template.Callback()
-	def on_params_row_enabled(self, exprow, prop_name):
-		app.main_config["launcher"]["params_on"] = str(exprow.get_enable_expansion() and app.main_config["launcher"]["params"] != "")
+	def on_params_row_expanded(self, widget, prop_name):
+		if widget == self.params_expandrow:
+			self.params_switch.set_active(self.params_expandrow.get_expanded())
+
+		if widget == self.params_switch:
+			self.params_expandrow.set_expanded(self.params_switch.get_active())
+
+		app.main_config["launcher"]["params_on"] = str(self.params_switch.get_active() and app.main_config["launcher"]["params"] != "")
 
 	@Gtk.Template.Callback()
 	def on_params_entry_changed(self, entry):
 		app.main_config["launcher"]["params"] = entry.get_text()
 
-		app.main_config["launcher"]["params_on"] = str(self.params_expandrow.get_enable_expansion() and app.main_config["launcher"]["params"] != "")
+		app.main_config["launcher"]["params_on"] = str(self.params_switch.get_active() and app.main_config["launcher"]["params"] != "")
 
 	@Gtk.Template.Callback()
 	def on_params_entry_clear(self, entry, icon):

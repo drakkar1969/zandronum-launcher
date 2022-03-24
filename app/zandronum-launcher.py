@@ -559,7 +559,6 @@ class MainWindow(Adw.ApplicationWindow):
 	@Gtk.Template.Callback()
 	def on_pwad_btn_files_changed(self, button):
 		app.main_config["launcher"]["file"] = button.get_selected_files()
-		pass
 
 	@Gtk.Template.Callback()
 	def on_params_row_expanded(self, widget, prop_name):

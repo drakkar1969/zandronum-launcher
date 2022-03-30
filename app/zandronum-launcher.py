@@ -751,5 +751,5 @@ class LauncherApp(Adw.Application):
 #------------------------------------------------------------------------------
 #-- MAIN APP
 #------------------------------------------------------------------------------
-app = LauncherApp(application_id="com.github.zandronumlauncher")
+app = LauncherApp(application_id="com.github.ZandronumLauncher")
 app.run(sys.argv)

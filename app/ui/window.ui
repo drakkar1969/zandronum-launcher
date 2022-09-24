@@ -93,33 +93,11 @@
 											</object>
 										</child>
 										<child>
-											<object class="AdwExpanderRow" id="params_expandrow">
-												<property name="title">Additional _Parameters</property>
+											<object class="AdwEntryRow" id="params_entryrow">
+												<property name="title">_Additional Switches (e.g. -warp 7 -skill 3)</property>
 												<property name="use_underline">True</property>
-												<signal name="notify::expanded" handler="on_params_row_expanded" swapped="no"/>
-												<child type="action">
-													<object class="GtkSwitch" id="params_switch">
-														<property name="valign">center</property>
-														<signal name="notify::active" handler="on_params_row_expanded" swapped="no"/>
-													</object>
-												</child>
-												<child>
-													<object class="AdwActionRow" id="params_listrow">
-														<property name="title">_Custom Switches</property>
-														<property name="use_underline">True</property>
-														<property name="activatable_widget">params_entry</property>
-														<child>
-															<object class="GtkEntry" id="params_entry">
-																<property name="valign">center</property>
-																<property name="width_request">350</property>
-																<property name="placeholder_text">e.g. -warp 7 -skill 3</property>
-																<property name="secondary_icon_name">edit-clear-symbolic</property>
-																<signal name="changed" handler="on_params_entry_changed" swapped="no"/>
-																<signal name="icon-press" handler="on_params_entry_clear" swapped="no"/>
-															</object>
-														</child>
-													</object>
-												</child>
+												<property name="activates_default">False</property>
+												<signal name="changed" handler="on_params_entryrow_changed" swapped="no"/>
 											</object>
 										</child>
 									</object>

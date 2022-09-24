@@ -426,9 +426,7 @@ class MainWindow(Adw.ApplicationWindow):
 	iwad_store = Gtk.Template.Child()
 	iwad_combo = Gtk.Template.Child()
 	pwad_btn = Gtk.Template.Child()
-	params_expandrow = Gtk.Template.Child()
-	params_switch = Gtk.Template.Child()
-	params_entry = Gtk.Template.Child()
+	params_entryrow = Gtk.Template.Child()
 	launch_btn = Gtk.Template.Child()
 	toast_overlay = Gtk.Template.Child()
 	prefs_window = Gtk.Template.Child()
@@ -467,9 +465,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_btn.set_default_folder(app.main_config["paths"]["pwad_dir"])
 		self.pwad_btn.set_selected_files(app.main_config["launcher"]["file"])
 
-		self.params_switch.set_active(app.main_config["launcher"].getboolean("params_on"))
-
-		self.params_entry.set_text(app.main_config["launcher"]["params"])
+		self.params_entryrow.set_text(app.main_config["launcher"]["params"])
 
 		self.set_focus(self.iwad_combo)
 
@@ -522,8 +518,7 @@ class MainWindow(Adw.ApplicationWindow):
 	def on_reset_widgets_action(self, action, param, user_data):
 		self.iwad_combo.set_active(0)
 		self.pwad_btn.set_selected_files("")
-		self.params_entry.set_text("")
-		self.params_switch.set_active(False)
+		self.params_entryrow.set_text("")
 
 	def on_show_preferences_action(self, action, param, user_data):
 		self.prefs_window.show()
@@ -558,22 +553,12 @@ class MainWindow(Adw.ApplicationWindow):
 		app.main_config["launcher"]["file"] = button.get_selected_files()
 
 	@Gtk.Template.Callback()
-	def on_params_row_expanded(self, widget, prop_name):
-		if widget == self.params_expandrow:
-			self.params_switch.set_active(self.params_expandrow.get_expanded())
-
-		if widget == self.params_switch:
-			self.params_expandrow.set_expanded(self.params_switch.get_active())
-
-		app.main_config["launcher"]["params_on"] = str(self.params_switch.get_active())
-
-	@Gtk.Template.Callback()
-	def on_params_entry_changed(self, entry):
+	def on_params_entryrow_changed(self, entry):
 		app.main_config["launcher"]["params"] = entry.get_text()
 
-	@Gtk.Template.Callback()
-	def on_params_entry_clear(self, entry, icon):
-		self.params_entry.set_text("")
+	# @Gtk.Template.Callback()
+	# def on_params_entry_clear(self, entry, icon):
+	# 	self.params_entry.set_text("")
 
 	@Gtk.Template.Callback()
 	def on_launch_btn_clicked(self, button):
@@ -648,7 +633,7 @@ class MainWindow(Adw.ApplicationWindow):
 				cmdline += f' -file "{wad_file}"'
 
 		# Add extra params if present and enabled
-		if app.main_config["launcher"].getboolean("params_on") == True and app.main_config["launcher"]["params"] != "":
+		if app.main_config["launcher"]["params"] != "":
 			cmdline += f' {app.main_config["launcher"]["params"]}'
 
 		# Launch Zandronum
@@ -710,8 +695,7 @@ class LauncherApp(Adw.Application):
 			"launcher": {
 				"iwad": "",
 				"file": "",
-				"params": "",
-				"params_on": "False"
+				"params": ""
 			},
 			"paths": {
 				"exec_file": self.default_exec_file,

@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=Zandronum-Launcher
 GenericName=Zandronum-Launcher
 Comment=Custom Zandronum launcher with WAD selection
@@ -8,4 +7,4 @@ Icon=zandronum
 StartupNotify=true
 Terminal=false
 Type=Application
-Categories=Application;Game
+Categories=Game;Shooter

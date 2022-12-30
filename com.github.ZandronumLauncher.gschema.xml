@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="com.github.ZandronumLauncher" path="/com/github/ZandronumLauncher/">
+    <key name="executable-file" type="s">
+      <default>'/usr/bin/zandronum'</default>
+      <summary>Path to Zandronum executable</summary>
+    </key>
+    <key name="iwad-folder" type="s">
+      <default>'$HOME/.config/zandronum/iwads'</default>
+      <summary>Folder to search for game (IWAD) files</summary>
+    </key>
+    <key name="pwad-folder" type="s">
+      <default>'$HOME/.config/zandronum/pwads'</default>
+      <summary>Folder to search for additional files</summary>
+    </key>
+    <key name="mods-folder" type="s">
+      <default>'$HOME/.config/zandronum/mods'</default>
+      <summary>Folder to search for hi-res graphics files</summary>
+    </key>
+    <key name="selected-iwad" type="s">
+      <default>''</default>
+      <summary>Selected game (IWAD) file</summary>
+    </key>
+    <key name="enable-texture-mods" type="b">
+      <default>true</default>
+      <summary>Enable hi-res texture graphics</summary>
+    </key>
+    <key name="enable-object-mods" type="b">
+      <default>true</default>
+      <summary>Enable hi-res object graphics</summary>
+    </key>
+    <key name="enable-monster-mods" type="b">
+      <default>true</default>
+      <summary>Enable hi-res monster graphics</summary>
+    </key>
+    <key name="enable-menu-mods" type="b">
+      <default>true</default>
+      <summary>Enable hi-res menu graphics</summary>
+    </key>
+    <key name="enable-hud-mods" type="b">
+      <default>true</default>
+      <summary>Enable hi-res HUD graphics</summary>
+    </key>
+    <key name="pwad-files" type="as">
+      <default>[]</default>
+      <summary>Additional (optional) files to load with the main game file</summary>
+    </key>
+    <key name="extra-parameters" type="s">
+      <default>''</default>
+      <summary>Extra parameters to pass to Zandronum</summary>
+    </key>
+  </schema>
+</schemalist>

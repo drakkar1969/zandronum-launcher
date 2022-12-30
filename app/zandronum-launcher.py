@@ -1,20 +1,32 @@
 #!/usr/bin/env python
 
-import gi, sys, os, configparser, subprocess, shlex, json
+import gi, sys, os, json, subprocess, shlex
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw, Gio, GObject
+from gi.repository import Gtk, Adw, Gio, GObject, Pango
 
-# Global path variables
+# Global path variable
 app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
-ui_dir = os.path.join(app_dir, "ui")
+
+# Global gresource file
+gresource = Gio.Resource.load(os.path.join(app_dir, "com.github.ZandronumLauncher.gresource"))
+gresource._register()
 
 #------------------------------------------------------------------------------
-#-- CLASS: FILEDIALOGBUTTON
+#-- CLASS: DIALOGSELECTROW
 #------------------------------------------------------------------------------
-@Gtk.Template(filename=os.path.join(ui_dir, "filedialogbutton.ui"))
-class FileDialogButton(Gtk.Box):
-	__gtype_name__ = "FileDialogButton"
+@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/dialogselectrow.ui")
+class DialogSelectRow(Adw.ActionRow):
+	__gtype_name__ = "DialogSelectRow"
+
+	#-----------------------------------
+	# Class widget variables
+	#-----------------------------------
+	label = Gtk.Template.Child()
+	image = Gtk.Template.Child()
+	file_btn = Gtk.Template.Child()
+	clear_btn = Gtk.Template.Child()
+	reset_btn = Gtk.Template.Child()
 
 	#-----------------------------------
 	# Button signals
@@ -26,19 +38,9 @@ class FileDialogButton(Gtk.Box):
 	#-----------------------------------
 	# Button properties
 	#-----------------------------------
-	_icon_name = ""
-	_folder_select = False
-	_can_clear = False
-	_can_reset = False
-	_is_linked = True
-
-	# Simple properties
-	dialog_parent = GObject.Property(type=Gtk.Window, default=None)
-	title = GObject.Property(type=str, default="Open File")
-	file_filter = GObject.Property(type=Gtk.FileFilter, default=None)
-	multi_select = GObject.Property(type=bool, default=False)
-
 	# icon_name property
+	_icon_name = ""
+
 	@GObject.Property(type=str, default="")
 	def icon_name(self):
 		return(self._icon_name)
@@ -53,6 +55,8 @@ class FileDialogButton(Gtk.Box):
 			self.image.set_from_icon_name(self._icon_name)
 
 	# folder_select property
+	_folder_select = False
+
 	@GObject.Property(type=bool, default=False)
 	def folder_select(self):
 		return(self._folder_select)
@@ -65,6 +69,8 @@ class FileDialogButton(Gtk.Box):
 			self.image.set_from_icon_name("folder-symbolic" if self._folder_select == True else "document-open-symbolic")
 
 	# can_clear property
+	_can_clear = False
+
 	@GObject.Property(type=bool, default=False)
 	def can_clear(self):
 		return(self._can_clear)
@@ -76,6 +82,8 @@ class FileDialogButton(Gtk.Box):
 		self.clear_btn.set_visible(self._can_clear)
 
 	# can_reset property
+	_can_reset = False
+
 	@GObject.Property(type=bool, default=False)
 	def can_reset(self):
 		return(self._can_reset)
@@ -86,81 +94,49 @@ class FileDialogButton(Gtk.Box):
 
 		self.reset_btn.set_visible(self._can_reset)
 
-	# is_linked property
-	@GObject.Property(type=bool, default=True)
-	def is_linked(self):
-		return(self._is_linked)
-
-	@is_linked.setter
-	def is_linked(self, value):
-		self._is_linked = value
-
-		if self._is_linked == True:
-			self.add_css_class("linked")
-			self.set_spacing(0)
-			self.clear_btn.remove_css_class("flat")
-			self.reset_btn.remove_css_class("flat")
-		else:
-			self.remove_css_class("linked")
-			self.set_spacing(6)
-			self.clear_btn.add_css_class("flat")
-			self.reset_btn.add_css_class("flat")
-
 	#-----------------------------------
 	# File properties
 	#-----------------------------------
-	_gfile_default_folder = None
-	_gfile_default_file = None
-	_gstore_selected_files = None
+	# base_folder property
+	base_folder = GObject.Property(type=str, default="")
 
-	# default_folder property
-	@GObject.Property(type=str, default="")
-	def default_folder(self):
-		return(self._gfile_default_folder.get_path() if self._gfile_default_folder is not None else "")
-
-	@default_folder.setter
-	def default_folder(self, value):
-		self._gfile_default_folder = Gio.File.new_for_path(value) if value != "" else None
+	def set_base_folder(self, value):
+		self.base_folder = value
 
 	# default_file property
+	_default_file = ""
+
 	@GObject.Property(type=str, default="")
 	def default_file(self):
-		return(self._gfile_default_file.get_path() if self._gfile_default_file is not None else "")
+		return(self._default_file)
 
 	@default_file.setter
 	def default_file(self, value):
-		self._gfile_default_file = Gio.File.new_for_path(value) if value != "" else None
+		self._default_file = value
 
 		self.set_reset_btn_state()
 
+	def set_default_file(self, value):
+		self.default_file = value
+
 	# selected_files property
-	@GObject.Property(type=str, default="")
+	_selected_files = []
+
+	@GObject.Property(type=GObject.TYPE_STRV, default=[])
 	def selected_files(self):
-		filelist = []
-
-		for i in range(self._gstore_selected_files.get_n_items()):
-			gfile = self._gstore_selected_files.get_item(i)
-
-			if gfile is not None: filelist.append(gfile.get_path())
-
-		return(",".join(filelist))
+		return(self._selected_files)
 
 	@selected_files.setter
 	def selected_files(self, value):
-		self._gstore_selected_files.remove_all()
+		self._selected_files = value
 
-		if value != "":
-			for f in value.split(","):
-				if f != "": self._gstore_selected_files.append(Gio.File.new_for_path(f))
-
-		n_files = self._gstore_selected_files.get_n_items()
+		n_files = len(self._selected_files)
 
 		if n_files == 0:
 			self.label.set_text("(None)")
 		else:
 			if n_files == 1:
-				gfile = self._gstore_selected_files.get_item(0)
-				self.label.set_text(gfile.get_basename() if gfile is not None else "(None)")
+				self.label.set_text(os.path.basename(self.selected_files[0]))
 			else:
 				self.label.set_text(f"({n_files} files)")
 
@@ -169,24 +145,38 @@ class FileDialogButton(Gtk.Box):
 
 		self.emit("files-changed")
 
+	def get_selected_files(self):
+		return(self.selected_files)
+
+	def get_selected_file(self):
+		return(self.selected_files[0] if len(self.selected_files) > 0 else "")
+
+	def set_selected_files(self, value):
+		self.selected_files = value
+
+	def set_selected_file(self, value):
+		self.selected_files = [value]
+
 	# Helper functions
 	def set_clear_btn_state(self):
-		self.clear_btn.set_sensitive(self._gstore_selected_files.get_n_items() != 0)
+		self.clear_btn.set_sensitive(len(self._selected_files) != 0)
 
 	def set_reset_btn_state(self):
-		if self._gfile_default_file is None:
+		if self._default_file == "" or len(self._selected_files) != 1:
 			self.reset_btn.set_sensitive(False)
 		else:
-			self.reset_btn.set_sensitive(self.default_file != self.selected_files)
+			self.reset_btn.set_sensitive(self._default_file != self._selected_files[0])
 
 	#-----------------------------------
-	# Class widget variables
+	# Dialog properties
 	#-----------------------------------
-	image = Gtk.Template.Child()
-	label = Gtk.Template.Child()
-	file_btn = Gtk.Template.Child()
-	clear_btn = Gtk.Template.Child()
-	reset_btn = Gtk.Template.Child()
+	dialog_parent = GObject.Property(type=Gtk.Window, default=None)
+	dialog_title = GObject.Property(type=str, default="Open File")
+	dialog_multi_select = GObject.Property(type=bool, default=False)
+	dialog_file_filter = GObject.Property(type=Gtk.FileFilter, default=None)
+
+	def set_dialog_parent(self, value):
+		self.dialog_parent = value
 
 	#-----------------------------------
 	# Init function
@@ -200,26 +190,21 @@ class FileDialogButton(Gtk.Box):
 	# Signal handlers
 	#-----------------------------------
 	@Gtk.Template.Callback()
-	def on_activate(self, button, group_cycling):
-		self.file_btn.activate()
-
-	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
-		self.dialog = Gtk.FileChooserNative(title=self.title, transient_for=self.dialog_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN)
+		self.dialog = Gtk.FileChooserNative(title=self.dialog_title, transient_for=self.dialog_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN)
 
 		self.dialog.set_modal(True)
+		self.dialog.set_accept_label("_Select")
 
-		self.dialog.set_select_multiple(self.multi_select)
+		self.dialog.set_select_multiple(self.dialog_multi_select)
 
-		if self.file_filter is not None: self.dialog.add_filter(self.file_filter)
+		if self.dialog_file_filter is not None: self.dialog.add_filter(self.dialog_file_filter)
 
-		if self._gstore_selected_files.get_n_items() != 0:
-			self.dialog.set_file(self._gstore_selected_files.get_item(0))
+		if len(self._selected_files) > 0:
+			self.dialog.set_file(Gio.File.new_for_path(self._selected_files[0]))
 		else:
-			if self._gfile_default_folder is not None:
-				self.dialog.set_current_folder(self._gfile_default_folder)
-
-		if self._folder_select == True: self.dialog.set_accept_label("_Select")
+			if self.base_folder != "":
+				self.dialog.set_current_folder(Gio.File.new_for_path(self.base_folder))
 
 		self.dialog.connect("response", self.on_dialog_response)
 
@@ -227,65 +212,37 @@ class FileDialogButton(Gtk.Box):
 
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
-			gfiles = dialog.get_files()
-
-			if gfiles is not None:
-				filelist = []
-
-				for i in range(gfiles.get_n_items()):
-					gfile = gfiles.get_item(i)
-
-					if gfile is not None: filelist.append(gfile.get_path())
-
-				self.selected_files = ",".join(filelist)
-
-		self.dialog = None
+			self.selected_files = [gfile.get_path() for gfile in dialog.get_files() if gfile is not None]
 
 	@Gtk.Template.Callback()
 	def on_clear_btn_clicked(self, button):
-		self.selected_files = ""
+		self.selected_files = []
 
 	@Gtk.Template.Callback()
 	def on_reset_btn_clicked(self, button):
-		self.selected_files = self.default_file
-
-	#-----------------------------------
-	# Property helper functions
-	#-----------------------------------
-	def set_dialog_parent(self, value):
-		self.dialog_parent = value
-
-	def set_default_folder(self, value):
-		if self.default_folder != value: self.default_folder = value
-		
-	def set_selected_files(self, value):
-		if self.selected_files != value: self.selected_files = value
-
-	def get_selected_files(self):
-		return(self.selected_files)
-
-	def set_default_file(self, value):
-		if self.default_file != value: self.default_file = value
+		self.selected_files = [self._default_file]
 
 #------------------------------------------------------------------------------
 #-- CLASS: PREFERENCESWINDOW
 #------------------------------------------------------------------------------
-@Gtk.Template(filename=os.path.join(ui_dir, "preferences.ui"))
+@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/preferences.ui")
 class PreferencesWindow(Adw.PreferencesWindow):
 	__gtype_name__ = "PreferencesWindow"
 
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
-	exec_btn = Gtk.Template.Child()
-	iwaddir_btn = Gtk.Template.Child()
-	pwaddir_btn = Gtk.Template.Child()
-	modgroup_checkbtn = Gtk.Template.Child()
-	texture_checkbtn = Gtk.Template.Child()
-	object_checkbtn = Gtk.Template.Child()
-	monster_checkbtn = Gtk.Template.Child()
-	menu_checkbtn = Gtk.Template.Child()
-	hud_checkbtn = Gtk.Template.Child()
+	exec_selectrow = Gtk.Template.Child()
+	iwaddir_selectrow = Gtk.Template.Child()
+	pwaddir_selectrow = Gtk.Template.Child()
+	moddir_selectrow = Gtk.Template.Child()
+
+	modgroup_check = Gtk.Template.Child()
+	texture_check = Gtk.Template.Child()
+	object_check = Gtk.Template.Child()
+	monster_check = Gtk.Template.Child()
+	menu_check = Gtk.Template.Child()
+	hud_check = Gtk.Template.Child()
 
 	#-----------------------------------
 	# Init function
@@ -293,9 +250,10 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		self.exec_btn.set_dialog_parent(self)
-		self.iwaddir_btn.set_dialog_parent(self)
-		self.pwaddir_btn.set_dialog_parent(self)
+		self.exec_selectrow.set_dialog_parent(self)
+		self.iwaddir_selectrow.set_dialog_parent(self)
+		self.pwaddir_selectrow.set_dialog_parent(self)
+		self.moddir_selectrow.set_dialog_parent(self)
 
 		# Flags for check button toggle handlers
 		self.mod_is_changing = False
@@ -305,40 +263,38 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	# Signal handlers
 	#-----------------------------------
 	@Gtk.Template.Callback()
-	def on_modgroup_checkbtn_toggled(self, checkbutton):
+	def on_modgroup_check_toggled(self, checkbutton):
 		if self.mod_is_changing == False:
 			self.modgroup_is_changing = True
 
-			self.modgroup_checkbtn.set_inconsistent(False)
+			self.modgroup_check.set_inconsistent(False)
 
-			self.texture_checkbtn.set_active(checkbutton.get_active())
-			self.object_checkbtn.set_active(checkbutton.get_active())
-			self.monster_checkbtn.set_active(checkbutton.get_active())
-			self.menu_checkbtn.set_active(checkbutton.get_active())
-			self.hud_checkbtn.set_active(checkbutton.get_active())
+			self.texture_check.set_active(checkbutton.get_active())
+			self.object_check.set_active(checkbutton.get_active())
+			self.monster_check.set_active(checkbutton.get_active())
+			self.menu_check.set_active(checkbutton.get_active())
+			self.hud_check.set_active(checkbutton.get_active())
 
 			self.modgroup_is_changing = False
 
 	@Gtk.Template.Callback()
-	def on_mod_checkbtn_toggled(self, checkbutton):
+	def on_mod_check_toggled(self, checkbutton):
 		if self.modgroup_is_changing == False:
-			btn_list = [self.texture_checkbtn, self.object_checkbtn, self.monster_checkbtn, self.menu_checkbtn, self.hud_checkbtn]
-			n_active = 0
+			btn_list = [self.texture_check, self.object_check, self.monster_check, self.menu_check, self.hud_check]
 
-			for btn in btn_list:
-				if btn.get_active(): n_active += 1
+			on_list = [1 for btn in btn_list if btn.get_active()]
 
 			self.mod_is_changing = True
 
-			self.modgroup_checkbtn.set_active(n_active == len(btn_list))
-			self.modgroup_checkbtn.set_inconsistent(n_active != 0 and n_active != len(btn_list))
+			self.modgroup_check.set_active(len(on_list) == len(btn_list))
+			self.modgroup_check.set_inconsistent(len(on_list) != 0 and len(on_list) != len(btn_list))
 
 			self.mod_is_changing = False
 
 #------------------------------------------------------------------------------
 #-- CLASS: CHEATSWINDOW
 #------------------------------------------------------------------------------
-@Gtk.Template(filename=os.path.join(ui_dir, "cheats.ui"))
+@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/cheats.ui")
 class CheatsWindow(Adw.PreferencesWindow):
 	__gtype_name__ = "CheatsWindow"
 
@@ -356,14 +312,14 @@ class CheatsWindow(Adw.PreferencesWindow):
 
 		doom_switches = {
 			"Switch": "Description",
-			"-fast": "Increases the speed and attack rate of\nmonsters. Requires the -warp parameter.",
-			"-nomonsters": "Disable spawning of monsters. Requires\nthe -warp parameter.",
+			"-fast": "Increases the speed and attack rate of monsters. Requires the -warp parameter.",
+			"-nomonsters": "Disable spawning of monsters. Requires the -warp parameter.",
 			"-nomusic": "Disable background music",
 			"-nosfx": "Disable sound effects",
 			"-nosound": "Disable music and sound effects",
-			"-respawn": "Monsters return a few seconds after being\nkilled. Requires the -warp parameter.",
-			"-skill <s>": "Select difficulty level <s> (1 to 5). This\nparameter will warp to the first level of\nthe game (if no other -warp parameter\nis specified).",
-			"-warp <m>\n-warp <e> <m>": "Start the game on level <m> (1 to 32).\nFor Ultimate Doom and Freedoom Phase\n1, both episode <e> (1 to 4) and map <m>\n(1 to 9) must be specified, separated by\na space.",
+			"-respawn": "Monsters return a few seconds after being killed. Requires the -warp parameter.",
+			"-skill <s>": "Select difficulty level <s> (1 to 5). This parameter will warp to the first level of the game (if no other -warp parameter is specified).",
+			"-warp <m>\n-warp <e> <m>": "Start the game on level <m> (1 to 32). For Ultimate Doom and Freedoom Phase 1, both episode <e> (1 to 4) and map <m> (1 to 9) must be specified, separated by a space.",
 			"-width x\n-height y": "Specify desired screen resolution."
 		}
 
@@ -385,50 +341,47 @@ class CheatsWindow(Adw.PreferencesWindow):
 			"IDMYPOS": "Display location"
 		}
 
-		row = 0
-
-		for key, value in doom_switches.items():
+		for i, key in enumerate(doom_switches):
 			param_label = Gtk.Label(label=key, halign=Gtk.Align.START)
-			self.switches_grid.attach(param_label, 0, row, 1, 1)
-			if row == 0: param_label.add_css_class("heading")
+			self.switches_grid.attach(param_label, 0, i, 1, 1)
+
+			if i == 0: param_label.add_css_class("heading")
 			else: param_label.set_selectable(True)
 
-			desc_label = Gtk.Label(label=value, halign=Gtk.Align.START)
-			self.switches_grid.attach(desc_label, 1, row, 1, 1)
-			if row == 0: desc_label.add_css_class("heading")
+			desc_label = Gtk.Label(label=doom_switches[key], halign=Gtk.Align.START, wrap_mode=Pango.WrapMode.WORD, wrap=True, width_chars=40, max_width_chars=40, xalign=0)
+			self.switches_grid.attach(desc_label, 1, i, 1, 1)
 
-			row += 1
+			if i == 0: desc_label.add_css_class("heading")
 
-		row = 0
-
-		for key, value in doom_cheats.items():
+		for i, key in enumerate(doom_cheats):
 			cheat_label = Gtk.Label(label=key, halign=Gtk.Align.START)
-			self.cheats_grid.attach(cheat_label, 0, row, 1, 1)
-			if row == 0: cheat_label.add_css_class("heading")
+			self.cheats_grid.attach(cheat_label, 0, i, 1, 1)
 
-			effect_label = Gtk.Label(label=value, halign=Gtk.Align.START)
-			self.cheats_grid.attach(effect_label, 1, row, 1, 1)
-			if row == 0: effect_label.add_css_class("heading")
+			if i == 0: cheat_label.add_css_class("heading")
 
-			row += 1
+			effect_label = Gtk.Label(label=doom_cheats[key], halign=Gtk.Align.START)
+			self.cheats_grid.attach(effect_label, 1, i, 1, 1)
+
+			if i == 0: effect_label.add_css_class("heading")
 
 #------------------------------------------------------------------------------
 #-- CLASS: MAINWINDOW
 #------------------------------------------------------------------------------
-@Gtk.Template(filename=os.path.join(ui_dir, "window.ui"))
+@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/window.ui")
 class MainWindow(Adw.ApplicationWindow):
 	__gtype_name__ = "MainWindow"
 
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
-	shortcut_window = Gtk.Template.Child()
-	iwad_store = Gtk.Template.Child()
-	iwad_combo = Gtk.Template.Child()
-	pwad_btn = Gtk.Template.Child()
+	iwad_comborow = Gtk.Template.Child()
+	iwad_stringlist = Gtk.Template.Child()
+	pwad_selectrow = Gtk.Template.Child()
 	params_entryrow = Gtk.Template.Child()
+	params_clearbtn = Gtk.Template.Child()
 	launch_btn = Gtk.Template.Child()
-	toast_overlay = Gtk.Template.Child()
+
+	shortcut_window = Gtk.Template.Child()
 	prefs_window = Gtk.Template.Child()
 	cheats_window = Gtk.Template.Child()
 
@@ -440,7 +393,6 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Shortcut window
 		self.set_help_overlay(self.shortcut_window)
-		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 
 		# Actions
 		action_list = [
@@ -453,71 +405,75 @@ class MainWindow(Adw.ApplicationWindow):
 
 		self.add_action_entries(action_list)
 
+		# Keyboard shortcuts
 		app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
 		app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])
+		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 		app.set_accels_for_action("win.show-cheats", ["F1"])
 		app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
 
 		# Widget initialization
-		self.populate_iwad_combo(app.main_config["launcher"]["iwad"])
+		self.populate_iwad_comborow(app.iwad_selected)
 
-		self.pwad_btn.set_dialog_parent(self)
-		self.pwad_btn.set_default_folder(app.main_config["paths"]["pwad_dir"])
-		self.pwad_btn.set_selected_files(app.main_config["launcher"]["file"])
+		self.pwad_selectrow.set_dialog_parent(self)
+		self.pwad_selectrow.set_base_folder(app.pwad_folder)
+		self.pwad_selectrow.set_selected_files(app.pwad_files)
 
-		self.params_entryrow.set_text(app.main_config["launcher"]["params"])
+		self.params_entryrow.set_text(app.extra_params)
 
-		self.set_focus(self.iwad_combo)
+		self.set_focus(self.iwad_comborow)
 
 		# Preferences initialization
 		self.prefs_window.set_transient_for(self)
 
-		self.prefs_window.exec_btn.set_default_file(app.default_exec_file)
-		self.prefs_window.exec_btn.set_selected_files(app.main_config["paths"]["exec_file"])
+		self.prefs_window.exec_selectrow.set_default_file(app.default_exec_file)
+		self.prefs_window.exec_selectrow.set_selected_file(app.exec_file)
 
-		self.prefs_window.iwaddir_btn.set_default_file(app.default_iwad_dir)
-		self.prefs_window.iwaddir_btn.set_selected_files(app.main_config["paths"]["iwad_dir"])
+		self.prefs_window.iwaddir_selectrow.set_default_file(app.default_iwad_folder)
+		self.prefs_window.iwaddir_selectrow.set_selected_file(app.iwad_folder)
 
-		self.prefs_window.pwaddir_btn.set_default_file(app.default_pwad_dir)
-		self.prefs_window.pwaddir_btn.set_selected_files(app.main_config["paths"]["pwad_dir"])
+		self.prefs_window.pwaddir_selectrow.set_default_file(app.default_pwad_folder)
+		self.prefs_window.pwaddir_selectrow.set_selected_file(app.pwad_folder)
 
-		self.prefs_window.texture_checkbtn.set_active(app.main_config["mods"].getboolean("textures"))
-		self.prefs_window.object_checkbtn.set_active(app.main_config["mods"].getboolean("objects"))
-		self.prefs_window.monster_checkbtn.set_active(app.main_config["mods"].getboolean("monsters"))
-		self.prefs_window.menu_checkbtn.set_active(app.main_config["mods"].getboolean("menus"))
-		self.prefs_window.hud_checkbtn.set_active(app.main_config["mods"].getboolean("hud"))
+		self.prefs_window.moddir_selectrow.set_default_file(app.default_mods_folder)
+		self.prefs_window.moddir_selectrow.set_selected_file(app.mods_folder)
+
+		self.prefs_window.texture_check.set_active(app.mods_textures)
+		self.prefs_window.object_check.set_active(app.mods_objects)
+		self.prefs_window.monster_check.set_active(app.mods_monsters)
+		self.prefs_window.menu_check.set_active(app.mods_menus)
+		self.prefs_window.hud_check.set_active(app.mods_hud)
 
 		# Help initialization
 		self.cheats_window.set_transient_for(self)
 
-	# Add IWADs to combo
-	def populate_iwad_combo(self, iwad_selected):
-		if iwad_selected is None: iwad_selected = ""
+	# Add IWADs to comborow
+	def populate_iwad_comborow(self, iwad_selected):
+		# Find iwad files in iwad folder and convert to lower case
+		iwad_files = list(map(str.lower, os.listdir(app.iwad_folder)))
 
-		self.iwad_store.set_sort_column_id(Gtk.TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, Gtk.SortType.ASCENDING)
+		# Get sorted list of iwad names from found iwad files
+		iwad_names = [k for k,v in app.doom_iwads.items() if v["iwad"] in iwad_files]
+		iwad_names.sort()
 
-		self.iwad_store.clear()
+		# Clear iwad stringlist and add iwad names
+		self.iwad_stringlist.splice(0, len(self.iwad_stringlist), iwad_names)
 
-		with os.scandir(app.main_config["paths"]["iwad_dir"]) as filelist:
-			for f in filelist:
-				iwad_lc = f.name.lower()
+		# Set selected iwad
+		try:
+			self.iwad_comborow.set_selected(iwad_names.index(iwad_selected))
+		except:
+			self.iwad_comborow.set_selected(0)
 
-				if iwad_lc in app.doom_iwads:
-					self.iwad_store.insert_with_values(-1, [0, 1], [app.doom_iwads[iwad_lc]["name"], iwad_lc])
-
-		self.iwad_store.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-
-		if self.iwad_combo.set_active_id(iwad_selected) == False:
-			self.iwad_combo.set_active(0)
-
-		self.launch_btn.set_sensitive(self.iwad_combo.get_active_id() is not None)
+		# Set launch button state
+		self.launch_btn.set_sensitive(self.iwad_comborow.get_selected_item() is not None)
 
 	#-----------------------------------
 	# Action handlers
 	#-----------------------------------
 	def on_reset_widgets_action(self, action, param, user_data):
-		self.iwad_combo.set_active(0)
-		self.pwad_btn.set_selected_files("")
+		self.iwad_comborow.set_selected(0)
+		self.pwad_selectrow.set_selected_files([])
 		self.params_entryrow.set_text("")
 
 	def on_show_preferences_action(self, action, param, user_data):
@@ -531,7 +487,10 @@ class MainWindow(Adw.ApplicationWindow):
 			application_name="Zandronum Launcher",
 			application_icon="zandronum",
 			developer_name="draKKar1969",
-			version="1.1.0",
+			version="1.2.0",
+			developers=["draKKar1969"],
+			designers=["draKKar1969"],
+			license_type=Gtk.License.GPL_3_0,
 			transient_for=self)
 
 		about_window.show()
@@ -543,22 +502,24 @@ class MainWindow(Adw.ApplicationWindow):
 	# Signal handlers
 	#-----------------------------------
 	@Gtk.Template.Callback()
-	def on_iwad_combo_changed(self, combo):
-		iwad_selected = combo.get_active_id()
-
-		app.main_config["launcher"]["iwad"] = iwad_selected if iwad_selected is not None else ""
+	def on_iwad_combo_changed(self, combo, param):
+		if iwad_selected := combo.get_selected_item():
+			app.iwad_selected = iwad_selected.get_string()
 
 	@Gtk.Template.Callback()
-	def on_pwad_btn_files_changed(self, button):
-		app.main_config["launcher"]["file"] = button.get_selected_files()
+	def on_pwad_selectrow_files_changed(self, button):
+		app.pwad_files = button.get_selected_files()
 
 	@Gtk.Template.Callback()
 	def on_params_entryrow_changed(self, entry):
-		app.main_config["launcher"]["params"] = entry.get_text()
+		extra_params = entry.get_text()
+		app.extra_params = extra_params
 
-	# @Gtk.Template.Callback()
-	# def on_params_entry_clear(self, entry, icon):
-	# 	self.params_entry.set_text("")
+		self.params_clearbtn.set_visible(extra_params != "")
+
+	@Gtk.Template.Callback()
+	def on_params_clearbtn_clicked(self, button):
+		self.params_entryrow.set_text("")
 
 	@Gtk.Template.Callback()
 	def on_launch_btn_clicked(self, button):
@@ -569,165 +530,205 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_prefs_window_close(self, window):
-		app.main_config["paths"]["exec_file"] = self.prefs_window.exec_btn.get_selected_files()
+		if (exec_file := window.exec_selectrow.get_selected_file()) != app.exec_file:
+			app.exec_file = exec_file
 
-		iwad_dir = self.prefs_window.iwaddir_btn.get_selected_files()
+		if (iwad_folder := window.iwaddir_selectrow.get_selected_file()) != app.iwad_folder:
+			app.iwad_folder = iwad_folder
+			self.populate_iwad_comborow(app.iwad_selected)
 
-		if iwad_dir != app.main_config["paths"]["iwad_dir"]:
-			app.main_config["paths"]["iwad_dir"] = iwad_dir
-			self.populate_iwad_combo(self.iwad_combo.get_active_id())
+		if (pwad_folder := window.pwaddir_selectrow.get_selected_file()) != app.pwad_folder:
+			app.pwad_folder = pwad_folder
+			self.pwad_selectrow.set_base_folder(pwad_folder)
 
-		pwad_dir = self.prefs_window.pwaddir_btn.get_selected_files()
+		if(mods_folder := window.moddir_selectrow.get_selected_file()) != app.mods_folder:
+			app.mods_folder = mods_folder
 
-		if pwad_dir != app.main_config["paths"]["pwad_dir"]:
-			app.main_config["paths"]["pwad_dir"] = pwad_dir
-			self.pwad_btn.set_default_folder(pwad_dir)
+		if (mods_textures := window.texture_check.get_active()) != app.mods_textures:
+			app.mods_textures = mods_textures
 
-		app.main_config["mods"]["textures"] = str(self.prefs_window.texture_checkbtn.get_active())
-		app.main_config["mods"]["objects"] = str(self.prefs_window.object_checkbtn.get_active())
-		app.main_config["mods"]["monsters"] = str(self.prefs_window.monster_checkbtn.get_active())
-		app.main_config["mods"]["menus"] = str(self.prefs_window.menu_checkbtn.get_active())
-		app.main_config["mods"]["hud"] = str(self.prefs_window.hud_checkbtn.get_active())
+		if (mods_objects := window.object_check.get_active()) != app.mods_objects:
+			app.mods_objects = mods_objects
+	
+		if (mods_monsters := window.monster_check.get_active()) != app.mods_monsters:
+			app.mods_monsters = mods_monsters
+
+		if (mods_menus := window.menu_check.get_active()) != app.mods_menus:
+			app.mods_menus = mods_menus
+
+		if (mods_hud := window.hud_check.get_active()) != app.mods_hud:
+			app.mods_hud = mods_hud
 
 	#-----------------------------------
 	# Launch Zandronum function
 	#-----------------------------------
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
-		if os.path.exists(app.main_config["paths"]["exec_file"]) == False:
-			self.show_toast('ERROR: Zandronum executable not found')
+		if os.path.exists(app.exec_file) == False:
+			print('ERROR: Zandronum executable not found')
 			return(False)
 
 		# Initialize Zandronum command line with executable
-		cmdline = app.main_config["paths"]["exec_file"]
+		cmdline = app.exec_file
 
 		# Return with error if IWAD name is empty
-		if app.main_config["launcher"]["iwad"] == "":
-			self.show_toast('ERROR: No IWAD file specified')
+		if app.iwad_selected == "":
+			print('ERROR: No IWAD file specified')
 			return(False)
 
 		# Return with error if IWAD file does not exist
-		iwad_file = os.path.join(app.main_config["paths"]["iwad_dir"], app.main_config["launcher"]["iwad"])
+		iwad_file = os.path.join(app.iwad_folder, app.doom_iwads[app.iwad_selected]["iwad"])
 
 		if os.path.exists(iwad_file) == False:
-			self.show_toast(f'ERROR: IWAD file {app.main_config["launcher"]["iwad"]} not found')
+			print(f'ERROR: IWAD file {app.doom_iwads[app.iwad_selected]["iwad"]} not found')
 			return(False)
 
 		# Add IWAD file
 		cmdline += f' -iwad "{iwad_file}"'
 
-		# Add hi-res graphics if options are true
-		mod_dict = app.doom_iwads[app.main_config["launcher"]["iwad"]]["mods"]
+		# Add hi-res graphics if options are true and files are present
+		mod_files = []
 
-		for key, modlist in mod_dict.items():
-			if app.main_config["mods"].getboolean(key) == True:
-				for mod_name in modlist:
-					if mod_name != "":
-						mod_file = os.path.join(app.mod_dir, mod_name)
+		if app.mods_textures == True:
+			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["textures"])
 
-						if os.path.exists(mod_file): cmdline += f' -file "{mod_file}"'
+		if app.mods_objects == True:
+			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["objects"])
+
+		if app.mods_monsters == True:
+			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["monsters"])
+
+		if app.mods_menus == True:
+			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["menus"])
+
+		if app.mods_hud == True:
+			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["hud"])
+
+		for mod in mod_files:
+			mod_file = os.path.join(app.mods_folder, mod)
+
+			if os.path.exists(mod_file): cmdline += f' -file "{mod_file}"'
 
 		# Add PWAD files if present
-		for wad_file in app.main_config["launcher"]["file"].split(","):
-			if wad_file != "" and os.path.exists(wad_file):
-				cmdline += f' -file "{wad_file}"'
+		for pwad in app.pwad_files:
+			if pwad != "" and os.path.exists(pwad):
+				cmdline += f' -file "{pwad}"'
 
-		# Add extra params if present and enabled
-		if app.main_config["launcher"]["params"] != "":
-			cmdline += f' {app.main_config["launcher"]["params"]}'
+		# Add extra params if present
+		if app.extra_params != "":
+			cmdline += f' {app.extra_params}'
 
 		# Launch Zandronum
 		subprocess.Popen(shlex.split(cmdline))
 
 		return(True)
 
-	def show_toast(self, toast_title):
-		self.toast_overlay.add_toast(Adw.Toast(title=toast_title, priority=Adw.ToastPriority.HIGH))
-
 #------------------------------------------------------------------------------
 #-- CLASS: LAUNCHERAPP
 #------------------------------------------------------------------------------
 class LauncherApp(Adw.Application):
 	#-----------------------------------
+	# Properties
+	#-----------------------------------
+	_exec_file = ""
+
+	@GObject.Property(type=str)
+	def exec_file(self):
+		return(os.path.expandvars(self._exec_file))
+
+	@exec_file.setter
+	def exec_file(self, value):
+		self._exec_file = value
+
+	_iwad_folder = ""
+
+	@GObject.Property(type=str)
+	def iwad_folder(self):
+		return(os.path.expandvars(self._iwad_folder))
+
+	@iwad_folder.setter
+	def iwad_folder(self, value):
+		self._iwad_folder = value
+
+	_pwad_folder = ""
+
+	@GObject.Property(type=str)
+	def pwad_folder(self):
+		return(os.path.expandvars(self._pwad_folder))
+
+	@pwad_folder.setter
+	def pwad_folder(self, value):
+		self._pwad_folder = value
+
+	_mods_folder = ""
+
+	@GObject.Property(type=str)
+	def mods_folder(self):
+		return(os.path.expandvars(self._mods_folder))
+
+	@mods_folder.setter
+	def mods_folder(self, value):
+		self._mods_folder = value
+
+	mods_textures = GObject.Property(type=bool, default=True)
+	mods_objects = GObject.Property(type=bool, default=True)
+	mods_monsters = GObject.Property(type=bool, default=True)
+	mods_menus = GObject.Property(type=bool, default=True)
+	mods_hud = GObject.Property(type=bool, default=True)
+
+	iwad_selected = GObject.Property(type=str)
+	pwad_files = GObject.Property(type=GObject.TYPE_STRV)
+	extra_params = GObject.Property(type=str)
+
+	#-----------------------------------
 	# Init function
 	#-----------------------------------
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
+
+		# Connect signal handlers
 		self.connect("startup", self.on_startup)
 		self.connect("activate", self.on_activate)
 		self.connect("shutdown", self.on_shutdown)
+
+		# Initialize gsettings
+		self.gsettings = Gio.Settings(schema_id="com.github.ZandronumLauncher")
+		self.gsettings.delay()
+
+		self.gsettings.bind("executable-file", self, "exec_file", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("iwad-folder", self, "iwad_folder", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("pwad-folder", self, "pwad_folder", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("mods-folder", self, "mods_folder", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("enable-texture-mods", self, "mods_textures", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("enable-object-mods", self, "mods_objects", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("enable-monster-mods", self, "mods_monsters", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("enable-menu-mods", self, "mods_menus", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("enable-hud-mods", self, "mods_hud", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("selected-iwad", self, "iwad_selected", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("pwad-files", self, "pwad_files", Gio.SettingsBindFlags.DEFAULT)
+		self.gsettings.bind("extra-parameters", self, "extra_params", Gio.SettingsBindFlags.DEFAULT)
+
+		# Initialize default values for settings
+		self.default_exec_file = os.path.expandvars(self.gsettings.get_default_value("executable-file").get_string())
+		self.default_iwad_folder = os.path.expandvars(self.gsettings.get_default_value("iwad-folder").get_string())
+		self.default_pwad_folder = os.path.expandvars(self.gsettings.get_default_value("pwad-folder").get_string())
+		self.default_mods_folder = os.path.expandvars(self.gsettings.get_default_value("mods-folder").get_string())
 
 	#-----------------------------------
 	# Signal handlers
 	#-----------------------------------
 	def on_startup(self, app):
-		# Config dir
-		self.config_dir = os.path.join(os.getenv("HOME"), ".config/zandronum")
-
-		if os.path.exists(self.config_dir) == False:
-			os.makedirs(self.config_dir)
-
-		# Zandronum INI file
-		self.zandronum_ini_file = os.path.join(self.config_dir, "zandronum.ini")
-
-		if os.path.exists(self.zandronum_ini_file) == False:
-			zandronum_ini_src = os.path.join(app_dir, "config/zandronum.ini")
-
-			shutil.copyfile(zandronum_ini_src, zandronum_ini_file)
-
-		# Default paths
-		self.mod_dir = os.path.join(app_dir, "mods")
-
-		self.default_exec_file = "/usr/bin/zandronum"
-		self.default_iwad_dir = os.path.join(app_dir, "iwads")
-		self.default_pwad_dir = os.path.join(self.config_dir, "WADs")
-
 		# Read IWAD json file
 		with open(os.path.join(app_dir, "iwads.json"), "r") as iwad_file:
 			self.doom_iwads = json.load(iwad_file)
-
-		# Parse configuration file
-		self.launcher_config_file = os.path.join(self.config_dir, "launcher.conf")
-
-		self.main_config = configparser.ConfigParser()
-
-		default_config = {
-			"launcher": {
-				"iwad": "",
-				"file": "",
-				"params": ""
-			},
-			"paths": {
-				"exec_file": self.default_exec_file,
-				"iwad_dir": self.default_iwad_dir,
-				"pwad_dir": self.default_pwad_dir
-			},
-			"mods": {
-				"textures": "True",
-				"objects": "True",
-				"monsters": "True",
-				"menus": "True",
-				"hud": "True"
-			}
-		}
-
-		self.main_config.read_dict(default_config)
-
-		self.main_config.read(self.launcher_config_file)
-
-		for section in self.main_config.sections():
-			for key, value in self.main_config.items(section):
-				if value == "" and default_config[section][key] != "":
-					self.main_config[section][key] = default_config[section][key]
 
 	def on_activate(self, app):
 		self.main_window = MainWindow(application=app)
 		self.main_window.present()
 
 	def on_shutdown(self, app):
-		# Write configuration file
-		with open(self.launcher_config_file, "w") as configfile:
-			self.main_config.write(configfile)
+		# Write gsettings
+		self.gsettings.apply()
 
 #------------------------------------------------------------------------------
 #-- MAIN APP

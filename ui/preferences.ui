@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="PreferencesWindow" parent="AdwPreferencesWindow">
+    <property name="default_width">460</property>
+    <property name="default_height">-1</property>
+    <property name="title">Zandronum Preferences</property>
+    <property name="modal">True</property>
+    <property name="hide_on_close">True</property>
+    <property name="search_enabled">False</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Application Paths</property>
+            <child>
+              <object class="DialogSelectRow" id="exec_selectrow">
+                <property name="title">_Zandronum Path</property>
+                <property name="icon_name">application-x-executable-symbolic</property>
+                <property name="can_reset">True</property>
+                <property name="dialog_title">Select Zandronum Executable</property>
+              </object>
+            </child>
+            <child>
+              <object class="DialogSelectRow" id="iwaddir_selectrow">
+                <property name="title">_IWAD Folder</property>
+                <property name="folder_select">True</property>
+                <property name="can_reset">True</property>
+                <property name="dialog_title">Select IWAD Folder</property>
+              </object>
+            </child>
+            <child>
+              <object class="DialogSelectRow" id="pwaddir_selectrow">
+                <property name="title">_PWAD Folder</property>
+                <property name="folder_select">True</property>
+                <property name="can_reset">True</property>
+                <property name="dialog_title">Select PWAD Folder</property>
+              </object>
+            </child>
+            <child>
+              <object class="DialogSelectRow" id="moddir_selectrow">
+                <property name="title">_Hi-Res Graphics Folder</property>
+                <property name="folder_select">True</property>
+                <property name="can_reset">True</property>
+                <property name="dialog_title">Select Mod Folder</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Hi-Res Graphics</property>
+            <child>
+              <object class="AdwExpanderRow">
+                <property name="title">_Enable High Resolution Graphics</property>
+                <property name="use_underline">True</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="modgroup_check">
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="on_modgroup_check_toggled" swapped="no"/>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title">_Textures</property>
+                    <property name="use_underline">True</property>
+                    <property name="activatable_widget">texture_check</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="texture_check">
+                        <property name="valign">center</property>
+                        <signal name="toggled" handler="on_mod_check_toggled" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title">_Objects and Weapons</property>
+                    <property name="use_underline">True</property>
+                    <property name="activatable_widget">object_check</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="object_check">
+                        <property name="valign">center</property>
+                        <signal name="toggled" handler="on_mod_check_toggled" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title">_Monsters</property>
+                    <property name="use_underline">True</property>
+                    <property name="activatable_widget">monster_check</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="monster_check">
+                        <property name="valign">center</property>
+                        <signal name="toggled" handler="on_mod_check_toggled" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title">_Screens and Menus</property>
+                    <property name="use_underline">True</property>
+                    <property name="activatable_widget">menu_check</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="menu_check">
+                        <property name="valign">center</property>
+                        <signal name="toggled" handler="on_mod_check_toggled" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title">H_UD</property>
+                    <property name="use_underline">True</property>
+                    <property name="activatable_widget">hud_check</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="hud_check">
+                        <property name="valign">center</property>
+                        <signal name="toggled" handler="on_mod_check_toggled" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

@@ -488,6 +488,7 @@ class MainWindow(Adw.ApplicationWindow):
 			application_icon="zandronum",
 			developer_name="draKKar1969",
 			version="1.2.0",
+			website="https://github.com/drakkar1969/zandronum-launcher",
 			developers=["draKKar1969"],
 			designers=["draKKar1969"],
 			license_type=Gtk.License.GPL_3_0,

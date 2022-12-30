@@ -4,7 +4,6 @@
     <!-- MAIN WINDOW -->
     <property name="default_width">580</property>
     <property name="default_height">-1</property>
-    <property name="resizable">False</property>
     <property name="title">Zandronum Launcher</property>
     <property name="content">
       <object class="GtkBox" id="window_box">
@@ -34,6 +33,7 @@
                 <child>
                   <object class="AdwComboRow" id="iwad_comborow">
                     <property name="title">_Game</property>
+                    <property name="title_lines">1</property>
                     <property name="use_underline">True</property>
                     <property name="model">
                       <object class="GtkStringList" id="iwad_stringlist"/>
@@ -44,6 +44,8 @@
                 <child>
                   <object class="DialogSelectRow" id="pwad_selectrow">
                     <property name="title">Optional WAD _Files</property>
+                    <property name="title_lines">1</property>
+                    <property name="use_underline">True</property>
                     <property name="can_clear">True</property>
                     <property name="dialog_title">Select WAD Files</property>
                     <property name="dialog_multi_select">True</property>

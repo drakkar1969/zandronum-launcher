@@ -15,6 +15,7 @@
             <child>
               <object class="DialogSelectRow" id="exec_selectrow">
                 <property name="title">_Zandronum Path</property>
+                <property name="use_underline">True</property>
                 <property name="icon_name">application-x-executable-symbolic</property>
                 <property name="can_reset">True</property>
                 <property name="dialog_title">Select Zandronum Executable</property>
@@ -23,6 +24,7 @@
             <child>
               <object class="DialogSelectRow" id="iwaddir_selectrow">
                 <property name="title">_IWAD Folder</property>
+                <property name="use_underline">True</property>
                 <property name="folder_select">True</property>
                 <property name="can_reset">True</property>
                 <property name="dialog_title">Select IWAD Folder</property>
@@ -31,6 +33,7 @@
             <child>
               <object class="DialogSelectRow" id="pwaddir_selectrow">
                 <property name="title">_PWAD Folder</property>
+                <property name="use_underline">True</property>
                 <property name="folder_select">True</property>
                 <property name="can_reset">True</property>
                 <property name="dialog_title">Select PWAD Folder</property>
@@ -39,6 +42,7 @@
             <child>
               <object class="DialogSelectRow" id="moddir_selectrow">
                 <property name="title">_Hi-Res Graphics Folder</property>
+                <property name="use_underline">True</property>
                 <property name="folder_select">True</property>
                 <property name="can_reset">True</property>
                 <property name="dialog_title">Select Mod Folder</property>

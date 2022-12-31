@@ -61,7 +61,7 @@
                             </mime-types>
                           </object>
                         </property>
-                        <signal name="files-changed" handler="on_pwad_selectrow_files_changed" swapped="no"/>
+                        <signal name="notify::selected-files" handler="on_pwad_selectrow_files_changed" swapped="no"/>
                       </object>
                     </child>
                     <child>

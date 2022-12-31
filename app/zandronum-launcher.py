@@ -29,13 +29,6 @@ class DialogSelectRow(Adw.ActionRow):
 	reset_btn = Gtk.Template.Child()
 
 	#-----------------------------------
-	# Button signals
-	#-----------------------------------
-	__gsignals__ = {
-		"files-changed": (GObject.SignalFlags.RUN_FIRST, None, ())
-	}
-
-	#-----------------------------------
 	# Button properties
 	#-----------------------------------
 	# icon_name property
@@ -142,8 +135,6 @@ class DialogSelectRow(Adw.ActionRow):
 
 		self.set_clear_btn_state()
 		self.set_reset_btn_state()
-
-		self.emit("files-changed")
 
 	def get_selected_files(self):
 		return(self.selected_files)
@@ -508,8 +499,8 @@ class MainWindow(Adw.ApplicationWindow):
 			app.iwad_selected = iwad_selected.get_string()
 
 	@Gtk.Template.Callback()
-	def on_pwad_selectrow_files_changed(self, button):
-		app.pwad_files = button.get_selected_files()
+	def on_pwad_selectrow_files_changed(self, row, param):
+		app.pwad_files = row.get_selected_files()
 
 	@Gtk.Template.Callback()
 	def on_params_entryrow_changed(self, entry):

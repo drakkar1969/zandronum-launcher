@@ -17,10 +17,6 @@
       <default>'$HOME/.config/zandronum/mods'</default>
       <summary>Folder to search for hi-res graphics files</summary>
     </key>
-    <key name="selected-iwad" type="s">
-      <default>''</default>
-      <summary>Selected game (IWAD) file</summary>
-    </key>
     <key name="enable-texture-mods" type="b">
       <default>true</default>
       <summary>Enable hi-res texture graphics</summary>
@@ -40,6 +36,10 @@
     <key name="enable-hud-mods" type="b">
       <default>true</default>
       <summary>Enable hi-res HUD graphics</summary>
+    </key>
+    <key name="selected-iwad" type="s">
+      <default>''</default>
+      <summary>Selected game (IWAD) file</summary>
     </key>
     <key name="pwad-files" type="as">
       <default>[]</default>

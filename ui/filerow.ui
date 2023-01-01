@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="DialogSelectRow" parent="AdwActionRow">
+  <template class="FileRow" parent="AdwActionRow">
     <property name="activatable_widget">file_btn</property>
     <child>
       <object class="GtkButton" id="file_btn">

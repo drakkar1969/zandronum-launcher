@@ -13,11 +13,11 @@ gresource = Gio.Resource.load(os.path.join(app_dir, "com.github.ZandronumLaunche
 gresource._register()
 
 #------------------------------------------------------------------------------
-#-- CLASS: DIALOGSELECTROW
+#-- CLASS: FILEROW
 #------------------------------------------------------------------------------
-@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/dialogselectrow.ui")
-class DialogSelectRow(Adw.ActionRow):
-	__gtype_name__ = "DialogSelectRow"
+@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/filerow.ui")
+class FileRow(Adw.ActionRow):
+	__gtype_name__ = "FileRow"
 
 	#-----------------------------------
 	# Class widget variables
@@ -221,10 +221,10 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
-	exec_selectrow = Gtk.Template.Child()
-	iwaddir_selectrow = Gtk.Template.Child()
-	pwaddir_selectrow = Gtk.Template.Child()
-	moddir_selectrow = Gtk.Template.Child()
+	exec_filerow = Gtk.Template.Child()
+	iwaddir_filerow = Gtk.Template.Child()
+	pwaddir_filerow = Gtk.Template.Child()
+	moddir_filerow = Gtk.Template.Child()
 
 	texture_switch = Gtk.Template.Child()
 	object_switch = Gtk.Template.Child()
@@ -238,16 +238,16 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		self.exec_selectrow.set_dialog_parent(self)
-		self.iwaddir_selectrow.set_dialog_parent(self)
-		self.pwaddir_selectrow.set_dialog_parent(self)
-		self.moddir_selectrow.set_dialog_parent(self)
+		self.exec_filerow.set_dialog_parent(self)
+		self.iwaddir_filerow.set_dialog_parent(self)
+		self.pwaddir_filerow.set_dialog_parent(self)
+		self.moddir_filerow.set_dialog_parent(self)
 
 		# Set default values for widgets
-		self.exec_selectrow.set_default_file(app.default_exec_file)
-		self.iwaddir_selectrow.set_default_file(app.default_iwad_folder)
-		self.pwaddir_selectrow.set_default_file(app.default_pwad_folder)
-		self.moddir_selectrow.set_default_file(app.default_mods_folder)
+		self.exec_filerow.set_default_file(app.default_exec_file)
+		self.iwaddir_filerow.set_default_file(app.default_iwad_folder)
+		self.pwaddir_filerow.set_default_file(app.default_pwad_folder)
+		self.moddir_filerow.set_default_file(app.default_mods_folder)
 
 		# Bind widget properties to app properties
 		def str_to_list(binding, value):
@@ -256,10 +256,10 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		def list_to_str(binding, value):
 			return(value[0] if len(value) > 0 else "")
 
-		app.bind_property("exec_file", self.exec_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
-		app.bind_property("iwad_folder", self.iwaddir_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
-		app.bind_property("pwad_folder", self.pwaddir_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
-		app.bind_property("mods_folder", self.moddir_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		app.bind_property("exec_file", self.exec_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		app.bind_property("iwad_folder", self.iwaddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		app.bind_property("pwad_folder", self.pwaddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		app.bind_property("mods_folder", self.moddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
 
 		app.bind_property("mods_textures", self.texture_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 		app.bind_property("mods_objects", self.object_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
@@ -352,7 +352,7 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	iwad_comborow = Gtk.Template.Child()
 	iwad_stringlist = Gtk.Template.Child()
-	pwad_selectrow = Gtk.Template.Child()
+	pwad_filerow = Gtk.Template.Child()
 	params_entryrow = Gtk.Template.Child()
 	launch_btn = Gtk.Template.Child()
 
@@ -390,7 +390,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# Widget initialization
 		self.populate_iwad_comborow()
 
-		self.pwad_selectrow.set_dialog_parent(self)
+		self.pwad_filerow.set_dialog_parent(self)
 
 		# Bind widget properties to app properties
 		def str_to_comboitem(binding, value):
@@ -403,8 +403,8 @@ class MainWindow(Adw.ApplicationWindow):
 			return(iwad_selected.get_string() if iwad_selected is not None else "")
 
 		app.bind_property("iwad_selected", self.iwad_comborow, "selected", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_comboitem, comboitem_to_string)
-		app.bind_property("pwad_folder", self.pwad_selectrow, "base_folder", GObject.BindingFlags.SYNC_CREATE)
-		app.bind_property("pwad_files", self.pwad_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		app.bind_property("pwad_folder", self.pwad_filerow, "base_folder", GObject.BindingFlags.SYNC_CREATE)
+		app.bind_property("pwad_files", self.pwad_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 		app.bind_property("extra_params", self.params_entryrow, "text", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
 		self.set_focus(self.iwad_comborow)
@@ -435,7 +435,7 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	def on_reset_widgets_action(self, action, param, user_data):
 		self.iwad_comborow.set_selected(0)
-		self.pwad_selectrow.set_selected_files([])
+		self.pwad_filerow.set_selected_files([])
 		self.params_entryrow.set_text("")
 
 	def on_show_preferences_action(self, action, param, user_data):

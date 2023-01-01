@@ -13,7 +13,7 @@
           <object class="AdwPreferencesGroup">
             <property name="title">Application Paths</property>
             <child>
-              <object class="DialogSelectRow" id="exec_selectrow">
+              <object class="FileRow" id="exec_filerow">
                 <property name="title">_Zandronum Path</property>
                 <property name="use_underline">True</property>
                 <property name="icon_name">application-x-executable-symbolic</property>
@@ -22,7 +22,7 @@
               </object>
             </child>
             <child>
-              <object class="DialogSelectRow" id="iwaddir_selectrow">
+              <object class="FileRow" id="iwaddir_filerow">
                 <property name="title">_IWAD Folder</property>
                 <property name="use_underline">True</property>
                 <property name="folder_select">True</property>
@@ -31,7 +31,7 @@
               </object>
             </child>
             <child>
-              <object class="DialogSelectRow" id="pwaddir_selectrow">
+              <object class="FileRow" id="pwaddir_filerow">
                 <property name="title">_PWAD Folder</property>
                 <property name="use_underline">True</property>
                 <property name="folder_select">True</property>
@@ -40,7 +40,7 @@
               </object>
             </child>
             <child>
-              <object class="DialogSelectRow" id="moddir_selectrow">
+              <object class="FileRow" id="moddir_filerow">
                 <property name="title">_Hi-Res Graphics Folder</property>
                 <property name="use_underline">True</property>
                 <property name="folder_select">True</property>

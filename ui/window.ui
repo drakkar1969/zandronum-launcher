@@ -43,7 +43,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="DialogSelectRow" id="pwad_selectrow">
+                      <object class="FileRow" id="pwad_filerow">
                         <property name="title">Optional WAD _Files</property>
                         <property name="title_lines">1</property>
                         <property name="use_underline">True</property>

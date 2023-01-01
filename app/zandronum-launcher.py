@@ -175,8 +175,6 @@ class DialogSelectRow(Adw.ActionRow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		self._gstore_selected_files = Gio.ListStore()
-
 	#-----------------------------------
 	# Signal handlers
 	#-----------------------------------
@@ -228,12 +226,11 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	pwaddir_selectrow = Gtk.Template.Child()
 	moddir_selectrow = Gtk.Template.Child()
 
-	modgroup_check = Gtk.Template.Child()
-	texture_check = Gtk.Template.Child()
-	object_check = Gtk.Template.Child()
-	monster_check = Gtk.Template.Child()
-	menu_check = Gtk.Template.Child()
-	hud_check = Gtk.Template.Child()
+	texture_switch = Gtk.Template.Child()
+	object_switch = Gtk.Template.Child()
+	monster_switch = Gtk.Template.Child()
+	menu_switch = Gtk.Template.Child()
+	hud_switch = Gtk.Template.Child()
 
 	#-----------------------------------
 	# Init function
@@ -246,41 +243,29 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.pwaddir_selectrow.set_dialog_parent(self)
 		self.moddir_selectrow.set_dialog_parent(self)
 
-		# Flags for check button toggle handlers
-		self.mod_is_changing = False
-		self.modgroup_is_changing = False
+		# Set default values for widgets
+		self.exec_selectrow.set_default_file(app.default_exec_file)
+		self.iwaddir_selectrow.set_default_file(app.default_iwad_folder)
+		self.pwaddir_selectrow.set_default_file(app.default_pwad_folder)
+		self.moddir_selectrow.set_default_file(app.default_mods_folder)
 
-	#-----------------------------------
-	# Signal handlers
-	#-----------------------------------
-	@Gtk.Template.Callback()
-	def on_modgroup_check_toggled(self, checkbutton):
-		if self.mod_is_changing == False:
-			self.modgroup_is_changing = True
+		# Bind widget properties to app properties
+		def str_to_list(binding, value):
+			return([value])
 
-			self.modgroup_check.set_inconsistent(False)
+		def list_to_str(binding, value):
+			return(value[0] if len(value) > 0 else "")
 
-			self.texture_check.set_active(checkbutton.get_active())
-			self.object_check.set_active(checkbutton.get_active())
-			self.monster_check.set_active(checkbutton.get_active())
-			self.menu_check.set_active(checkbutton.get_active())
-			self.hud_check.set_active(checkbutton.get_active())
+		app.bind_property("exec_file", self.exec_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		app.bind_property("iwad_folder", self.iwaddir_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		app.bind_property("pwad_folder", self.pwaddir_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		app.bind_property("mods_folder", self.moddir_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
 
-			self.modgroup_is_changing = False
-
-	@Gtk.Template.Callback()
-	def on_mod_check_toggled(self, checkbutton):
-		if self.modgroup_is_changing == False:
-			btn_list = [self.texture_check, self.object_check, self.monster_check, self.menu_check, self.hud_check]
-
-			on_list = [1 for btn in btn_list if btn.get_active()]
-
-			self.mod_is_changing = True
-
-			self.modgroup_check.set_active(len(on_list) == len(btn_list))
-			self.modgroup_check.set_inconsistent(len(on_list) != 0 and len(on_list) != len(btn_list))
-
-			self.mod_is_changing = False
+		app.bind_property("mods_textures", self.texture_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		app.bind_property("mods_objects", self.object_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		app.bind_property("mods_monsters", self.monster_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		app.bind_property("mods_menus", self.menu_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		app.bind_property("mods_hud", self.hud_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
 #------------------------------------------------------------------------------
 #-- CLASS: CHEATSWINDOW
@@ -369,7 +354,6 @@ class MainWindow(Adw.ApplicationWindow):
 	iwad_stringlist = Gtk.Template.Child()
 	pwad_selectrow = Gtk.Template.Child()
 	params_entryrow = Gtk.Template.Child()
-	params_clearbtn = Gtk.Template.Child()
 	launch_btn = Gtk.Template.Child()
 
 	shortcut_window = Gtk.Template.Child()
@@ -404,42 +388,35 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
 
 		# Widget initialization
-		self.populate_iwad_comborow(app.iwad_selected)
+		self.populate_iwad_comborow()
 
 		self.pwad_selectrow.set_dialog_parent(self)
-		self.pwad_selectrow.set_base_folder(app.pwad_folder)
-		self.pwad_selectrow.set_selected_files(app.pwad_files)
 
-		self.params_entryrow.set_text(app.extra_params)
+		# Bind widget properties to app properties
+		def str_to_comboitem(binding, value):
+			for i in range(len(self.iwad_stringlist)):
+				if self.iwad_stringlist.get_item(i).get_string() == value: return(i)
+			return(0)
+
+		def comboitem_to_string(binding, value):
+			iwad_selected = self.iwad_stringlist.get_item(value)
+			return(iwad_selected.get_string() if iwad_selected is not None else "")
+
+		app.bind_property("iwad_selected", self.iwad_comborow, "selected", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_comboitem, comboitem_to_string)
+		app.bind_property("pwad_folder", self.pwad_selectrow, "base_folder", GObject.BindingFlags.SYNC_CREATE)
+		app.bind_property("pwad_files", self.pwad_selectrow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		app.bind_property("extra_params", self.params_entryrow, "text", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
 		self.set_focus(self.iwad_comborow)
 
 		# Preferences initialization
 		self.prefs_window.set_transient_for(self)
 
-		self.prefs_window.exec_selectrow.set_default_file(app.default_exec_file)
-		self.prefs_window.exec_selectrow.set_selected_file(app.exec_file)
-
-		self.prefs_window.iwaddir_selectrow.set_default_file(app.default_iwad_folder)
-		self.prefs_window.iwaddir_selectrow.set_selected_file(app.iwad_folder)
-
-		self.prefs_window.pwaddir_selectrow.set_default_file(app.default_pwad_folder)
-		self.prefs_window.pwaddir_selectrow.set_selected_file(app.pwad_folder)
-
-		self.prefs_window.moddir_selectrow.set_default_file(app.default_mods_folder)
-		self.prefs_window.moddir_selectrow.set_selected_file(app.mods_folder)
-
-		self.prefs_window.texture_check.set_active(app.mods_textures)
-		self.prefs_window.object_check.set_active(app.mods_objects)
-		self.prefs_window.monster_check.set_active(app.mods_monsters)
-		self.prefs_window.menu_check.set_active(app.mods_menus)
-		self.prefs_window.hud_check.set_active(app.mods_hud)
-
 		# Help initialization
 		self.cheats_window.set_transient_for(self)
 
 	# Add IWADs to comborow
-	def populate_iwad_comborow(self, iwad_selected):
+	def populate_iwad_comborow(self):
 		# Find iwad files in iwad folder and convert to lower case
 		iwad_files = list(map(str.lower, os.listdir(app.iwad_folder)))
 
@@ -450,14 +427,8 @@ class MainWindow(Adw.ApplicationWindow):
 		# Clear iwad stringlist and add iwad names
 		self.iwad_stringlist.splice(0, len(self.iwad_stringlist), iwad_names)
 
-		# Set selected iwad
-		try:
-			self.iwad_comborow.set_selected(iwad_names.index(iwad_selected))
-		except:
-			self.iwad_comborow.set_selected(0)
-
 		# Set launch button state
-		self.launch_btn.set_sensitive(self.iwad_comborow.get_selected_item() is not None)
+		self.launch_btn.set_sensitive(len(self.iwad_stringlist) > 0)
 
 	#-----------------------------------
 	# Action handlers
@@ -494,26 +465,6 @@ class MainWindow(Adw.ApplicationWindow):
 	# Signal handlers
 	#-----------------------------------
 	@Gtk.Template.Callback()
-	def on_iwad_combo_changed(self, combo, param):
-		if iwad_selected := combo.get_selected_item():
-			app.iwad_selected = iwad_selected.get_string()
-
-	@Gtk.Template.Callback()
-	def on_pwad_selectrow_files_changed(self, row, param):
-		app.pwad_files = row.get_selected_files()
-
-	@Gtk.Template.Callback()
-	def on_params_entryrow_changed(self, entry):
-		extra_params = entry.get_text()
-		app.extra_params = extra_params
-
-		self.params_clearbtn.set_visible(extra_params != "")
-
-	@Gtk.Template.Callback()
-	def on_params_clearbtn_clicked(self, button):
-		self.params_entryrow.set_text("")
-
-	@Gtk.Template.Callback()
 	def on_launch_btn_clicked(self, button):
 		self.set_sensitive(False)
 
@@ -522,34 +473,8 @@ class MainWindow(Adw.ApplicationWindow):
 
 	@Gtk.Template.Callback()
 	def on_prefs_window_close(self, window):
-		if (exec_file := window.exec_selectrow.get_selected_file()) != app.exec_file:
-			app.exec_file = exec_file
-
-		if (iwad_folder := window.iwaddir_selectrow.get_selected_file()) != app.iwad_folder:
-			app.iwad_folder = iwad_folder
-			self.populate_iwad_comborow(app.iwad_selected)
-
-		if (pwad_folder := window.pwaddir_selectrow.get_selected_file()) != app.pwad_folder:
-			app.pwad_folder = pwad_folder
-			self.pwad_selectrow.set_base_folder(pwad_folder)
-
-		if(mods_folder := window.moddir_selectrow.get_selected_file()) != app.mods_folder:
-			app.mods_folder = mods_folder
-
-		if (mods_textures := window.texture_check.get_active()) != app.mods_textures:
-			app.mods_textures = mods_textures
-
-		if (mods_objects := window.object_check.get_active()) != app.mods_objects:
-			app.mods_objects = mods_objects
-	
-		if (mods_monsters := window.monster_check.get_active()) != app.mods_monsters:
-			app.mods_monsters = mods_monsters
-
-		if (mods_menus := window.menu_check.get_active()) != app.mods_menus:
-			app.mods_menus = mods_menus
-
-		if (mods_hud := window.hud_check.get_active()) != app.mods_hud:
-			app.mods_hud = mods_hud
+		self.populate_iwad_comborow()
+		self.iwad_comborow.set_selected(0)
 
 	#-----------------------------------
 	# Launch Zandronum function
@@ -668,9 +593,9 @@ class LauncherApp(Adw.Application):
 	mods_menus = GObject.Property(type=bool, default=True)
 	mods_hud = GObject.Property(type=bool, default=True)
 
-	iwad_selected = GObject.Property(type=str)
+	iwad_selected = GObject.Property(type=str, default="")
 	pwad_files = GObject.Property(type=GObject.TYPE_STRV)
-	extra_params = GObject.Property(type=str)
+	extra_params = GObject.Property(type=str, default="")
 
 	#-----------------------------------
 	# Init function

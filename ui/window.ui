@@ -40,7 +40,6 @@
                         <property name="model">
                           <object class="GtkStringList" id="iwad_stringlist"/>
                         </property>
-                        <signal name="notify::selected" handler="on_iwad_combo_changed" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -61,7 +60,6 @@
                             </mime-types>
                           </object>
                         </property>
-                        <signal name="notify::selected-files" handler="on_pwad_selectrow_files_changed" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -69,18 +67,6 @@
                         <property name="title">_Additional Switches (e.g. -warp 7 -skill 3)</property>
                         <property name="use_underline">True</property>
                         <property name="activates_default">False</property>
-                        <signal name="changed" handler="on_params_entryrow_changed" swapped="no"/>
-                        <child>
-                          <object class="GtkButton" id="params_clearbtn">
-                            <property name="visible">False</property>
-                            <property name="icon-name">edit-clear</property>
-                            <property name="valign">center</property>
-                            <style>
-                              <class name="flat"/>
-                            </style>
-                            <signal name="clicked" handler="on_params_clearbtn_clicked" swapped="no"/>
-                          </object>
-                        </child>
                       </object>
                     </child>
                   </object>

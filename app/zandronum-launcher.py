@@ -418,7 +418,7 @@ class MainWindow(Adw.ApplicationWindow):
 	# Add IWADs to comborow
 	def populate_iwad_comborow(self):
 		# Find iwad files in iwad folder and convert to lower case
-		iwad_files = list(map(str.lower, os.listdir(app.iwad_folder)))
+		iwad_files = list(map(str.lower, os.listdir(app.iwad_folder))) if os.path.exists(app.iwad_folder) else []
 
 		# Get sorted list of iwad names from found iwad files
 		iwad_names = [k for k,v in app.doom_iwads.items() if v["iwad"] in iwad_files]

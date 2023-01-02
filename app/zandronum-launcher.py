@@ -393,16 +393,16 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_filerow.set_dialog_parent(self)
 
 		# Bind widget properties to app properties
-		def str_to_comboitem(binding, value):
+		def str_to_comboindex(binding, value):
 			for i in range(len(self.iwad_stringlist)):
 				if self.iwad_stringlist.get_item(i).get_string() == value: return(i)
 			return(0)
 
-		def comboitem_to_string(binding, value):
+		def comboindex_to_str(binding, value):
 			iwad_selected = self.iwad_stringlist.get_item(value)
 			return(iwad_selected.get_string() if iwad_selected is not None else "")
 
-		app.bind_property("iwad_selected", self.iwad_comborow, "selected", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_comboitem, comboitem_to_string)
+		app.bind_property("iwad_selected", self.iwad_comborow, "selected", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_comboindex, comboindex_to_str)
 		app.bind_property("pwad_folder", self.pwad_filerow, "base_folder", GObject.BindingFlags.SYNC_CREATE)
 		app.bind_property("pwad_files", self.pwad_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 		app.bind_property("extra_params", self.params_entryrow, "text", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)

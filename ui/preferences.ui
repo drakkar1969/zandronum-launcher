@@ -14,7 +14,7 @@
             <property name="title">Application Paths</property>
             <child type="header-suffix">
               <object class="GtkButton" id="paths_btn">
-                <property name="icon-name">edit-undo-symbolic</property>
+                <property name="icon-name">view-refresh-symbolic</property>
                 <signal name="clicked" handler="on_paths_btn_clicked" swapped="no"/>
                 <style>
                   <class name="flat"/>
@@ -64,7 +64,7 @@
             <property name="title">Hi-Res Graphics</property>
             <child type="header-suffix">
               <object class="GtkButton" id="graphics_btn">
-                <property name="icon-name">edit-undo-symbolic</property>
+                <property name="icon-name">view-refresh-symbolic</property>
                 <signal name="clicked" handler="on_graphics_btn_clicked" swapped="no"/>
                 <style>
                   <class name="flat"/>

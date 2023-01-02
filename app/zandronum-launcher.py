@@ -180,12 +180,17 @@ class FileRow(Adw.ActionRow):
 	#-----------------------------------
 	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
-		self.dialog = Gtk.FileChooserNative(title=self.dialog_title, transient_for=self.dialog_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN, accept_label="_Select")
+		# Dialog constructor
+		self.dialog = Gtk.FileChooserNative(
+			title=self.dialog_title,
+			modal=True,
+			transient_for=self.dialog_parent,
+			action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN,
+			accept_label="_Select",
+			select_multiple=self.dialog_multi_select
+		)
 
-		self.dialog.set_modal(True)
-
-		self.dialog.set_select_multiple(self.dialog_multi_select)
-
+		# File filters
 		if self._folder_select == False:
 			all_filter = Gtk.FileFilter(name="All Files")
 			all_filter.add_pattern("*")
@@ -201,12 +206,14 @@ class FileRow(Adw.ActionRow):
 			self.dialog.add_filter(self.dialog_file_filter)
 			self.dialog.set_filter(self.dialog_file_filter)
 
+		# Initial folder
 		if len(self._selected_files) > 0:
 			self.dialog.set_file(Gio.File.new_for_path(self._selected_files[0]))
 		else:
 			if self.base_folder != "":
 				self.dialog.set_current_folder(Gio.File.new_for_path(self.base_folder))
 
+		# Response signal handler
 		self.dialog.connect("response", self.on_dialog_response)
 
 		self.dialog.show()

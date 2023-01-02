@@ -220,6 +220,9 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
+	paths_btn = Gtk.Template.Child()
+	graphics_btn = Gtk.Template.Child()
+
 	exec_filerow = Gtk.Template.Child()
 	iwaddir_filerow = Gtk.Template.Child()
 	pwaddir_filerow = Gtk.Template.Child()
@@ -237,7 +240,10 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		# Widget initialization
+		# Widget initialization (note: flat button style not working in UI file)
+		self.paths_btn.add_css_class("flat")
+		self.graphics_btn.add_css_class("flat")
+
 		self.exec_filerow.set_dialog_parent(self)
 		self.iwaddir_filerow.set_dialog_parent(self)
 		self.pwaddir_filerow.set_dialog_parent(self)
@@ -266,6 +272,27 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		app.bind_property("mods_monsters", self.monster_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 		app.bind_property("mods_menus", self.menu_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 		app.bind_property("mods_hud", self.hud_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+
+		# Set widget focus
+		self.set_focus(self.exec_filerow)
+
+	#-----------------------------------
+	# Signal handlers
+	#-----------------------------------
+	@Gtk.Template.Callback()
+	def on_paths_btn_clicked(self, button):
+		self.exec_filerow.set_selected_file(app.default_exec_file)
+		self.iwaddir_filerow.set_selected_file(app.default_iwad_folder)
+		self.pwaddir_filerow.set_selected_file(app.default_pwad_folder)
+		self.moddir_filerow.set_selected_file(app.default_mods_folder)
+
+	@Gtk.Template.Callback()
+	def on_graphics_btn_clicked(self, button):
+		self.texture_switch.set_active(True)
+		self.object_switch.set_active(True)
+		self.monster_switch.set_active(True)
+		self.menu_switch.set_active(True)
+		self.hud_switch.set_active(True)
 
 #------------------------------------------------------------------------------
 #-- CLASS: CHEATSWINDOW

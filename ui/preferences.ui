@@ -12,6 +12,15 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Application Paths</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="paths_btn">
+                <property name="icon-name">edit-undo-symbolic</property>
+                <signal name="clicked" handler="on_paths_btn_clicked" swapped="no"/>
+                <style>
+                  <class name="flat"/>
+                </style>
+              </object>
+            </child>
             <child>
               <object class="FileRow" id="exec_filerow">
                 <property name="title">_Zandronum Path</property>
@@ -53,6 +62,15 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Hi-Res Graphics</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="graphics_btn">
+                <property name="icon-name">edit-undo-symbolic</property>
+                <signal name="clicked" handler="on_graphics_btn_clicked" swapped="no"/>
+                <style>
+                  <class name="flat"/>
+                </style>
+              </object>
+            </child>
             <child>
               <object class="AdwExpanderRow">
                 <property name="title">_Enable High Resolution Graphics</property>

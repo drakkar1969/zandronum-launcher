@@ -237,12 +237,13 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
+		# Widget initialization
 		self.exec_filerow.set_dialog_parent(self)
 		self.iwaddir_filerow.set_dialog_parent(self)
 		self.pwaddir_filerow.set_dialog_parent(self)
 		self.moddir_filerow.set_dialog_parent(self)
 
-		# Set default values for widgets
+		# Set default values for widget properties
 		self.exec_filerow.set_default_file(app.default_exec_file)
 		self.iwaddir_filerow.set_default_file(app.default_iwad_folder)
 		self.pwaddir_filerow.set_default_file(app.default_pwad_folder)
@@ -426,6 +427,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		app.bind_property("extra_params", self.params_entryrow, "text", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
+		# Set widget focus
 		self.set_focus(self.iwad_comborow)
 
 		# Preferences initialization

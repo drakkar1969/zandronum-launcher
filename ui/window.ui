@@ -85,22 +85,11 @@
                     <property name="label">_Launch Zandronum</property>
                     <property name="halign">center</property>
                     <property name="use_underline">True</property>
-                    <signal name="clicked" handler="on_launch_btn_clicked" swapped="no"/>
+                    <property name="action-name">win.launch-zandronum</property>
                     <style>
                       <class name="suggested-action"/>
                       <class name="pill"/>
                     </style>
-                    <child>
-                      <object class='GtkShortcutController'>
-                        <property name='scope'>managed</property>
-                        <child>
-                          <object class='GtkShortcut'>
-                            <property name='trigger'>&lt;Control&gt;Return|&lt;Control&gt;KP_Enter</property>
-                            <property name='action'>activate</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
                   </object>
                 </child>
               </object>

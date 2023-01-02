@@ -402,7 +402,8 @@ class MainWindow(Adw.ApplicationWindow):
 			[ "show-preferences", self.on_show_preferences_action ],
 			[ "show-cheats", self.on_show_cheats_action ],
 			[ "show-about", self.on_show_about_action ],
-			[ "quit-app", self.on_quit_app_action ]
+			[ "quit-app", self.on_quit_app_action ],
+			[ "launch-zandronum", self.on_launch_zandronum_action ]
 		]
 
 		self.add_action_entries(action_list)
@@ -413,6 +414,7 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 		app.set_accels_for_action("win.show-cheats", ["F1"])
 		app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
+		app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
 		# Widget initialization
 		self.pwad_filerow.set_dialog_parent(self)
@@ -494,11 +496,7 @@ class MainWindow(Adw.ApplicationWindow):
 	def on_quit_app_action(self, action, param, user_data):
 		self.close()
 
-	#-----------------------------------
-	# Signal handlers
-	#-----------------------------------
-	@Gtk.Template.Callback()
-	def on_launch_btn_clicked(self, button):
+	def on_launch_zandronum_action(self, action, param, user_data):
 		self.set_sensitive(False)
 
 		if self.launch_zandronum() == True: self.close()

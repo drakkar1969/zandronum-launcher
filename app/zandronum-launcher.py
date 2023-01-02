@@ -186,7 +186,20 @@ class FileRow(Adw.ActionRow):
 
 		self.dialog.set_select_multiple(self.dialog_multi_select)
 
-		if self.dialog_file_filter is not None: self.dialog.add_filter(self.dialog_file_filter)
+		if self._folder_select == False:
+			all_filter = Gtk.FileFilter(name="All Files")
+			all_filter.add_pattern("*")
+
+			self.dialog.add_filter(all_filter)
+		else:
+			folder_filter = Gtk.FileFilter(name="Folders")
+			folder_filter.add_mime_type("inode/directory")
+
+			self.dialog.add_filter(folder_filter)
+
+		if self.dialog_file_filter is not None:
+			self.dialog.add_filter(self.dialog_file_filter)
+			self.dialog.set_filter(self.dialog_file_filter)
 
 		if len(self._selected_files) > 0:
 			self.dialog.set_file(Gio.File.new_for_path(self._selected_files[0]))

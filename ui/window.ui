@@ -189,7 +189,6 @@
     </object>
     <!-- PREFERENCES WINDOW -->
     <object class="PreferencesWindow" id="prefs_window">
-      <signal name="close-request" handler="on_prefs_window_close" swapped="no"/>
     </object>
     <!-- CHEATS WINDOW -->
     <object class="CheatsWindow" id="cheats_window">

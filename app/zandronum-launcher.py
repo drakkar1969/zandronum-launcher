@@ -388,11 +388,28 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
 
 		# Widget initialization
-		self.populate_iwad_comborow()
-
 		self.pwad_filerow.set_dialog_parent(self)
 
 		# Bind widget properties to app properties
+		def str_to_model(binding, value):
+			# Find iwad files in iwad folder and convert to lower case
+			iwad_files = list(map(str.lower, os.listdir(value))) if os.path.exists(value) else []
+
+			# Get sorted list of iwad names from found iwad files
+			iwad_names = [k for k,v in app.doom_iwads.items() if v["iwad"] in iwad_files]
+			iwad_names.sort()
+
+			# Clear iwad stringlist and add iwad names
+			self.iwad_stringlist.splice(0, len(self.iwad_stringlist), iwad_names)
+
+			# Reset iwad selection
+			self.iwad_comborow.set_selected(0)
+
+			# Set launch button state
+			self.launch_btn.set_sensitive(len(self.iwad_stringlist) > 0)
+
+			return(self.iwad_stringlist)
+
 		def str_to_comboindex(binding, value):
 			for i in range(len(self.iwad_stringlist)):
 				if self.iwad_stringlist.get_item(i).get_string() == value: return(i)
@@ -402,9 +419,12 @@ class MainWindow(Adw.ApplicationWindow):
 			iwad_selected = self.iwad_stringlist.get_item(value)
 			return(iwad_selected.get_string() if iwad_selected is not None else "")
 
+		app.bind_property("iwad_folder", self.iwad_comborow, "model", GObject.BindingFlags.SYNC_CREATE, str_to_model)
 		app.bind_property("iwad_selected", self.iwad_comborow, "selected", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_comboindex, comboindex_to_str)
+
 		app.bind_property("pwad_folder", self.pwad_filerow, "base_folder", GObject.BindingFlags.SYNC_CREATE)
 		app.bind_property("pwad_files", self.pwad_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+
 		app.bind_property("extra_params", self.params_entryrow, "text", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
 		self.set_focus(self.iwad_comborow)
@@ -414,21 +434,6 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Help initialization
 		self.cheats_window.set_transient_for(self)
-
-	# Add IWADs to comborow
-	def populate_iwad_comborow(self):
-		# Find iwad files in iwad folder and convert to lower case
-		iwad_files = list(map(str.lower, os.listdir(app.iwad_folder))) if os.path.exists(app.iwad_folder) else []
-
-		# Get sorted list of iwad names from found iwad files
-		iwad_names = [k for k,v in app.doom_iwads.items() if v["iwad"] in iwad_files]
-		iwad_names.sort()
-
-		# Clear iwad stringlist and add iwad names
-		self.iwad_stringlist.splice(0, len(self.iwad_stringlist), iwad_names)
-
-		# Set launch button state
-		self.launch_btn.set_sensitive(len(self.iwad_stringlist) > 0)
 
 	#-----------------------------------
 	# Action handlers
@@ -470,11 +475,6 @@ class MainWindow(Adw.ApplicationWindow):
 
 		if self.launch_zandronum() == True: self.close()
 		else: self.set_sensitive(True)
-
-	@Gtk.Template.Callback()
-	def on_prefs_window_close(self, window):
-		self.populate_iwad_comborow()
-		self.iwad_comborow.set_selected(0)
 
 	#-----------------------------------
 	# Launch Zandronum function

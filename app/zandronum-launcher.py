@@ -440,9 +440,8 @@ class MainWindow(Adw.ApplicationWindow):
 			return(self.iwad_stringlist)
 
 		def str_to_comboindex(binding, value):
-			for i,v in enumerate(self.iwad_stringlist):
-				if v.get_string() == value: return(i)
-			return(0)
+			iwad_names = [v.get_string() for i,v in enumerate(self.iwad_stringlist)]
+			return(iwad_names.index(value) if value in iwad_names else 0)
 
 		def comboindex_to_str(binding, value):
 			iwad_selected = self.iwad_stringlist.get_item(value)

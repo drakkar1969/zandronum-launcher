@@ -508,7 +508,7 @@ class MainWindow(Adw.ApplicationWindow):
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
 		if os.path.exists(app.exec_file) == False:
-			print('ERROR: Zandronum executable not found')
+			self.show_error_dialog("Zandronum executable file not found")
 			return(False)
 
 		# Initialize Zandronum command line with executable
@@ -516,14 +516,14 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Return with error if IWAD name is empty
 		if app.iwad_selected == "":
-			print('ERROR: No IWAD file specified')
+			self.show_error_dialog("No IWAD file specified")
 			return(False)
 
 		# Return with error if IWAD file does not exist
 		iwad_file = os.path.join(app.iwad_folder, app.doom_iwads[app.iwad_selected]["iwad"])
 
 		if os.path.exists(iwad_file) == False:
-			print(f'ERROR: IWAD file {app.doom_iwads[app.iwad_selected]["iwad"]} not found')
+			self.show_error_dialog(f'IWAD file for "{app.iwad_selected}" ({app.doom_iwads[app.iwad_selected]["iwad"]}) not found')
 			return(False)
 
 		# Add IWAD file
@@ -565,6 +565,14 @@ class MainWindow(Adw.ApplicationWindow):
 		subprocess.Popen(shlex.split(cmdline))
 
 		return(True)
+
+	def show_error_dialog(self, msg):
+		dialog = Adw.MessageDialog()
+		dialog.set_transient_for(self)
+		dialog.set_heading("ERROR")
+		dialog.set_body(msg)
+		dialog.add_response("id_close", "Close")
+		dialog.show()
 
 #------------------------------------------------------------------------------
 #-- CLASS: LAUNCHERAPP

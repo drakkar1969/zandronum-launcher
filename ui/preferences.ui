@@ -83,7 +83,6 @@
                     <child>
                       <object class="GtkSwitch" id="texture_switch">
                         <property name="valign">center</property>
-                        <signal name="state-set" handler="on_mod_switch_toggled" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -96,7 +95,6 @@
                     <child>
                       <object class="GtkSwitch" id="object_switch">
                         <property name="valign">center</property>
-                        <signal name="state-set" handler="on_mod_switch_toggled" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -109,7 +107,6 @@
                     <child>
                       <object class="GtkSwitch" id="monster_switch">
                         <property name="valign">center</property>
-                        <signal name="state-set" handler="on_mod_switch_toggled" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -122,7 +119,6 @@
                     <child>
                       <object class="GtkSwitch" id="menu_switch">
                         <property name="valign">center</property>
-                        <signal name="state-set" handler="on_mod_switch_toggled" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -135,7 +131,6 @@
                     <child>
                       <object class="GtkSwitch" id="hud_switch">
                         <property name="valign">center</property>
-                        <signal name="state-set" handler="on_mod_switch_toggled" swapped="no"/>
                       </object>
                     </child>
                   </object>

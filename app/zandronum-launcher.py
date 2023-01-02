@@ -180,10 +180,9 @@ class FileRow(Adw.ActionRow):
 	#-----------------------------------
 	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
-		self.dialog = Gtk.FileChooserNative(title=self.dialog_title, transient_for=self.dialog_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN)
+		self.dialog = Gtk.FileChooserNative(title=self.dialog_title, transient_for=self.dialog_parent, action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN, accept_label="_Select")
 
 		self.dialog.set_modal(True)
-		self.dialog.set_accept_label("_Select")
 
 		self.dialog.set_select_multiple(self.dialog_multi_select)
 

@@ -4,6 +4,7 @@ import gi, sys, os, json, subprocess, shlex
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw, Gio, GObject, Pango
+from enum import IntEnum
 
 # Global path variable
 app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -11,6 +12,12 @@ app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
 # Global gresource file
 gresource = Gio.Resource.load(os.path.join(app_dir, "com.github.ZandronumLauncher.gresource"))
 gresource._register()
+
+# Global SelectType enum for FileRow class
+class SelectType(IntEnum):
+	SELECT = 0
+	SELECT_MULTIPLE = 1
+	SELECT_FOLDER = 2
 
 #------------------------------------------------------------------------------
 #-- CLASS: FILEROW
@@ -43,23 +50,23 @@ class FileRow(Adw.ActionRow):
 		self._icon_name = value
 
 		if self._icon_name == "":
-			self.image.set_from_icon_name("folder-symbolic" if self._folder_select == True else "document-open-symbolic")
+			self.image.set_from_icon_name("folder-symbolic" if self._select_type == SelectType.SELECT_FOLDER else "document-open-symbolic")
 		else:
 			self.image.set_from_icon_name(self._icon_name)
 
-	# folder_select property
-	_folder_select = False
+	# select_type property
+	_select_type = SelectType.SELECT
 
-	@GObject.Property(type=bool, default=False)
-	def folder_select(self):
-		return(self._folder_select)
+	@GObject.Property(type=int, default=SelectType.SELECT)
+	def select_type(self):
+		return(self._select_type)
 
-	@folder_select.setter
-	def folder_select(self, value):
-		self._folder_select = value
+	@select_type.setter
+	def select_type(self, value):
+		self._select_type = SelectType(value) if type(value) is int else value
 
 		if self._icon_name == "":
-			self.image.set_from_icon_name("folder-symbolic" if self._folder_select == True else "document-open-symbolic")
+			self.image.set_from_icon_name("folder-symbolic" if self._select_type == SelectType.SELECT_FOLDER else "document-open-symbolic")
 
 	# can_clear property
 	_can_clear = False
@@ -163,7 +170,6 @@ class FileRow(Adw.ActionRow):
 	#-----------------------------------
 	dialog_parent = GObject.Property(type=Gtk.Window, default=None)
 	dialog_title = GObject.Property(type=str, default="Open File")
-	dialog_multi_select = GObject.Property(type=bool, default=False)
 	dialog_file_filter = GObject.Property(type=Gtk.FileFilter, default=None)
 
 	def set_dialog_parent(self, value):
@@ -185,22 +191,22 @@ class FileRow(Adw.ActionRow):
 			title=self.dialog_title,
 			modal=True,
 			transient_for=self.dialog_parent,
-			action=Gtk.FileChooserAction.SELECT_FOLDER if self._folder_select == True else Gtk.FileChooserAction.OPEN,
+			action=Gtk.FileChooserAction.SELECT_FOLDER if self._select_type == SelectType.SELECT_FOLDER else Gtk.FileChooserAction.OPEN,
 			accept_label="_Select",
-			select_multiple=self.dialog_multi_select
+			select_multiple=(self._select_type == SelectType.SELECT_MULTIPLE)
 		)
 
 		# File filters
-		if self._folder_select == False:
-			all_filter = Gtk.FileFilter(name="All Files")
-			all_filter.add_pattern("*")
-
-			self.dialog.add_filter(all_filter)
-		else:
+		if self._select_type == SelectType.SELECT_FOLDER:
 			folder_filter = Gtk.FileFilter(name="Folders")
 			folder_filter.add_mime_type("inode/directory")
 
 			self.dialog.add_filter(folder_filter)
+		else:
+			all_filter = Gtk.FileFilter(name="All Files")
+			all_filter.add_pattern("*")
+
+			self.dialog.add_filter(all_filter)
 
 		if self.dialog_file_filter is not None:
 			self.dialog.add_filter(self.dialog_file_filter)

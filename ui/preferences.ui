@@ -34,7 +34,7 @@
               <object class="FileRow" id="iwaddir_filerow">
                 <property name="title">_IWAD Folder</property>
                 <property name="use_underline">True</property>
-                <property name="folder_select">True</property>
+                <property name="select_type">2</property>
                 <property name="can_reset">True</property>
                 <property name="dialog_title">Select IWAD Folder</property>
               </object>
@@ -43,7 +43,7 @@
               <object class="FileRow" id="pwaddir_filerow">
                 <property name="title">_PWAD Folder</property>
                 <property name="use_underline">True</property>
-                <property name="folder_select">True</property>
+                <property name="select_type">2</property>
                 <property name="can_reset">True</property>
                 <property name="dialog_title">Select PWAD Folder</property>
               </object>
@@ -52,7 +52,7 @@
               <object class="FileRow" id="moddir_filerow">
                 <property name="title">_Hi-Res Graphics Folder</property>
                 <property name="use_underline">True</property>
-                <property name="folder_select">True</property>
+                <property name="select_type">2</property>
                 <property name="can_reset">True</property>
                 <property name="dialog_title">Select Mod Folder</property>
               </object>

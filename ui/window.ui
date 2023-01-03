@@ -57,8 +57,8 @@
                         <property name="title_lines">1</property>
                         <property name="use_underline">True</property>
                         <property name="can_clear">True</property>
+                        <property name="select_type">1</property>
                         <property name="dialog_title">Select WAD Files</property>
-                        <property name="dialog_multi_select">True</property>
                         <property name="dialog_file_filter">
                           <object class="GtkFileFilter">
                             <property name="name">WAD/PK3/PK7 files</property>

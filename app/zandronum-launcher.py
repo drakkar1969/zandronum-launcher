@@ -26,6 +26,9 @@ class SelectType(IntEnum):
 class FileRow(Adw.ActionRow):
 	__gtype_name__ = "FileRow"
 
+	# Flags for properties
+	PROPS_CONSTRUCT = GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT
+
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
@@ -41,7 +44,7 @@ class FileRow(Adw.ActionRow):
 	# icon_name property
 	_icon_name = ""
 
-	@GObject.Property(type=str, default="")
+	@GObject.Property(type=str, default="", flags=PROPS_CONSTRUCT)
 	def icon_name(self):
 		return(self._icon_name)
 
@@ -57,7 +60,7 @@ class FileRow(Adw.ActionRow):
 	# select_type property
 	_select_type = SelectType.SELECT
 
-	@GObject.Property(type=int, default=SelectType.SELECT, minimum=SelectType.SELECT, maximum=SelectType.SELECT_FOLDER)
+	@GObject.Property(type=int, default=SelectType.SELECT, minimum=SelectType.SELECT, maximum=SelectType.SELECT_FOLDER, flags=PROPS_CONSTRUCT)
 	def select_type(self):
 		return(self._select_type)
 
@@ -71,7 +74,7 @@ class FileRow(Adw.ActionRow):
 	# can_clear property
 	_can_clear = False
 
-	@GObject.Property(type=bool, default=False)
+	@GObject.Property(type=bool, default=False, flags=PROPS_CONSTRUCT)
 	def can_clear(self):
 		return(self._can_clear)
 
@@ -84,7 +87,7 @@ class FileRow(Adw.ActionRow):
 	# can_reset property
 	_can_reset = False
 
-	@GObject.Property(type=bool, default=False)
+	@GObject.Property(type=bool, default=False, flags=PROPS_CONSTRUCT)
 	def can_reset(self):
 		return(self._can_reset)
 
@@ -98,7 +101,7 @@ class FileRow(Adw.ActionRow):
 	# File properties
 	#-----------------------------------
 	# base_folder property
-	base_folder = GObject.Property(type=str, default="")
+	base_folder = GObject.Property(type=str, default="", flags=PROPS_CONSTRUCT)
 
 	def set_base_folder(self, value):
 		self.base_folder = value
@@ -106,7 +109,7 @@ class FileRow(Adw.ActionRow):
 	# default_file property
 	_default_file = ""
 
-	@GObject.Property(type=str, default="")
+	@GObject.Property(type=str, default="", flags=PROPS_CONSTRUCT)
 	def default_file(self):
 		return(self._default_file)
 
@@ -122,7 +125,7 @@ class FileRow(Adw.ActionRow):
 	# selected_files property
 	_selected_files = []
 
-	@GObject.Property(type=GObject.TYPE_STRV, default=[])
+	@GObject.Property(type=GObject.TYPE_STRV, default=[], flags=PROPS_CONSTRUCT)
 	def selected_files(self):
 		return(self._selected_files)
 
@@ -168,9 +171,9 @@ class FileRow(Adw.ActionRow):
 	#-----------------------------------
 	# Dialog properties
 	#-----------------------------------
-	dialog_parent = GObject.Property(type=Gtk.Window, default=None)
-	dialog_title = GObject.Property(type=str, default="Open File")
-	dialog_file_filter = GObject.Property(type=Gtk.FileFilter, default=None)
+	dialog_parent = GObject.Property(type=Gtk.Window, default=None, flags=PROPS_CONSTRUCT)
+	dialog_title = GObject.Property(type=str, default="Open File", flags=PROPS_CONSTRUCT)
+	dialog_file_filter = GObject.Property(type=Gtk.FileFilter, default=None, flags=PROPS_CONSTRUCT)
 
 	def set_dialog_parent(self, value):
 		self.dialog_parent = value

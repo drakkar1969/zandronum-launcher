@@ -208,9 +208,9 @@ class FileRow(Adw.ActionRow):
 
 			self.dialog.add_filter(all_filter)
 
-		if self.dialog_file_filter is not None:
-			self.dialog.add_filter(self.dialog_file_filter)
-			self.dialog.set_filter(self.dialog_file_filter)
+			if self.dialog_file_filter is not None:
+				self.dialog.add_filter(self.dialog_file_filter)
+				self.dialog.set_filter(self.dialog_file_filter)
 
 		# Initial folder
 		if len(self._selected_files) > 0:
@@ -227,6 +227,8 @@ class FileRow(Adw.ActionRow):
 	def on_dialog_response(self, dialog, response):
 		if response == Gtk.ResponseType.ACCEPT:
 			self.selected_files = [gfile.get_path() for gfile in dialog.get_files() if gfile is not None]
+
+		self.dialog = None
 
 	@Gtk.Template.Callback()
 	def on_clear_btn_clicked(self, button):

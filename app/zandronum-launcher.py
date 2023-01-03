@@ -57,7 +57,7 @@ class FileRow(Adw.ActionRow):
 	# select_type property
 	_select_type = SelectType.SELECT
 
-	@GObject.Property(type=int, default=SelectType.SELECT)
+	@GObject.Property(type=int, default=SelectType.SELECT, minimum=SelectType.SELECT, maximum=SelectType.SELECT_FOLDER)
 	def select_type(self):
 		return(self._select_type)
 

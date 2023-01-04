@@ -15,7 +15,7 @@ gresource._register()
 
 # Global SelectType enum for FileRow class
 class SelectType(IntEnum):
-	SELECT = 0
+	SELECT_FILE = 0
 	SELECT_MULTIPLE = 1
 	SELECT_FOLDER = 2
 
@@ -58,9 +58,9 @@ class FileRow(Adw.ActionRow):
 			self.image.set_from_icon_name(self._icon_name)
 
 	# select_type property
-	_select_type = SelectType.SELECT
+	_select_type = SelectType.SELECT_FILE
 
-	@GObject.Property(type=int, default=SelectType.SELECT, minimum=SelectType.SELECT, maximum=SelectType.SELECT_FOLDER, flags=PROPS_CONSTRUCT)
+	@GObject.Property(type=int, default=SelectType.SELECT_FILE, minimum=SelectType.SELECT_FILE, maximum=SelectType.SELECT_FOLDER, flags=PROPS_CONSTRUCT)
 	def select_type(self):
 		return(self._select_type)
 

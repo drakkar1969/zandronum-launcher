@@ -648,7 +648,7 @@ class LauncherApp(Adw.Application):
 	mods_hud = GObject.Property(type=bool, default=True)
 
 	iwad_selected = GObject.Property(type=str, default="")
-	pwad_files = GObject.Property(type=GObject.TYPE_STRV)
+	pwad_files = GObject.Property(type=GObject.TYPE_STRV, default=[])
 	extra_params = GObject.Property(type=str, default="")
 
 	#-----------------------------------

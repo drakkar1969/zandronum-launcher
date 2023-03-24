@@ -571,7 +571,7 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
-		if os.path.exists(app.exec_file) == False:
+		if os.path.exists(app.exec_file) != False:
 			self.show_error_dialog("Zandronum executable file not found")
 			return(False)
 
@@ -627,12 +627,9 @@ class MainWindow(Adw.ApplicationWindow):
 		return(True)
 
 	def show_error_dialog(self, msg):
-		dialog = Adw.MessageDialog()
-		dialog.set_transient_for(self)
-		dialog.set_heading("ERROR")
-		dialog.set_body(msg)
+		dialog = Adw.MessageDialog.new(self, "Error", msg)
 		dialog.add_response("id_close", "Close")
-		dialog.show()
+		dialog.present()
 
 #------------------------------------------------------------------------------
 #-- CLASS: LAUNCHERAPP

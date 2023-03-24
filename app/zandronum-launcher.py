@@ -526,10 +526,10 @@ class MainWindow(Adw.ApplicationWindow):
 		self.params_entryrow.set_text("")
 
 	def on_show_preferences_action(self, action, param, user_data):
-		self.prefs_window.show()
+		self.prefs_window.present()
 
 	def on_show_cheats_action(self, action, param, user_data):
-		self.cheats_window.show()
+		self.cheats_window.present()
 
 	def on_show_about_action(self, action, param, user_data):
 		about_window = Adw.AboutWindow(
@@ -543,7 +543,7 @@ class MainWindow(Adw.ApplicationWindow):
 			license_type=Gtk.License.GPL_3_0,
 			transient_for=self)
 
-		about_window.show()
+		about_window.present()
 
 	def on_quit_app_action(self, action, param, user_data):
 		self.close()

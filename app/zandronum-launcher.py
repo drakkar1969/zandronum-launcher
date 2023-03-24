@@ -270,9 +270,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
-	paths_btn = Gtk.Template.Child()
-	graphics_btn = Gtk.Template.Child()
-
 	exec_filerow = Gtk.Template.Child()
 	iwaddir_filerow = Gtk.Template.Child()
 	pwaddir_filerow = Gtk.Template.Child()
@@ -289,10 +286,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	#-----------------------------------
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-
-		# Widget initialization (note: flat button style not working in UI file)
-		self.paths_btn.add_css_class("flat")
-		self.graphics_btn.add_css_class("flat")
 
 		# Set default values for widget properties
 		self.exec_filerow.set_default_file(app.default_exec_file)
@@ -320,24 +313,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 		# Set widget focus
 		self.set_focus(self.exec_filerow)
-
-	#-----------------------------------
-	# Signal handlers
-	#-----------------------------------
-	@Gtk.Template.Callback()
-	def on_paths_btn_clicked(self, button):
-		self.exec_filerow.set_selected_file(app.default_exec_file)
-		self.iwaddir_filerow.set_selected_file(app.default_iwad_folder)
-		self.pwaddir_filerow.set_selected_file(app.default_pwad_folder)
-		self.moddir_filerow.set_selected_file(app.default_mods_folder)
-
-	@Gtk.Template.Callback()
-	def on_graphics_btn_clicked(self, button):
-		self.texture_switch.set_active(True)
-		self.object_switch.set_active(True)
-		self.monster_switch.set_active(True)
-		self.menu_switch.set_active(True)
-		self.hud_switch.set_active(True)
 
 #------------------------------------------------------------------------------
 #-- CLASS: CHEATSWINDOW

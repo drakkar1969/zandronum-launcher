@@ -20,6 +20,29 @@ class SelectType(IntEnum):
 	SELECT_FOLDER = 2
 
 #------------------------------------------------------------------------------
+#-- CLASS: IWADOBJECT
+#------------------------------------------------------------------------------
+class IWadObject(GObject.Object):
+	__gtype_name__ = "IWadObject"
+
+	#-----------------------------------
+	# Properties
+	#-----------------------------------
+	iwad = GObject.Property(type=str, default="")
+	name = GObject.Property(type=str, default="")
+	textures = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	objects = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	monsters = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	menus = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	hud = GObject.Property(type=GObject.TYPE_STRV, default=[])
+
+	#-----------------------------------
+	# Init function
+	#-----------------------------------
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+#------------------------------------------------------------------------------
 #-- CLASS: FILEROW
 #------------------------------------------------------------------------------
 @Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/filerow.ui")
@@ -409,7 +432,7 @@ class MainWindow(Adw.ApplicationWindow):
 	# Class widget variables
 	#-----------------------------------
 	iwad_comborow = Gtk.Template.Child()
-	iwad_stringlist = Gtk.Template.Child()
+	iwad_model = Gtk.Template.Child()
 	pwad_filerow = Gtk.Template.Child()
 	params_entryrow = Gtk.Template.Child()
 	launch_btn = Gtk.Template.Child()
@@ -455,28 +478,39 @@ class MainWindow(Adw.ApplicationWindow):
 			# Find iwad files in iwad folder and convert to lower case
 			iwad_files = list(map(str.lower, os.listdir(value))) if os.path.exists(value) else []
 
-			# Get sorted list of iwad names from found iwad files
-			iwad_names = [k for k,v in app.doom_iwads.items() if v["iwad"] in iwad_files]
-			iwad_names.sort()
+			# Get sorted list of iwads from found iwad files
+			iwad_list = sorted([
+				IWadObject(
+					iwad=n,
+					name=app.doom_iwads[n].get("name", ""),
+					textures=app.doom_iwads[n].get("textures", []),
+					objects=app.doom_iwads[n].get("objects", []),
+					monsters=app.doom_iwads[n].get("monsters", []),
+					menus=app.doom_iwads[n].get("menus", []),
+					hud=app.doom_iwads[n].get("hud", []),
+				)
+				for n in app.doom_iwads.keys() if n in iwad_files
+			],
+			key=lambda obj: obj.iwad)
 
-			# Clear iwad stringlist and add iwad names
-			self.iwad_stringlist.splice(0, len(self.iwad_stringlist), iwad_names)
+			# Clear iwad model and add iwad names
+			self.iwad_model.splice(0, len(self.iwad_model), iwad_list)
 
 			# Reset iwad selection
 			self.iwad_comborow.set_selected(0)
 
 			# Set launch button state
-			self.launch_btn.set_sensitive(len(self.iwad_stringlist) > 0)
+			self.launch_btn.set_sensitive(len(self.iwad_model) > 0)
 
-			return(self.iwad_stringlist)
+			return(self.iwad_model)
 
 		def str_to_comboindex(binding, value):
-			iwad_names = [v.get_string() for i,v in enumerate(self.iwad_stringlist)]
-			return(iwad_names.index(value) if value in iwad_names else 0)
+			iwads = [obj.iwad for obj in self.iwad_model]
+			return(iwads.index(value) if value in iwads else 0)
 
 		def comboindex_to_str(binding, value):
-			iwad_selected = self.iwad_stringlist.get_item(value)
-			return(iwad_selected.get_string() if iwad_selected is not None else "")
+			selected = self.iwad_model.get_item(value)
+			return(selected.iwad if selected is not None else "")
 
 		app.bind_property("iwad_folder", self.iwad_comborow, "model", GObject.BindingFlags.SYNC_CREATE, str_to_model)
 		app.bind_property("iwad_selected", self.iwad_comborow, "selected", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_comboindex, comboindex_to_str)
@@ -544,16 +578,19 @@ class MainWindow(Adw.ApplicationWindow):
 		# Initialize Zandronum command line with executable
 		cmdline = app.exec_file
 
-		# Return with error if IWAD name is empty
-		if app.iwad_selected == "":
+		# Get selected iwad
+		iwad_obj = self.iwad_comborow.get_selected_item()
+
+		# Return with error if no iwad selected
+		if iwad_obj is None:
 			self.show_error_dialog("No IWAD file specified")
 			return(False)
 
 		# Return with error if IWAD file does not exist
-		iwad_file = os.path.join(app.iwad_folder, app.doom_iwads[app.iwad_selected]["iwad"])
+		iwad_file = os.path.join(app.iwad_folder, iwad_obj.iwad)
 
 		if os.path.exists(iwad_file) == False:
-			self.show_error_dialog(f'IWAD file for "{app.iwad_selected}" ({app.doom_iwads[app.iwad_selected]["iwad"]}) not found')
+			self.show_error_dialog(f'IWAD file "{app.iwad_selected}" not found')
 			return(False)
 
 		# Add IWAD file
@@ -562,20 +599,15 @@ class MainWindow(Adw.ApplicationWindow):
 		# Add hi-res graphics if options are true and files are present
 		mod_files = []
 
-		if app.mods_textures == True:
-			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["textures"])
+		if app.mods_textures == True: mod_files.extend(iwad_obj.textures)
 
-		if app.mods_objects == True:
-			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["objects"])
+		if app.mods_objects == True: mod_files.extend(iwad_obj.objects)
 
-		if app.mods_monsters == True:
-			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["monsters"])
+		if app.mods_monsters == True: mod_files.extend(iwad_obj.monsters)
 
-		if app.mods_menus == True:
-			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["menus"])
+		if app.mods_menus == True: mod_files.extend(iwad_obj.menus)
 
-		if app.mods_hud == True:
-			mod_files.extend(app.doom_iwads[app.iwad_selected]["mods"]["hud"])
+		if app.mods_hud == True: mod_files.extend(iwad_obj.hud)
 
 		for mod in mod_files:
 			mod_file = os.path.join(app.mods_folder, mod)
@@ -584,12 +616,10 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Add PWAD files if present
 		for pwad in app.pwad_files:
-			if pwad != "" and os.path.exists(pwad):
-				cmdline += f' -file "{pwad}"'
+			if pwad != "" and os.path.exists(pwad): cmdline += f' -file "{pwad}"'
 
 		# Add extra params if present
-		if app.extra_params != "":
-			cmdline += f' {app.extra_params}'
+		if app.extra_params != "": cmdline += f' {app.extra_params}'
 
 		# Launch Zandronum
 		subprocess.Popen(shlex.split(cmdline))

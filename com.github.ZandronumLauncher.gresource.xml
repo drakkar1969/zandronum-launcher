@@ -3,6 +3,8 @@
   <gresource prefix="/com/github/ZandronumLauncher">
     <file compressed="true">ui/cheats.ui</file>
     <file compressed="true">ui/filerow.ui</file>
+    <file compressed="true">ui/iwad-item.ui</file>
+    <file compressed="true">ui/iwad-list-item.ui</file>
     <file compressed="true">ui/preferences.ui</file>
     <file compressed="true">ui/window.ui</file>
   </gresource>

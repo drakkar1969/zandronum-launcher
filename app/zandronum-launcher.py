@@ -534,7 +534,7 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
-		if os.path.exists(app.exec_file) != False:
+		if os.path.exists(app.exec_file) == False:
 			self.show_error_dialog("Zandronum executable file not found")
 			return(False)
 

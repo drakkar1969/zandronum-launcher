@@ -194,12 +194,8 @@ class FileRow(Adw.ActionRow):
 	#-----------------------------------
 	# Dialog properties
 	#-----------------------------------
-	dialog_parent = GObject.Property(type=Gtk.Window, default=None, flags=PROPS_CONSTRUCT)
 	dialog_title = GObject.Property(type=str, default="Open File", flags=PROPS_CONSTRUCT)
 	dialog_file_filter = GObject.Property(type=Gtk.FileFilter, default=None, flags=PROPS_CONSTRUCT)
-
-	def set_dialog_parent(self, value):
-		self.dialog_parent = value
 
 	#-----------------------------------
 	# Init function
@@ -216,7 +212,7 @@ class FileRow(Adw.ActionRow):
 		self.dialog = Gtk.FileChooserNative(
 			title=self.dialog_title,
 			modal=True,
-			transient_for=self.dialog_parent,
+			transient_for=self.get_root(),
 			action=Gtk.FileChooserAction.SELECT_FOLDER if self._select_type == SelectType.SELECT_FOLDER else Gtk.FileChooserAction.OPEN,
 			accept_label="_Select",
 			select_multiple=(self._select_type == SelectType.SELECT_MULTIPLE)
@@ -297,11 +293,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		# Widget initialization (note: flat button style not working in UI file)
 		self.paths_btn.add_css_class("flat")
 		self.graphics_btn.add_css_class("flat")
-
-		self.exec_filerow.set_dialog_parent(self)
-		self.iwaddir_filerow.set_dialog_parent(self)
-		self.pwaddir_filerow.set_dialog_parent(self)
-		self.moddir_filerow.set_dialog_parent(self)
 
 		# Set default values for widget properties
 		self.exec_filerow.set_default_file(app.default_exec_file)
@@ -469,9 +460,6 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.show-cheats", ["F1"])
 		app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
 		app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
-
-		# Widget initialization
-		self.pwad_filerow.set_dialog_parent(self)
 
 		# Bind widget properties to app properties
 		def str_to_model(binding, value):

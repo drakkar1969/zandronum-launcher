@@ -659,7 +659,6 @@ class LauncherApp(Adw.Application):
 
 		# Connect signal handlers
 		self.connect("startup", self.on_startup)
-		self.connect("activate", self.on_activate)
 		self.connect("shutdown", self.on_shutdown)
 
 		# Initialize gsettings
@@ -686,16 +685,24 @@ class LauncherApp(Adw.Application):
 		self.default_mods_folder = os.path.expandvars(self.gsettings.get_default_value("mods-folder").get_string())
 
 	#-----------------------------------
+	# Activate function
+	#-----------------------------------
+	def do_activate(self):
+		active_window = self.get_active_window()
+
+		if active_window:
+			active_window.present()
+		else:
+			self.main_window = MainWindow(application=app)
+			self.main_window.present()
+
+	#-----------------------------------
 	# Signal handlers
 	#-----------------------------------
 	def on_startup(self, app):
 		# Read IWAD json file
 		with open(os.path.join(app_dir, "iwads.json"), "r") as iwad_file:
 			self.doom_iwads = json.load(iwad_file)
-
-	def on_activate(self, app):
-		self.main_window = MainWindow(application=app)
-		self.main_window.present()
 
 	def on_shutdown(self, app):
 		# Write gsettings

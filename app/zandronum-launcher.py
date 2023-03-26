@@ -403,7 +403,6 @@ class MainWindow(Adw.ApplicationWindow):
 	params_entryrow = Gtk.Template.Child()
 	launch_btn = Gtk.Template.Child()
 
-	shortcut_window = Gtk.Template.Child()
 	prefs_window = Gtk.Template.Child()
 	cheats_window = Gtk.Template.Child()
 
@@ -412,9 +411,6 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-
-		# Shortcut window
-		self.set_help_overlay(self.shortcut_window)
 
 		# Actions
 		action_list = [

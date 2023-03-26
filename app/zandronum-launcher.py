@@ -43,6 +43,24 @@ class IWadObject(GObject.Object):
 		super().__init__(*args, **kwargs)
 
 #------------------------------------------------------------------------------
+#-- CLASS: CHEATOBJECT
+#------------------------------------------------------------------------------
+class CheatObject(GObject.Object):
+	__gtype_name__ = "CheatObject"
+
+	#-----------------------------------
+	# Properties
+	#-----------------------------------
+	label = GObject.Property(type=str, default="")
+	value = GObject.Property(type=str, default="")
+
+	#-----------------------------------
+	# Init function
+	#-----------------------------------
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+#------------------------------------------------------------------------------
 #-- CLASS: FILEROW
 #------------------------------------------------------------------------------
 @Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/filerow.ui")
@@ -324,8 +342,8 @@ class CheatsWindow(Adw.PreferencesWindow):
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
-	switches_grid = Gtk.Template.Child()
-	cheats_grid = Gtk.Template.Child()
+	switches_model = Gtk.Template.Child()
+	cheats_model = Gtk.Template.Child()
 
 	#-----------------------------------
 	# Init function
@@ -334,7 +352,6 @@ class CheatsWindow(Adw.PreferencesWindow):
 		super().__init__(*args, **kwargs)
 
 		doom_switches = {
-			"Switch": "Description",
 			"-fast": "Increases the speed and attack rate of monsters. Requires the -warp parameter.",
 			"-nomonsters": "Disable spawning of monsters. Requires the -warp parameter.",
 			"-nomusic": "Disable background music",
@@ -347,7 +364,6 @@ class CheatsWindow(Adw.PreferencesWindow):
 		}
 
 		doom_cheats = {
-			"Cheat Code": "Effect",
 			"IDBEHOLDA": "Automap",
 			"IDBEHOLDI": "Temporary invisibility",
 			"IDBEHOLDL": "Light amplification goggles",
@@ -364,28 +380,11 @@ class CheatsWindow(Adw.PreferencesWindow):
 			"IDMYPOS": "Display location"
 		}
 
-		for i, key in enumerate(doom_switches):
-			param_label = Gtk.Label(label=key, halign=Gtk.Align.START)
-			self.switches_grid.attach(param_label, 0, i, 1, 1)
+		for k,v in doom_switches.items():
+			self.switches_model.append(CheatObject(label=k, value=v))
 
-			if i == 0: param_label.add_css_class("heading")
-			else: param_label.set_selectable(True)
-
-			desc_label = Gtk.Label(label=doom_switches[key], halign=Gtk.Align.START, wrap_mode=Pango.WrapMode.WORD, wrap=True, width_chars=40, max_width_chars=40, xalign=0)
-			self.switches_grid.attach(desc_label, 1, i, 1, 1)
-
-			if i == 0: desc_label.add_css_class("heading")
-
-		for i, key in enumerate(doom_cheats):
-			cheat_label = Gtk.Label(label=key, halign=Gtk.Align.START)
-			self.cheats_grid.attach(cheat_label, 0, i, 1, 1)
-
-			if i == 0: cheat_label.add_css_class("heading")
-
-			effect_label = Gtk.Label(label=doom_cheats[key], halign=Gtk.Align.START)
-			self.cheats_grid.attach(effect_label, 1, i, 1, 1)
-
-			if i == 0: effect_label.add_css_class("heading")
+		for k,v in doom_cheats.items():
+			self.cheats_model.append(CheatObject(label=k, value=v))
 
 #------------------------------------------------------------------------------
 #-- CLASS: MAINWINDOW

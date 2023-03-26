@@ -2,6 +2,8 @@
 <gresources>
   <gresource prefix="/com/github/ZandronumLauncher">
     <file compressed="true">gtk/help-overlay.ui</file>
+    <file compressed="true">ui/cheat-label-item.ui</file>
+    <file compressed="true">ui/cheat-value-item.ui</file>
     <file compressed="true">ui/cheats.ui</file>
     <file compressed="true">ui/filerow.ui</file>
     <file compressed="true">ui/iwad-item.ui</file>

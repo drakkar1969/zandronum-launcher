@@ -1,5 +1,6 @@
 mod app;
 mod window;
+mod iwad_combo_row;
 
 use gtk::{gio, glib};
 use gtk::prelude::*;

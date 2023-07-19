@@ -3,6 +3,7 @@ use adw::subclass::prelude::*;
 use gtk::prelude::*;
 
 use crate::ZLApplication;
+use crate::iwad_combo_row::IWadComboRow;
 
 //------------------------------------------------------------------------------
 // MODULE: ZLWindow
@@ -30,6 +31,8 @@ mod imp {
         type ParentType = adw::ApplicationWindow;
 
         fn class_init(klass: &mut Self::Class) {
+            IWadComboRow::ensure_type();
+
             klass.bind_template();
         }
 

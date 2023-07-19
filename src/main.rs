@@ -2,6 +2,7 @@ mod app;
 mod window;
 mod iwad_combo_row;
 mod iwad_object;
+mod file_select_row;
 
 use gtk::{gio, glib};
 use gtk::prelude::*;

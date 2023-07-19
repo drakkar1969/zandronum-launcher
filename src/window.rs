@@ -4,6 +4,7 @@ use gtk::prelude::*;
 
 use crate::ZLApplication;
 use crate::iwad_combo_row::IWadComboRow;
+use crate::file_select_row::FileSelectRow;
 
 //------------------------------------------------------------------------------
 // MODULE: ZLWindow
@@ -32,6 +33,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             IWadComboRow::ensure_type();
+            FileSelectRow::ensure_type();
 
             klass.bind_template();
         }

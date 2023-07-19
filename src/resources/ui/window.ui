@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!--// MAIN WINDOW //-->
+  <template class="ZLWindow" parent="AdwApplicationWindow">
+    <property name="default_width">580</property>
+    <property name="default_height">-1</property>
+    <property name="title">Zandronum Launcher</property>
+    <property name="content">
+      <object class="GtkBox" id="window_box">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkHeaderBar">
+            <child type="end">
+              <object class="GtkMenuButton">
+                <property name="icon_name">open-menu-symbolic</property>
+                <property name="primary">True</property>
+                <!-- <property name="menu_model">header_menu</property> -->
+              </object>
+            </child>
+          </object>
+        </child>
+        <!-- <child>
+          <object class="AdwClamp">
+            <child>
+              <object class="GtkBox" id="launch_box">
+                <property name="orientation">vertical</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
+                <property name="margin_top">24</property>
+                <property name="margin_bottom">28</property>
+                <property name="spacing">28</property>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title">Launch Parameters</property>
+                    <child>
+                      <object class="AdwComboRow" id="iwad_comborow">
+                        <property name="title">_Game</property>
+                        <property name="title_lines">1</property>
+                        <property name="use_underline">True</property>
+                        <property name="model">
+                          <object class="GListStore" id="iwad_model">
+                            <property name="item-type">IWadObject</property>
+                          </object>
+                        </property>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/com/github/ZandronumLauncher/ui/iwad-item.ui</property>
+                          </object>
+                        </property>
+                        <property name="list-factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/com/github/ZandronumLauncher/ui/iwad-list-item.ui</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="FileRow" id="pwad_filerow">
+                        <property name="title">Optional WAD _Files</property>
+                        <property name="title_lines">1</property>
+                        <property name="use_underline">True</property>
+                        <property name="can_clear">True</property>
+                        <property name="select_type">1</property>
+                        <property name="dialog_title">Select WAD Files</property>
+                        <property name="dialog_file_filter">
+                          <object class="GtkFileFilter">
+                            <property name="name">WAD/PK3/PK7 files</property>
+                            <mime-types>
+                              <mime-type>application/x-doom-wad</mime-type>
+                              <mime-type>application/zip</mime-type>
+                              <mime-type>application/x-7z-compressed</mime-type>
+                            </mime-types>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwEntryRow" id="params_entryrow">
+                        <property name="title">_Additional Switches (e.g. -warp 7 -skill 3)</property>
+                        <property name="use_underline">True</property>
+                        <property name="activates_default">False</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="launch_btn">
+                    <property name="label">_Launch Zandronum</property>
+                    <property name="halign">center</property>
+                    <property name="use_underline">True</property>
+                    <property name="action-name">win.launch-zandronum</property>
+                    <style>
+                      <class name="suggested-action"/>
+                      <class name="pill"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child> -->
+      </object>
+    </property>
+  </template>
+
+  <!--// HEADER MENU //-->
+  <!-- <menu id="header_menu">
+    <section>
+      <item>
+        <attribute name="label">Reset to Defaults</attribute>
+        <attribute name="action">win.reset-widgets</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Preferences</attribute>
+        <attribute name="action">win.show-preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label">Keyboard Shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Zandronum Help</attribute>
+        <attribute name="action">win.show-cheats</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">About Zandronum Launcher</attribute>
+        <attribute name="action">win.show-about</attribute>
+      </item>
+    </section>
+  </menu> -->
+
+  <!--// PREFERENCES WINDOW //-->
+  <!-- <object class="PreferencesWindow" id="prefs_window">
+  </object> -->
+
+  <!--// CHEATS WINDOW //-->
+  <!-- <object class="CheatsWindow" id="cheats_window">
+  </object> -->
+</interface>

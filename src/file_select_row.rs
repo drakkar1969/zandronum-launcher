@@ -5,6 +5,24 @@ use adw::subclass::prelude::*;
 use gtk::prelude::*;
 
 //------------------------------------------------------------------------------
+// ENUM: SelectType
+//------------------------------------------------------------------------------
+#[derive(Debug, Eq, PartialEq, Clone, Copy, glib::Enum)]
+#[repr(u32)]
+#[enum_type(name = "SelectType")]
+pub enum SelectType {
+    File = 0,
+    Multiple = 1,
+    Folder = 2,
+}
+
+impl Default for SelectType {
+    fn default() -> Self {
+        SelectType::File
+    }
+}
+
+//------------------------------------------------------------------------------
 // MODULE: FileSelectRow
 //------------------------------------------------------------------------------
 mod imp {

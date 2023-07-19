@@ -14,7 +14,7 @@
               <object class="GtkMenuButton">
                 <property name="icon_name">open-menu-symbolic</property>
                 <property name="primary">True</property>
-                <!-- <property name="menu_model">header_menu</property> -->
+                <property name="menu_model">main_menu</property>
               </object>
             </child>
           </object>
@@ -103,15 +103,15 @@
     </property>
   </template>
 
-  <!--// HEADER MENU //-->
-  <!-- <menu id="header_menu">
-    <section>
+  <!--// MAIN MENU //-->
+  <menu id="main_menu">
+    <!-- <section>
       <item>
         <attribute name="label">Reset to Defaults</attribute>
         <attribute name="action">win.reset-widgets</attribute>
       </item>
-    </section>
-    <section>
+    </section> -->
+    <!-- <section>
       <item>
         <attribute name="label">Preferences</attribute>
         <attribute name="action">win.show-preferences</attribute>
@@ -120,20 +120,20 @@
         <attribute name="label">Keyboard Shortcuts</attribute>
         <attribute name="action">win.show-help-overlay</attribute>
       </item>
-    </section>
-    <section>
+    </section> -->
+    <!-- <section>
       <item>
         <attribute name="label">Zandronum Help</attribute>
         <attribute name="action">win.show-cheats</attribute>
       </item>
-    </section>
+    </section> -->
     <section>
       <item>
         <attribute name="label">About Zandronum Launcher</attribute>
-        <attribute name="action">win.show-about</attribute>
+        <attribute name="action">app.show-about</attribute>
       </item>
     </section>
-  </menu> -->
+  </menu>
 
   <!--// PREFERENCES WINDOW //-->
   <!-- <object class="PreferencesWindow" id="prefs_window">

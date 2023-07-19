@@ -446,8 +446,8 @@ class MainWindow(Adw.ApplicationWindow):
 			[ "reset-widgets", self.on_reset_widgets_action ],
 			[ "show-preferences", self.on_show_preferences_action ],
 			[ "show-cheats", self.on_show_cheats_action ],
-			[ "show-about", self.on_show_about_action ],
-			[ "quit-app", self.on_quit_app_action ],
+			# [ "show-about", self.on_show_about_action ],
+			# [ "quit-app", self.on_quit_app_action ],
 			[ "launch-zandronum", self.on_launch_zandronum_action ]
 		]
 
@@ -531,22 +531,22 @@ class MainWindow(Adw.ApplicationWindow):
 	def on_show_cheats_action(self, action, param, user_data):
 		self.cheats_window.present()
 
-	def on_show_about_action(self, action, param, user_data):
-		about_window = Adw.AboutWindow(
-			application_name="Zandronum Launcher",
-			application_icon="zandronum",
-			developer_name="draKKar1969",
-			version="1.2.0",
-			website="https://github.com/drakkar1969/zandronum-launcher",
-			developers=["draKKar1969"],
-			designers=["draKKar1969"],
-			license_type=Gtk.License.GPL_3_0,
-			transient_for=self)
+	# def on_show_about_action(self, action, param, user_data):
+	# 	about_window = Adw.AboutWindow(
+	# 		application_name="Zandronum Launcher",
+	# 		application_icon="zandronum",
+	# 		developer_name="draKKar1969",
+	# 		version="1.2.0",
+	# 		website="https://github.com/drakkar1969/zandronum-launcher",
+	# 		developers=["draKKar1969"],
+	# 		designers=["draKKar1969"],
+	# 		license_type=Gtk.License.GPL_3_0,
+	# 		transient_for=self)
 
-		about_window.present()
+	# 	about_window.present()
 
-	def on_quit_app_action(self, action, param, user_data):
-		self.close()
+	# def on_quit_app_action(self, action, param, user_data):
+	# 	self.close()
 
 	def on_launch_zandronum_action(self, action, param, user_data):
 		self.set_sensitive(False)

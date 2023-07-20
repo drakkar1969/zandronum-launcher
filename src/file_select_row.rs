@@ -1,4 +1,4 @@
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 
 use gtk::glib;
 use adw::subclass::prelude::*;
@@ -35,8 +35,15 @@ mod imp {
     #[template(resource = "/com/github/ZandronumLauncher/ui/file_select_row.ui")]
     #[properties(wrapper_type = super::FileSelectRow)]
     pub struct FileSelectRow {
-        #[property(get, set)]
-        icon: RefCell<String>,
+        #[template_child]
+        pub label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub image: TemplateChild<gtk::Image>,
+
+        #[property(get, set = Self::set_select, construct, builder(SelectType::default()))]
+        select: Cell<SelectType>,
+        #[property(get, set = Self::set_icon, nullable)]
+        icon: RefCell<Option<String>>,
     }
 
     //-----------------------------------
@@ -85,6 +92,39 @@ mod imp {
     impl ListBoxRowImpl for FileSelectRow {}
     impl PreferencesRowImpl for FileSelectRow {}
     impl ActionRowImpl for FileSelectRow {}
+    impl FileSelectRow {
+        //-----------------------------------
+        // Select property custom setter
+        //-----------------------------------
+        fn set_select(&self, select: SelectType) {
+            if self.obj().icon().is_none() {
+                if select == SelectType::Folder {
+                    self.image.set_icon_name(Some("folder-symbolic"));
+                } else {
+                    self.image.set_icon_name(Some("document-open-symbolic"));
+                }
+            }
+
+            self.select.replace(select);
+        }
+
+        //-----------------------------------
+        // Icon property custom setter
+        //-----------------------------------
+        fn set_icon(&self, icon: Option<&str>) {
+            if icon.is_some() {
+                self.image.set_icon_name(icon);
+            } else {
+                if self.obj().select() == SelectType::Folder {
+                    self.image.set_icon_name(Some("folder-symbolic"));
+                } else {
+                    self.image.set_icon_name(Some("document-open-symbolic"));
+                }
+            }
+
+            self.icon.replace(icon.map(|icon| icon.to_string()));
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

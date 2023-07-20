@@ -19,9 +19,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkImage" id="image">
-                <property name="icon_name">document-open-symbolic</property>
-              </object>
+              <object class="GtkImage" id="image"/>
             </child>
           </object>
         </property>

@@ -45,11 +45,15 @@ mod imp {
         pub label: TemplateChild<gtk::Label>,
         #[template_child]
         pub image: TemplateChild<gtk::Image>,
+        #[template_child]
+        pub clear_button: TemplateChild<gtk::Button>,
 
         #[property(get, set = Self::set_select, construct, builder(SelectType::default()))]
         select: Cell<SelectType>,
         #[property(get, set = Self::set_icon, nullable, construct)]
         icon: RefCell<Option<String>>,
+        #[property(get, set = Self::set_can_clear, construct)]
+        can_clear: Cell<bool>,
 
         #[property(get, set, default = "Select File", construct)]
         dialog_title: RefCell<String>,
@@ -161,7 +165,18 @@ mod imp {
                 self.label.set_label(&format!("({n_files} files)"))
             }
 
+            self.clear_button.set_sensitive(n_files > 0);
+
             self.files.replace(files);
+        }
+
+        //-----------------------------------
+        // Can clear property custom setter
+        //-----------------------------------
+        fn set_can_clear(&self, can_clear: bool) {
+            self.clear_button.set_visible(can_clear);
+
+            self.can_clear.replace(can_clear);
         }
     }
 }
@@ -256,6 +271,11 @@ impl FileSelectRow {
             }));
 
             dialog.show();
+        }));
+
+        // Clear button clicked signal
+        imp.clear_button.connect_clicked(clone!(@weak self as obj => move |_| {
+            obj.set_files(vec![]);
         }));
     }
 }

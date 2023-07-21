@@ -65,10 +65,10 @@ class CheatObject(GObject.Object):
 #------------------------------------------------------------------------------
 @Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/filerow.ui")
 class FileRow(Adw.ActionRow):
-	__gtype_name__ = "FileRow"
+	# __gtype_name__ = "FileRow"
 
 	# Flags for properties
-	PROPS_CONSTRUCT = GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT
+	# PROPS_CONSTRUCT = GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT
 
 	#-----------------------------------
 	# Class widget variables
@@ -76,7 +76,7 @@ class FileRow(Adw.ActionRow):
 	# label = Gtk.Template.Child()
 	# image = Gtk.Template.Child()
 	# file_btn = Gtk.Template.Child()
-	clear_btn = Gtk.Template.Child()
+	# clear_btn = Gtk.Template.Child()
 	reset_btn = Gtk.Template.Child()
 
 	#-----------------------------------
@@ -113,17 +113,17 @@ class FileRow(Adw.ActionRow):
 	# 		self.image.set_from_icon_name("folder-symbolic" if self._select_type == SelectType.SELECT_FOLDER else "document-open-symbolic")
 
 	# can_clear property
-	_can_clear = False
+	# _can_clear = False
 
-	@GObject.Property(type=bool, default=False, flags=PROPS_CONSTRUCT)
-	def can_clear(self):
-		return(self._can_clear)
+	# @GObject.Property(type=bool, default=False, flags=PROPS_CONSTRUCT)
+	# def can_clear(self):
+	# 	return(self._can_clear)
 
-	@can_clear.setter
-	def can_clear(self, value):
-		self._can_clear = value
+	# @can_clear.setter
+	# def can_clear(self, value):
+	# 	self._can_clear = value
 
-		self.clear_btn.set_visible(self._can_clear)
+	# 	self.clear_btn.set_visible(self._can_clear)
 
 	# can_reset property
 	_can_reset = False
@@ -184,7 +184,7 @@ class FileRow(Adw.ActionRow):
 		# 	else:
 		# 		self.label.set_text(f"({n_files} files)")
 
-		self.set_clear_btn_state()
+		# self.set_clear_btn_state()
 		self.set_reset_btn_state()
 
 	# def get_selected_files(self):
@@ -200,8 +200,8 @@ class FileRow(Adw.ActionRow):
 		self.selected_files = [value]
 
 	# Helper functions
-	def set_clear_btn_state(self):
-		self.clear_btn.set_sensitive(len(self._selected_files) != 0)
+	# def set_clear_btn_state(self):
+	# 	self.clear_btn.set_sensitive(len(self._selected_files) != 0)
 
 	def set_reset_btn_state(self):
 		if self._default_file == "" or len(self._selected_files) != 1:
@@ -270,9 +270,9 @@ class FileRow(Adw.ActionRow):
 
 	# 	self.dialog = None
 
-	@Gtk.Template.Callback()
-	def on_clear_btn_clicked(self, button):
-		self.selected_files = []
+	# @Gtk.Template.Callback()
+	# def on_clear_btn_clicked(self, button):
+	# 	self.selected_files = []
 
 	@Gtk.Template.Callback()
 	def on_reset_btn_clicked(self, button):

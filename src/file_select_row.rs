@@ -6,8 +6,6 @@ use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use glib::clone;
 
-use crate::window::ZLWindow;
-
 //------------------------------------------------------------------------------
 // ENUM: SelectType
 //------------------------------------------------------------------------------
@@ -224,8 +222,8 @@ impl FileSelectRow {
         imp.select_button.connect_clicked(clone!(@weak self as obj => move |_| {
             // Get root window
             let root = obj.root()
-                .and_downcast::<ZLWindow>()
-                .expect("Must be a 'ZLWindow'");
+                .and_downcast::<gtk::Window>()
+                .expect("Must be a 'Window'");
 
             // Create file dialog
             let dialog = gtk::FileChooserDialog::builder()

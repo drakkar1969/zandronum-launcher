@@ -111,16 +111,16 @@
         <attribute name="action">win.reset-widgets</attribute>
       </item>
     </section> -->
-    <!-- <section>
+    <section>
       <item>
         <attribute name="label">Preferences</attribute>
         <attribute name="action">win.show-preferences</attribute>
       </item>
-      <item>
+      <!-- <item>
         <attribute name="label">Keyboard Shortcuts</attribute>
         <attribute name="action">win.show-help-overlay</attribute>
-      </item>
-    </section> -->
+      </item> -->
+    </section>
     <!-- <section>
       <item>
         <attribute name="label">Zandronum Help</attribute>
@@ -136,8 +136,8 @@
   </menu>
 
   <!--// PREFERENCES WINDOW //-->
-  <!-- <object class="PreferencesWindow" id="prefs_window">
-  </object> -->
+  <object class="PreferencesWindow" id="prefs_window">
+  </object>
 
   <!--// CHEATS WINDOW //-->
   <!-- <object class="CheatsWindow" id="cheats_window">

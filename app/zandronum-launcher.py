@@ -14,10 +14,10 @@ gresource = Gio.Resource.load(os.path.join(app_dir, "com.github.ZandronumLaunche
 gresource._register()
 
 # Global SelectType enum for FileRow class
-class SelectType(IntEnum):
-	SELECT_FILE = 0
-	SELECT_MULTIPLE = 1
-	SELECT_FOLDER = 2
+# class SelectType(IntEnum):
+# 	SELECT_FILE = 0
+# 	SELECT_MULTIPLE = 1
+# 	SELECT_FOLDER = 2
 
 #------------------------------------------------------------------------------
 #-- CLASS: IWADOBJECT
@@ -73,9 +73,9 @@ class FileRow(Adw.ActionRow):
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
-	label = Gtk.Template.Child()
-	image = Gtk.Template.Child()
-	file_btn = Gtk.Template.Child()
+	# label = Gtk.Template.Child()
+	# image = Gtk.Template.Child()
+	# file_btn = Gtk.Template.Child()
 	clear_btn = Gtk.Template.Child()
 	reset_btn = Gtk.Template.Child()
 
@@ -83,34 +83,34 @@ class FileRow(Adw.ActionRow):
 	# Button properties
 	#-----------------------------------
 	# icon_name property
-	_icon_name = ""
+	# _icon_name = ""
 
-	@GObject.Property(type=str, default="", flags=PROPS_CONSTRUCT)
-	def icon_name(self):
-		return(self._icon_name)
+	# @GObject.Property(type=str, default="", flags=PROPS_CONSTRUCT)
+	# def icon_name(self):
+	# 	return(self._icon_name)
 
-	@icon_name.setter
-	def icon_name(self, value):
-		self._icon_name = value
+	# @icon_name.setter
+	# def icon_name(self, value):
+	# 	self._icon_name = value
 
-		if self._icon_name == "":
-			self.image.set_from_icon_name("folder-symbolic" if self._select_type == SelectType.SELECT_FOLDER else "document-open-symbolic")
-		else:
-			self.image.set_from_icon_name(self._icon_name)
+	# 	if self._icon_name == "":
+	# 		self.image.set_from_icon_name("folder-symbolic" if self._select_type == SelectType.SELECT_FOLDER else "document-open-symbolic")
+	# 	else:
+	# 		self.image.set_from_icon_name(self._icon_name)
 
 	# select_type property
-	_select_type = SelectType.SELECT_FILE
+	# _select_type = SelectType.SELECT_FILE
 
-	@GObject.Property(type=int, default=SelectType.SELECT_FILE, minimum=SelectType.SELECT_FILE, maximum=SelectType.SELECT_FOLDER, flags=PROPS_CONSTRUCT)
-	def select_type(self):
-		return(self._select_type)
+	# @GObject.Property(type=int, default=SelectType.SELECT_FILE, minimum=SelectType.SELECT_FILE, maximum=SelectType.SELECT_FOLDER, flags=PROPS_CONSTRUCT)
+	# def select_type(self):
+	# 	return(self._select_type)
 
-	@select_type.setter
-	def select_type(self, value):
-		self._select_type = SelectType(value) if type(value) is int else value
+	# @select_type.setter
+	# def select_type(self, value):
+	# 	self._select_type = SelectType(value) if type(value) is int else value
 
-		if self._icon_name == "":
-			self.image.set_from_icon_name("folder-symbolic" if self._select_type == SelectType.SELECT_FOLDER else "document-open-symbolic")
+	# 	if self._icon_name == "":
+	# 		self.image.set_from_icon_name("folder-symbolic" if self._select_type == SelectType.SELECT_FOLDER else "document-open-symbolic")
 
 	# can_clear property
 	_can_clear = False
@@ -142,10 +142,10 @@ class FileRow(Adw.ActionRow):
 	# File properties
 	#-----------------------------------
 	# base_folder property
-	base_folder = GObject.Property(type=str, default="", flags=PROPS_CONSTRUCT)
+	# base_folder = GObject.Property(type=str, default="", flags=PROPS_CONSTRUCT)
 
-	def set_base_folder(self, value):
-		self.base_folder = value
+	# def set_base_folder(self, value):
+	# 	self.base_folder = value
 
 	# default_file property
 	_default_file = ""
@@ -164,37 +164,37 @@ class FileRow(Adw.ActionRow):
 		self.default_file = value
 
 	# selected_files property
-	_selected_files = []
+	# _selected_files = []
 
-	@GObject.Property(type=GObject.TYPE_STRV, default=[], flags=PROPS_CONSTRUCT)
-	def selected_files(self):
-		return(self._selected_files)
+	# @GObject.Property(type=GObject.TYPE_STRV, default=[], flags=PROPS_CONSTRUCT)
+	# def selected_files(self):
+	# 	return(self._selected_files)
 
 	@selected_files.setter
 	def selected_files(self, value):
-		self._selected_files = value
+		# self._selected_files = value
 
-		n_files = len(self._selected_files)
+		# n_files = len(self._selected_files)
 
-		if n_files == 0:
-			self.label.set_text("(None)")
-		else:
-			if n_files == 1:
-				self.label.set_text(os.path.basename(self.selected_files[0]))
-			else:
-				self.label.set_text(f"({n_files} files)")
+		# if n_files == 0:
+		# 	self.label.set_text("(None)")
+		# else:
+		# 	if n_files == 1:
+		# 		self.label.set_text(os.path.basename(self.selected_files[0]))
+		# 	else:
+		# 		self.label.set_text(f"({n_files} files)")
 
 		self.set_clear_btn_state()
 		self.set_reset_btn_state()
 
-	def get_selected_files(self):
-		return(self.selected_files)
+	# def get_selected_files(self):
+	# 	return(self.selected_files)
 
 	def get_selected_file(self):
 		return(self.selected_files[0] if len(self.selected_files) > 0 else "")
 
-	def set_selected_files(self, value):
-		self.selected_files = value
+	# def set_selected_files(self, value):
+	# 	self.selected_files = value
 
 	def set_selected_file(self, value):
 		self.selected_files = [value]
@@ -212,14 +212,14 @@ class FileRow(Adw.ActionRow):
 	#-----------------------------------
 	# Dialog properties
 	#-----------------------------------
-	dialog_title = GObject.Property(type=str, default="Open File", flags=PROPS_CONSTRUCT)
-	dialog_file_filter = GObject.Property(type=Gtk.FileFilter, default=None, flags=PROPS_CONSTRUCT)
+	# dialog_title = GObject.Property(type=str, default="Open File", flags=PROPS_CONSTRUCT)
+	# dialog_file_filter = GObject.Property(type=Gtk.FileFilter, default=None, flags=PROPS_CONSTRUCT)
 
 	#-----------------------------------
 	# Init function
 	#-----------------------------------
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+	# def __init__(self, *args, **kwargs):
+	# 	super().__init__(*args, **kwargs)
 
 	#-----------------------------------
 	# Signal handlers
@@ -227,14 +227,14 @@ class FileRow(Adw.ActionRow):
 	@Gtk.Template.Callback()
 	def on_file_btn_clicked(self, button):
 		# Dialog constructor
-		self.dialog = Gtk.FileChooserNative(
-			title=self.dialog_title,
-			modal=True,
-			transient_for=self.get_root(),
-			action=Gtk.FileChooserAction.SELECT_FOLDER if self._select_type == SelectType.SELECT_FOLDER else Gtk.FileChooserAction.OPEN,
-			accept_label="_Select",
-			select_multiple=(self._select_type == SelectType.SELECT_MULTIPLE)
-		)
+		# self.dialog = Gtk.FileChooserNative(
+		# 	title=self.dialog_title,
+		# 	modal=True,
+		# 	transient_for=self.get_root(),
+		# 	action=Gtk.FileChooserAction.SELECT_FOLDER if self._select_type == SelectType.SELECT_FOLDER else Gtk.FileChooserAction.OPEN,
+		# 	accept_label="_Select",
+		# 	select_multiple=(self._select_type == SelectType.SELECT_MULTIPLE)
+		# )
 
 		# File filters
 		if self._select_type == SelectType.SELECT_FOLDER:
@@ -242,33 +242,33 @@ class FileRow(Adw.ActionRow):
 			folder_filter.add_mime_type("inode/directory")
 
 			self.dialog.add_filter(folder_filter)
-		else:
-			all_filter = Gtk.FileFilter(name="All Files")
-			all_filter.add_pattern("*")
+		# else:
+		# 	all_filter = Gtk.FileFilter(name="All Files")
+		# 	all_filter.add_pattern("*")
 
-			self.dialog.add_filter(all_filter)
+		# 	self.dialog.add_filter(all_filter)
 
-			if self.dialog_file_filter is not None:
-				self.dialog.add_filter(self.dialog_file_filter)
-				self.dialog.set_filter(self.dialog_file_filter)
+		# 	if self.dialog_file_filter is not None:
+		# 		self.dialog.add_filter(self.dialog_file_filter)
+		# 		self.dialog.set_filter(self.dialog_file_filter)
 
 		# Initial folder
-		if len(self._selected_files) > 0:
-			self.dialog.set_file(Gio.File.new_for_path(self._selected_files[0]))
-		else:
-			if self.base_folder != "":
-				self.dialog.set_current_folder(Gio.File.new_for_path(self.base_folder))
+		# if len(self._selected_files) > 0:
+		# 	self.dialog.set_file(Gio.File.new_for_path(self._selected_files[0]))
+		# else:
+		# 	if self.base_folder != "":
+		# 		self.dialog.set_current_folder(Gio.File.new_for_path(self.base_folder))
 
 		# Response signal handler
-		self.dialog.connect("response", self.on_dialog_response)
+		# self.dialog.connect("response", self.on_dialog_response)
 
-		self.dialog.show()
+		# self.dialog.show()
 
-	def on_dialog_response(self, dialog, response):
-		if response == Gtk.ResponseType.ACCEPT:
-			self.selected_files = [gfile.get_path() for gfile in dialog.get_files() if gfile is not None]
+	# def on_dialog_response(self, dialog, response):
+	# 	if response == Gtk.ResponseType.ACCEPT:
+	# 		self.selected_files = [gfile.get_path() for gfile in dialog.get_files() if gfile is not None]
 
-		self.dialog = None
+	# 	self.dialog = None
 
 	@Gtk.Template.Callback()
 	def on_clear_btn_clicked(self, button):

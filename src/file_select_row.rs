@@ -59,9 +59,11 @@ mod imp {
         dialog_title: RefCell<String>,
         #[property(get, set, nullable, construct)]
         filter: RefCell<Option<gtk::FileFilter>>,
-
         #[property(get, set, nullable, construct)]
         current_folder: RefCell<Option<String>>,
+
+        #[property(get = Self::file)]
+        _file: RefCell<Option<String>>,
         #[property(get, set = Self::set_files, construct)]
         files: RefCell<Vec<String>>,
     }
@@ -168,6 +170,19 @@ mod imp {
             self.clear_button.set_sensitive(n_files > 0);
 
             self.files.replace(files);
+        }
+
+        //-----------------------------------
+        // File property custom getter
+        //-----------------------------------
+        fn file(&self) -> Option<String> {
+            let files = self.files.borrow();
+
+            if files.len() > 0 {
+                Some(files[0].to_string())
+            } else {
+                None
+            }
         }
 
         //-----------------------------------

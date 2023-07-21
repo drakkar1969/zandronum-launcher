@@ -190,8 +190,8 @@ class FileRow(Adw.ActionRow):
 	# def get_selected_files(self):
 	# 	return(self.selected_files)
 
-	def get_selected_file(self):
-		return(self.selected_files[0] if len(self.selected_files) > 0 else "")
+	# def get_selected_file(self):
+	# 	return(self.selected_files[0] if len(self.selected_files) > 0 else "")
 
 	# def set_selected_files(self, value):
 	# 	self.selected_files = value

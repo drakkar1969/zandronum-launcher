@@ -57,12 +57,12 @@
                     <child>
                       <object class="FileSelectRow" id="pwad_filerow">
                         <property name="title">Optional WAD _Files</property>
-                        <!-- <property name="title_lines">1</property> -->
+                        <property name="title_lines">1</property>
                         <property name="use_underline">True</property>
-                        <!-- <property name="can_clear">True</property> -->
-                        <!-- <property name="select_type">1</property> -->
-                        <!-- <property name="dialog_title">Select WAD Files</property> -->
-                        <!-- <property name="dialog_file_filter">
+                        <property name="can_clear">True</property>
+                        <property name="select">multiple</property>
+                        <property name="dialog_title">Select WAD Files</property>
+                        <property name="filter">
                           <object class="GtkFileFilter">
                             <property name="name">WAD/PK3/PK7 files</property>
                             <mime-types>
@@ -71,7 +71,7 @@
                               <mime-type>application/x-7z-compressed</mime-type>
                             </mime-types>
                           </object>
-                        </property> -->
+                        </property>
                       </object>
                     </child>
                     <!-- <child>

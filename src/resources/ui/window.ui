@@ -24,11 +24,11 @@
             <child> -->
               <object class="GtkBox" id="launch_box">
                 <property name="orientation">vertical</property>
-                <!-- <property name="margin_start">12</property>
-                <property name="margin_end">12</property>
+                <property name="margin_start">24</property>
+                <property name="margin_end">24</property>
                 <property name="margin_top">24</property>
                 <property name="margin_bottom">28</property>
-                <property name="spacing">28</property> -->
+                <property name="spacing">28</property>
                 <child>
                   <object class="AdwPreferencesGroup">
                     <property name="title">Launch Parameters</property>

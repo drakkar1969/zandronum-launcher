@@ -231,10 +231,8 @@ impl ZLWindow {
 
         if let Some(gsettings) = imp.gsettings.get() {
             // Get selected IWAD
-            if let Some(iwad) = imp.iwad_comborow.selected_item()
-                .and_downcast::<IWadObject>()
-            {
-                self.set_selected_iwad(iwad.iwad());
+            if let Some(iwad) = imp.iwad_comborow.selected_iwad() {
+                self.set_selected_iwad(iwad);
             }
 
             // Save gsettings

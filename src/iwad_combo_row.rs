@@ -2,7 +2,7 @@ use std::cell::RefCell;
 
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
-use gtk::prelude::*;
+use adw::prelude::*;
 
 use glob::{glob_with, MatchOptions};
 
@@ -169,5 +169,14 @@ impl IWadComboRow {
             // Add IWADs to combo row
             imp.model.splice(0, imp.model.n_items(), &iwads);
         }
+    }
+
+    //-----------------------------------
+    // Public selected iwad function
+    //-----------------------------------
+    pub fn selected_iwad(&self) -> Option<String> {
+        self.selected_item()
+            .and_downcast::<IWadObject>()
+            .and_then(|iwad_obj| Some(iwad_obj.iwad()))
     }
 }

@@ -161,7 +161,7 @@ impl PreferencesWindow {
 
         fn vec_to_str(vec: Vec<String>) -> String {
             if vec.len() > 0 {
-                vec[0].clone()
+                vec[0].to_string()
             } else {
                 "".to_string()
             }

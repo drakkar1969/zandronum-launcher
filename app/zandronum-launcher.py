@@ -504,9 +504,9 @@ class MainWindow(Adw.ApplicationWindow):
 		app.bind_property("iwad_selected", self.iwad_comborow, "selected", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_comboindex, comboindex_to_str)
 
 		app.bind_property("pwad_folder", self.pwad_filerow, "base_folder", GObject.BindingFlags.SYNC_CREATE)
-		app.bind_property("pwad_files", self.pwad_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		# app.bind_property("pwad_files", self.pwad_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
-		app.bind_property("extra_params", self.params_entryrow, "text", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		# app.bind_property("extra_params", self.params_entryrow, "text", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
 		# Set widget focus
 		self.set_focus(self.iwad_comborow)
@@ -673,8 +673,8 @@ class LauncherApp(Adw.Application):
 	mods_hud = GObject.Property(type=bool, default=True)
 
 	iwad_selected = GObject.Property(type=str, default="")
-	pwad_files = GObject.Property(type=GObject.TYPE_STRV, default=[])
-	extra_params = GObject.Property(type=str, default="")
+	# pwad_files = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	# extra_params = GObject.Property(type=str, default="")
 
 	#-----------------------------------
 	# Init function
@@ -701,7 +701,7 @@ class LauncherApp(Adw.Application):
 		self.gsettings.bind("enable-hud-mods", self, "mods_hud", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("selected-iwad", self, "iwad_selected", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("pwad-files", self, "pwad_files", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("extra-parameters", self, "extra_params", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("extra-parameters", self, "extra_params", Gio.SettingsBindFlags.DEFAULT)
 
 		# Initialize default values for settings
 		self.default_exec_file = os.path.expandvars(self.gsettings.get_default_value("executable-file").get_string())

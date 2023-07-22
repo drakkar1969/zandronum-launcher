@@ -1,3 +1,5 @@
+use std::cell::RefCell;
+
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
@@ -7,6 +9,7 @@ use glib::once_cell::sync::OnceCell;
 use crate::APP_ID;
 use crate::ZLApplication;
 use crate::iwad_combo_row::IWadComboRow;
+use crate::iwad_object::IWadObject;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_window::PreferencesWindow;
 
@@ -19,8 +22,9 @@ mod imp {
     //-----------------------------------
     // Private structure
     //-----------------------------------
-    #[derive(Default, gtk::CompositeTemplate)]
+    #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
     #[template(resource = "/com/github/ZandronumLauncher/ui/window.ui")]
+    #[properties(wrapper_type = super::ZLWindow)]
     pub struct ZLWindow {
         #[template_child]
         pub iwad_comborow: TemplateChild<IWadComboRow>,
@@ -31,6 +35,13 @@ mod imp {
 
         #[template_child]
         pub prefs_window: TemplateChild<PreferencesWindow>,
+
+        #[property(get, set)]
+        selected_iwad: RefCell<String>,
+        #[property(get, set)]
+        pwad_files: RefCell<Vec<String>>,
+        #[property(get, set)]
+        extra_params: RefCell<String>,
 
         pub gsettings: OnceCell<gio::Settings>,
     }
@@ -59,6 +70,21 @@ mod imp {
 
     impl ObjectImpl for ZLWindow {
         //-----------------------------------
+        // Default property functions
+        //-----------------------------------
+        fn properties() -> &'static [glib::ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &glib::Value, pspec: &glib::ParamSpec) {
+            self.derived_set_property(id, value, pspec)
+        }
+
+        fn property(&self, id: usize, pspec: &glib::ParamSpec) -> glib::Value {
+            self.derived_property(id, pspec)
+        }
+
+        //-----------------------------------
         // Constructor
         //-----------------------------------
         fn constructed(&self) {
@@ -66,22 +92,15 @@ mod imp {
 
             self.parent_constructed();
 
+            obj.setup_widgets();
             obj.setup_signals();
 
             obj.init_gsettings();
             obj.load_gsettings();
 
-            obj.setup_widgets();
             obj.setup_actions();
             obj.setup_shortcuts();
         }
-
-        //-----------------------------------
-        // Destructor
-        //-----------------------------------
-        // fn dispose(&self) {
-        //     self.package_view_popup.get().unwrap().unparent();
-        // }
     }
 
     impl WidgetImpl for ZLWindow {}
@@ -118,13 +137,46 @@ impl ZLWindow {
     }
 
     //-----------------------------------
+    // Setup widgets
+    //-----------------------------------
+    fn setup_widgets(&self) {
+        let imp = self.imp();
+
+        // Bind properties to widgets
+        self.bind_property("selected-iwad", &imp.iwad_comborow.get(), "selected")
+            .transform_to(|binding, selected: String| {
+                let combo_row = binding.target()
+                    .and_downcast::<IWadComboRow>()
+                    .expect("Must be a 'IWadComboRow'");
+
+                combo_row.imp().model.find_with_equal_func(|iwad| {
+                    let iwad = iwad.downcast_ref::<IWadObject>()
+                        .expect("Must be a 'IWadObject'");
+
+                    iwad.iwad() == selected
+                })
+            })
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
+        self.bind_property("pwad-files", &imp.pwad_filerow.get(), "files")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
+        self.bind_property("extra-params", &imp.params_entryrow.get(), "text")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
+
+        // Set preferences window parent
+        imp.prefs_window.set_transient_for(Some(self));
+    }
+
+    //-----------------------------------
     // Setup signals
     //-----------------------------------
     fn setup_signals(&self) {
         let imp = self.imp();
 
         // Preferences window IWAD folders property notify signal
-        imp.prefs_window.connect_iwad_folder_notify(clone!(@weak imp => move |_| {
+        imp.prefs_window.connect_iwad_folder_notify(clone!(@weak self as obj, @weak imp => move |_| {
             imp.iwad_comborow.populate(&imp.prefs_window.iwad_folder());
         }));
 
@@ -159,7 +211,9 @@ impl ZLWindow {
 
         if let Some(gsettings) = imp.gsettings.get() {
             // Bind gsettings
-            gsettings.bind("pwad-files", &imp.pwad_filerow.get(), "files").build();
+            gsettings.bind("selected-iwad", self, "selected-iwad").build();
+            gsettings.bind("pwad-files", self, "pwad-files").build();
+            gsettings.bind("extra-parameters", self, "extra-params").build();
 
             gsettings.bind("iwad-folder", &imp.prefs_window.get(), "iwad-folder").build();
             gsettings.bind("pwad-folder", &imp.prefs_window.get(), "pwad-folder").build();
@@ -173,19 +227,16 @@ impl ZLWindow {
         let imp = self.imp();
 
         if let Some(gsettings) = imp.gsettings.get() {
+            // Get selected IWAD
+            if let Some(iwad) = imp.iwad_comborow.selected_item()
+                .and_downcast::<IWadObject>()
+            {
+                self.set_selected_iwad(iwad.iwad());
+            }
+
             // Save gsettings
             gsettings.apply();
         }
-    }
-
-    //-----------------------------------
-    // Setup widgets
-    //-----------------------------------
-    fn setup_widgets(&self) {
-        let imp = self.imp();
-
-        // Set preferences window parent
-        imp.prefs_window.set_transient_for(Some(self));
     }
 
     //-----------------------------------

@@ -17,15 +17,11 @@ mod imp {
     //-----------------------------------
     // Private structure
     //-----------------------------------
-    #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
+    #[derive(Default, gtk::CompositeTemplate)]
     #[template(resource = "/com/github/ZandronumLauncher/ui/iwad_combo_row.ui")]
-    #[properties(wrapper_type = super::IWadComboRow)]
     pub struct IWadComboRow {
         #[template_child]
         pub model: TemplateChild<gio::ListStore>,
-
-        #[property(get, set)]
-        icon: RefCell<String>,
 
         pub iwads: RefCell<Vec<IWadObject>>,
     }
@@ -51,21 +47,6 @@ mod imp {
     }
 
     impl ObjectImpl for IWadComboRow {
-        //-----------------------------------
-        // Default property functions
-        //-----------------------------------
-        fn properties() -> &'static [glib::ParamSpec] {
-            Self::derived_properties()
-        }
-
-        fn set_property(&self, id: usize, value: &glib::Value, pspec: &glib::ParamSpec) {
-            self.derived_set_property(id, value, pspec)
-        }
-
-        fn property(&self, id: usize, pspec: &glib::ParamSpec) -> glib::Value {
-            self.derived_property(id, pspec)
-        }
-
         //-----------------------------------
         // Constructor
         //-----------------------------------
@@ -164,9 +145,10 @@ impl IWadComboRow {
         };
 
         if let Ok(entries) = glob_with(&format!("{folder}/*.wad"), options) {
+            // Get list of IWADs in folder
             let iwads = imp.iwads.borrow();
 
-            let files: Vec<IWadObject> = entries.into_iter()
+            let mut iwads: Vec<IWadObject> = entries.into_iter()
                 .flatten()
                 .filter_map(|entry| {
                     iwads.clone().into_iter()
@@ -182,7 +164,10 @@ impl IWadComboRow {
                 })
                 .collect();
 
-            imp.model.splice(0, imp.model.n_items(), &files);
+            iwads.sort_unstable_by(|a, b| a.name().cmp(&b.name()));
+
+            // Add IWADs to combo row
+            imp.model.splice(0, imp.model.n_items(), &iwads);
         }
     }
 }

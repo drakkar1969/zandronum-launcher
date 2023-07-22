@@ -3,7 +3,7 @@
   <template class="PreferencesWindow" parent="AdwPreferencesWindow">
     <property name="default_width">560</property>
     <property name="default_height">-1</property>
-    <property name="title">Zandronum Preferences</property>
+    <property name="title">Preferences</property>
     <property name="modal">True</property>
     <property name="hide_on_close">True</property>
     <property name="search_enabled">False</property>

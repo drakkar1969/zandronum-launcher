@@ -37,21 +37,6 @@
                         <property name="title">_Game</property>
                         <!-- <property name="title_lines">1</property> -->
                         <property name="use_underline">True</property>
-                        <!-- <property name="model">
-                          <object class="GListStore" id="iwad_model">
-                            <property name="item-type">IWadObject</property>
-                          </object>
-                        </property> -->
-                        <!-- <property name="factory">
-                          <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/com/github/ZandronumLauncher/ui/iwad-item.ui</property>
-                          </object>
-                        </property> -->
-                        <!-- <property name="list-factory">
-                          <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/com/github/ZandronumLauncher/ui/iwad-list-item.ui</property>
-                          </object>
-                        </property> -->
                       </object>
                     </child>
                     <child>

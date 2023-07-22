@@ -23,6 +23,8 @@ mod imp {
     #[template(resource = "/com/github/ZandronumLauncher/ui/window.ui")]
     pub struct ZLWindow {
         #[template_child]
+        pub iwad_comborow: TemplateChild<IWadComboRow>,
+        #[template_child]
         pub prefs_window: TemplateChild<PreferencesWindow>,
 
         pub gsettings: OnceCell<gio::Settings>,
@@ -63,6 +65,7 @@ mod imp {
             obj.load_gsettings();
 
             obj.setup_widgets();
+            obj.setup_signals();
             obj.setup_actions();
             obj.setup_shortcuts();
         }
@@ -149,8 +152,22 @@ impl ZLWindow {
     fn setup_widgets(&self) {
         let imp = self.imp();
 
+        // Populate IWAD combo
+        imp.iwad_comborow.populate(&imp.prefs_window.iwad_folders());
+
         // Set preferences window parent
         imp.prefs_window.set_transient_for(Some(self));
+    }
+
+    //-----------------------------------
+    // Setup signals
+    //-----------------------------------
+    fn setup_signals(&self) {
+        let imp = self.imp();
+
+        imp.prefs_window.connect_iwad_folders_notify(clone!(@weak imp => move |_| {
+            imp.iwad_comborow.populate(&imp.prefs_window.iwad_folders());
+        }));
     }
 
     //-----------------------------------

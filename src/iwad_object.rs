@@ -17,6 +17,8 @@ mod imp {
     #[properties(wrapper_type = super::IWadObject)]
     pub struct IWadObject {
         #[property(get, set)]
+        name: RefCell<String>,
+        #[property(get, set)]
         iwad: RefCell<String>,
     }
 
@@ -58,8 +60,11 @@ impl IWadObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new() -> Self {
+    pub fn new(name: &str, iwad: &str) -> Self {
         // Build PropObject
-        glib::Object::builder().build()
+        glib::Object::builder()
+            .property("name", name)
+            .property("iwad", iwad)
+            .build()
     }
 }

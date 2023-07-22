@@ -23,7 +23,7 @@ mod imp {
         #[template_child]
         pub iwad_filerow: TemplateChild<FileSelectRow>,
 
-        #[property(get, set)]
+        #[property(get, set, construct)]
         iwad_folders: RefCell<Vec<String>>,
     }
 

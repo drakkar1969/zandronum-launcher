@@ -158,8 +158,17 @@ impl ZLWindow {
     fn setup_widgets(&self) {
         let imp = self.imp();
 
-        // Populate IWAD combo
+        // Populate IWAD combo row
         imp.iwad_comborow.populate(&imp.prefs_window.iwad_folder());
+
+        // Set current folder for PWAD select row
+        let folder = imp.prefs_window.pwad_folder();
+
+        if folder == "" {
+            imp.pwad_filerow.set_current_folder(None::<String>);
+        } else {
+            imp.pwad_filerow.set_current_folder(Some(folder));
+        }
 
         // Set preferences window parent
         imp.prefs_window.set_transient_for(Some(self));
@@ -178,6 +187,13 @@ impl ZLWindow {
 
         // Preferences window IWAD folders property notify signal
         imp.prefs_window.connect_pwad_folder_notify(clone!(@weak imp => move |_| {
+            let folder = imp.prefs_window.pwad_folder();
+
+            if folder == "" {
+                imp.pwad_filerow.set_current_folder(None::<String>);
+            } else {
+                imp.pwad_filerow.set_current_folder(Some(folder));
+            }
         }));
     }
 

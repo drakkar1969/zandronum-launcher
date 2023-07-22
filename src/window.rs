@@ -180,6 +180,8 @@ impl ZLWindow {
         // Preferences window IWAD folders property notify signal
         imp.prefs_window.connect_iwad_folder_notify(clone!(@weak self as obj, @weak imp => move |_| {
             imp.iwad_comborow.populate(&imp.prefs_window.iwad_folder());
+
+            imp.launch_button.set_sensitive(imp.iwad_comborow.selected_iwad().is_some());
         }));
 
         // Preferences window IWAD folders property notify signal

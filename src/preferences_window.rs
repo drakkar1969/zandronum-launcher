@@ -21,10 +21,14 @@ mod imp {
     #[template(resource = "/com/github/ZandronumLauncher/ui/preferences_window.ui")]
     pub struct PreferencesWindow {
         #[template_child]
+        pub exec_filerow: TemplateChild<FileSelectRow>,
+        #[template_child]
         pub iwad_filerow: TemplateChild<FileSelectRow>,
         #[template_child]
         pub pwad_filerow: TemplateChild<FileSelectRow>,
 
+        #[property(get, set)]
+        exec_file: RefCell<String>,
         #[property(get, set)]
         iwad_folder: RefCell<String>,
         #[property(get, set)]
@@ -132,6 +136,11 @@ impl PreferencesWindow {
         }
 
         // Bind properties to widgets
+        self.bind_property("exec-file", &imp.exec_filerow.get(), "files")
+            .transform_to(|_, folder| Some(str_to_vec(folder)))
+            .transform_from(|_, files| Some(vec_to_str(files)))
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
         self.bind_property("iwad-folder", &imp.iwad_filerow.get(), "files")
             .transform_to(|_, folder| Some(str_to_vec(folder)))
             .transform_from(|_, files| Some(vec_to_str(files)))

@@ -215,6 +215,7 @@ impl ZLWindow {
             gsettings.bind("pwad-files", self, "pwad-files").build();
             gsettings.bind("extra-parameters", self, "extra-params").build();
 
+            gsettings.bind("executable-file", &imp.prefs_window.get(), "exec-file").build();
             gsettings.bind("iwad-folder", &imp.prefs_window.get(), "iwad-folder").build();
             gsettings.bind("pwad-folder", &imp.prefs_window.get(), "pwad-folder").build();
         }

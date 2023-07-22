@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template class="PreferencesWindow" parent="AdwPreferencesWindow">
-    <!-- <property name="default_width">460</property> -->
+    <property name="default_width">560</property>
     <property name="default_height">-1</property>
     <property name="title">Zandronum Preferences</property>
     <property name="modal">True</property>
@@ -12,15 +12,16 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Application Paths</property>
-            <!-- <child>
-              <object class="FileRow" id="exec_filerow">
+            <child>
+              <object class="FileSelectRow" id="exec_filerow">
                 <property name="title">_Zandronum Path</property>
+                <property name="subtitle">Path to Zandronum executable</property>
                 <property name="use_underline">True</property>
-                <property name="icon_name">application-x-executable-symbolic</property>
-                <property name="can_reset">True</property>
+                <property name="icon">application-x-executable-symbolic</property>
+                <!-- <property name="can_reset">True</property> -->
                 <property name="dialog_title">Select Zandronum Executable</property>
               </object>
-            </child> -->
+            </child>
             <child>
               <object class="FileSelectRow" id="iwad_filerow">
                 <property name="title">_IWAD Folder</property>

@@ -25,10 +25,10 @@ mod imp {
         #[template_child]
         pub pwad_filerow: TemplateChild<FileSelectRow>,
 
-        #[property(get, set, construct)]
-        iwad_folders: RefCell<Vec<String>>,
-        #[property(get, set, construct)]
-        pwad_folders: RefCell<Vec<String>>,
+        #[property(get, set)]
+        iwad_folder: RefCell<String>,
+        #[property(get, set)]
+        pwad_folder: RefCell<String>,
     }
 
     //-----------------------------------
@@ -113,11 +113,33 @@ impl PreferencesWindow {
     //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
     //         .build();
 
+        // Binding helper functions
+        fn str_to_vec(string: &str) -> Vec<String> {
+            if string == "" {
+                vec![]
+            } else {
+                vec![string.to_string()]
+            }
+        }
+
+        fn vec_to_str(vec: Vec<String>) -> String {
+            if vec.len() > 0 {
+                vec[0].clone()
+            } else {
+                "".to_string()
+            }
+            
+        }
+
         // Bind properties to widgets
-        self.bind_property("iwad-folders", &imp.iwad_filerow.get(), "files")
+        self.bind_property("iwad-folder", &imp.iwad_filerow.get(), "files")
+            .transform_to(|_, folder| Some(str_to_vec(folder)))
+            .transform_from(|_, files| Some(vec_to_str(files)))
             .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
             .build();
-        self.bind_property("pwad-folders", &imp.pwad_filerow.get(), "files")
+        self.bind_property("pwad-folder", &imp.pwad_filerow.get(), "files")
+            .transform_to(|_, folder| Some(str_to_vec(folder)))
+            .transform_from(|_, files| Some(vec_to_str(files)))
             .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
             .build();
     }

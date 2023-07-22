@@ -135,8 +135,8 @@ impl ZLWindow {
 
         if let Some(gsettings) = imp.gsettings.get() {
             // Bind gsettings
-            gsettings.bind("iwad-folders", &imp.prefs_window.get(), "iwad-folders").build();
-            gsettings.bind("pwad-folders", &imp.prefs_window.get(), "pwad-folders").build();
+            gsettings.bind("iwad-folder", &imp.prefs_window.get(), "iwad-folder").build();
+            gsettings.bind("pwad-folder", &imp.prefs_window.get(), "pwad-folder").build();
         }
     }
 
@@ -159,7 +159,7 @@ impl ZLWindow {
         let imp = self.imp();
 
         // Populate IWAD combo
-        imp.iwad_comborow.populate(&imp.prefs_window.iwad_folders());
+        imp.iwad_comborow.populate(&imp.prefs_window.iwad_folder());
 
         // Set preferences window parent
         imp.prefs_window.set_transient_for(Some(self));
@@ -172,12 +172,12 @@ impl ZLWindow {
         let imp = self.imp();
 
         // Preferences window IWAD folders property notify signal
-        imp.prefs_window.connect_iwad_folders_notify(clone!(@weak imp => move |_| {
-            imp.iwad_comborow.populate(&imp.prefs_window.iwad_folders());
+        imp.prefs_window.connect_iwad_folder_notify(clone!(@weak imp => move |_| {
+            imp.iwad_comborow.populate(&imp.prefs_window.iwad_folder());
         }));
 
         // Preferences window IWAD folders property notify signal
-        imp.prefs_window.connect_pwad_folders_notify(clone!(@weak imp => move |_| {
+        imp.prefs_window.connect_pwad_folder_notify(clone!(@weak imp => move |_| {
         }));
     }
 

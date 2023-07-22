@@ -5,17 +5,9 @@
       <default>'/usr/bin/zandronum'</default>
       <summary>Path to Zandronum executable</summary>
     </key>
-    <key name="iwad-folders" type="as">
-      <default>['/home/drakkar/.config/zandronum/iwads']</default>
-      <summary>Folders to search for game (IWAD) files</summary>
-    </key>
     <key name="iwad-folder" type="s">
       <default>'$HOME/.config/zandronum/iwads'</default>
       <summary>Folder to search for game (IWAD) files</summary>
-    </key>
-    <key name="pwad-folders" type="as">
-      <default>['/home/drakkar/.config/zandronum/pwads']</default>
-      <summary>Folders to search for game (IWAD) files</summary>
     </key>
     <key name="pwad-folder" type="s">
       <default>'$HOME/.config/zandronum/pwads'</default>

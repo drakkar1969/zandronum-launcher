@@ -154,7 +154,7 @@ impl IWadComboRow {
     //-----------------------------------
     // Public populate function
     //-----------------------------------
-    pub fn populate(&self, folders: &Vec<String>) {
+    pub fn populate(&self, folder: &str) {
         let imp = self.imp();
 
         let options = MatchOptions {
@@ -163,28 +163,26 @@ impl IWadComboRow {
             require_literal_leading_dot: false
         };
 
-        for folder in folders {
-            if let Ok(entries) = glob_with(&format!("{folder}/*.wad"), options) {
-                let iwads = imp.iwads.borrow();
+        if let Ok(entries) = glob_with(&format!("{folder}/*.wad"), options) {
+            let iwads = imp.iwads.borrow();
 
-                let files: Vec<IWadObject> = entries.into_iter()
-                    .flatten()
-                    .filter_map(|entry| {
-                        iwads.clone().into_iter()
-                            .find(|iwad| {
-                                if let Some(file) = entry.as_path().file_name() {
-                                    if iwad.iwad() == file.to_string_lossy() {
-                                        return true
-                                    }
+            let files: Vec<IWadObject> = entries.into_iter()
+                .flatten()
+                .filter_map(|entry| {
+                    iwads.clone().into_iter()
+                        .find(|iwad| {
+                            if let Some(file) = entry.as_path().file_name() {
+                                if iwad.iwad() == file.to_string_lossy() {
+                                    return true
                                 }
+                            }
 
-                                false
-                            })
-                    })
-                    .collect();
+                            false
+                        })
+                })
+                .collect();
 
-                imp.model.splice(0, imp.model.n_items(), &files);
-            }
+            imp.model.splice(0, imp.model.n_items(), &files);
         }
     }
 }

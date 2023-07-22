@@ -1,4 +1,8 @@
 use std::cell::RefCell;
+use std::path::Path;
+use std::error::Error;
+use std::fmt;
+use std::process::Command;
 
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
@@ -6,12 +10,36 @@ use adw::prelude::*;
 use glib::clone;
 use glib::once_cell::sync::OnceCell;
 
+use shlex;
+
 use crate::APP_ID;
 use crate::ZLApplication;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::iwad_object::IWadObject;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_window::PreferencesWindow;
+
+//------------------------------------------------------------------------------
+// ERROR: LaunchError
+//------------------------------------------------------------------------------
+#[derive(Debug)]
+struct LaunchError {
+    msg: String
+}
+
+impl LaunchError {
+    fn new(msg: &str) -> LaunchError {
+        LaunchError{msg: msg.to_string()}
+    }
+}
+
+impl fmt::Display for LaunchError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.msg)
+    }
+}
+
+impl Error for LaunchError {}
 
 //------------------------------------------------------------------------------
 // MODULE: ZLWindow
@@ -251,7 +279,23 @@ impl ZLWindow {
         // Add launch Zandronum action
         let launch_action = gio::ActionEntry::<ZLWindow>::builder("launch-zandronum")
             .activate(clone!(@weak self as obj => move |_, _, _| {
-                // obj.set_sensitive(false);
+                obj.set_sensitive(false);
+
+                if let Err(launch_error) = obj.launch_zandronum() {
+                    obj.set_sensitive(true);
+
+                    let error_dialog = adw::MessageDialog::new(
+                        Some(&obj),
+                        Some("Error"),
+                        Some(&launch_error.to_string())
+                    );
+
+                    error_dialog.add_responses(&[("close", "_Close")]);
+
+                    error_dialog.present();
+                } else {
+                obj.close();
+                }
             }))
             .build();
 
@@ -314,5 +358,64 @@ impl ZLWindow {
 
         // Add shortcut controller to window
         self.add_controller(controller);
+    }
+
+    //-----------------------------------
+    // Launch Zandronum function
+    //-----------------------------------
+    fn launch_zandronum(&self) -> Result<bool, LaunchError> {
+        let imp = self.imp();
+
+        // Return with error if Zandronum executable does not exist
+        let exec_file = imp.prefs_window.exec_file();
+
+        if Path::new(&exec_file).try_exists().is_err() {
+            return Err(LaunchError::new("Zandronum executable file not found"))
+        }
+
+        // Initialize Zandronum command line with executable
+        let mut cmdline = exec_file;
+
+        // Return with error if no IWAD selected
+        let iwad = imp.iwad_comborow.selected_iwad();
+
+        if iwad.is_none() {
+            return Err(LaunchError::new("No IWAD file specified"))
+        }
+
+        // Get selected IWAD
+        let iwad = iwad.unwrap();
+
+        let iwad_file = Path::new(&imp.prefs_window.iwad_folder()).join(&iwad);
+
+        // Return with error if IWAD file does not exist
+        if iwad_file.try_exists().is_err() {
+            return Err(LaunchError::new(&format!("IWAD file '{iwad}' not found")))
+        }
+
+        // Add IWAD file to command line
+        cmdline += &format!(" -iwad \"{}\"", iwad_file.to_string_lossy());
+
+        // Add PWAD files to command line
+        for pwad_file in self.pwad_files() {
+            if Path::new(&pwad_file).try_exists().is_ok() {
+                cmdline += &format!(" -file \"{}\"", pwad_file);
+            }
+        }
+
+        // Add extra parameters to command line
+        if self.extra_params() != "" {
+            cmdline += &format!(" {}", self.extra_params());
+        }
+
+        // Launch Zandronum
+        if let Some(params) = shlex::split(&cmdline).filter(|params| !params.is_empty()) {
+            Command::new(&params[0])
+                .args(&params[1..])
+                .spawn()
+                .unwrap();
+        }
+
+        Ok(true)
     }
 }

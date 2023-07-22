@@ -559,30 +559,30 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
-		if os.path.exists(app.exec_file) == False:
-			self.show_error_dialog("Zandronum executable file not found")
-			return(False)
+		# if os.path.exists(app.exec_file) == False:
+		# 	self.show_error_dialog("Zandronum executable file not found")
+		# 	return(False)
 
 		# Initialize Zandronum command line with executable
-		cmdline = app.exec_file
+		# cmdline = app.exec_file
 
 		# Get selected iwad
-		iwad_obj = self.iwad_comborow.get_selected_item()
+		# iwad_obj = self.iwad_comborow.get_selected_item()
 
 		# Return with error if no iwad selected
-		if iwad_obj is None:
-			self.show_error_dialog("No IWAD file specified")
-			return(False)
+		# if iwad_obj is None:
+		# 	self.show_error_dialog("No IWAD file specified")
+		# 	return(False)
 
 		# Return with error if IWAD file does not exist
-		iwad_file = os.path.join(app.iwad_folder, iwad_obj.iwad)
+		# iwad_file = os.path.join(app.iwad_folder, iwad_obj.iwad)
 
-		if os.path.exists(iwad_file) == False:
-			self.show_error_dialog(f'IWAD file "{app.iwad_selected}" not found')
-			return(False)
+		# if os.path.exists(iwad_file) == False:
+		# 	self.show_error_dialog(f'IWAD file "{app.iwad_selected}" not found')
+		# 	return(False)
 
 		# Add IWAD file
-		cmdline += f' -iwad "{iwad_file}"'
+		# cmdline += f' -iwad "{iwad_file}"'
 
 		# Add hi-res graphics if options are true and files are present
 		mod_files = []
@@ -603,21 +603,21 @@ class MainWindow(Adw.ApplicationWindow):
 			if os.path.exists(mod_file): cmdline += f' -file "{mod_file}"'
 
 		# Add PWAD files if present
-		for pwad in app.pwad_files:
-			if pwad != "" and os.path.exists(pwad): cmdline += f' -file "{pwad}"'
+		# for pwad in app.pwad_files:
+		# 	if pwad != "" and os.path.exists(pwad): cmdline += f' -file "{pwad}"'
 
 		# Add extra params if present
-		if app.extra_params != "": cmdline += f' {app.extra_params}'
+		# if app.extra_params != "": cmdline += f' {app.extra_params}'
 
 		# Launch Zandronum
-		subprocess.Popen(shlex.split(cmdline))
+	# 	subprocess.Popen(shlex.split(cmdline))
 
-		return(True)
+	# 	return(True)
 
-	def show_error_dialog(self, msg):
-		dialog = Adw.MessageDialog.new(self, "Error", msg)
-		dialog.add_response("id_close", "Close")
-		dialog.present()
+	# def show_error_dialog(self, msg):
+	# 	dialog = Adw.MessageDialog.new(self, "Error", msg)
+	# 	dialog.add_response("id_close", "Close")
+	# 	dialog.present()
 
 #------------------------------------------------------------------------------
 #-- CLASS: LAUNCHERAPP

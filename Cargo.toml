@@ -10,6 +10,7 @@ adw = { version = "0.4.4", package = "libadwaita", features = ["v1_3"] }
 gio = { version = "0.17.10", features = ["v2_76"] }
 glob = "0.3.1"
 gtk = { version = "0.6.6", package = "gtk4", features = ["v4_10"] }
+shlex = "1.1.0"
 
 [build-dependencies]
 glib-build-tools = "0.17.10"

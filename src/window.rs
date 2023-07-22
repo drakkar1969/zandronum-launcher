@@ -25,6 +25,11 @@ mod imp {
         #[template_child]
         pub iwad_comborow: TemplateChild<IWadComboRow>,
         #[template_child]
+        pub pwad_filerow: TemplateChild<FileSelectRow>,
+        #[template_child]
+        pub params_entryrow: TemplateChild<adw::EntryRow>,
+
+        #[template_child]
         pub prefs_window: TemplateChild<PreferencesWindow>,
 
         pub gsettings: OnceCell<gio::Settings>,

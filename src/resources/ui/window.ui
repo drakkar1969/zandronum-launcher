@@ -35,14 +35,18 @@
                     <child>
                       <object class="IWadComboRow" id="iwad_comborow">
                         <property name="title">_Game</property>
-                        <!-- <property name="title_lines">1</property> -->
+                        <property name="title_lines">1</property>
+                        <property name="subtitle">Main IWAD file</property>
+                        <property name="subtitle_lines">1</property>
                         <property name="use_underline">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="FileSelectRow" id="pwad_filerow">
-                        <property name="title">Optional WAD _Files</property>
+                        <property name="title">Optional _Files</property>
                         <property name="title_lines">1</property>
+                        <property name="subtitle">Additional PWAD files</property>
+                        <property name="subtitle_lines">1</property>
                         <property name="use_underline">True</property>
                         <property name="can_clear">True</property>
                         <property name="select">multiple</property>
@@ -59,27 +63,27 @@
                         </property>
                       </object>
                     </child>
-                    <!-- <child>
+                    <child>
                       <object class="AdwEntryRow" id="params_entryrow">
-                        <property name="title">_Additional Switches (e.g. -warp 7 -skill 3)</property>
+                        <property name="title">Additional _Switches (e.g. -warp 7 -skill 3)</property>
                         <property name="use_underline">True</property>
                         <property name="activates_default">False</property>
                       </object>
-                    </child> -->
+                    </child>
                   </object>
                 </child>
-                <!-- <child>
+                <child>
                   <object class="GtkButton" id="launch_btn">
                     <property name="label">_Launch Zandronum</property>
                     <property name="halign">center</property>
                     <property name="use_underline">True</property>
-                    <property name="action-name">win.launch-zandronum</property>
+                    <!-- <property name="action-name">win.launch-zandronum</property> -->
                     <style>
                       <class name="suggested-action"/>
                       <class name="pill"/>
                     </style>
                   </object>
-                </child> -->
+                </child>
               </object>
             <!-- </child>
           </object> -->

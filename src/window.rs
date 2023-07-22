@@ -32,6 +32,8 @@ mod imp {
         pub pwad_filerow: TemplateChild<FileSelectRow>,
         #[template_child]
         pub params_entryrow: TemplateChild<adw::EntryRow>,
+        #[template_child]
+        pub launch_button: TemplateChild<gtk::Button>,
 
         #[template_child]
         pub prefs_window: TemplateChild<PreferencesWindow>,
@@ -246,6 +248,13 @@ impl ZLWindow {
     fn setup_actions(&self) {
         let imp = self.imp();
 
+        // Add launch Zandronum action
+        let launch_action = gio::ActionEntry::<ZLWindow>::builder("launch-zandronum")
+            .activate(clone!(@weak self as obj => move |_, _, _| {
+                // obj.set_sensitive(false);
+            }))
+            .build();
+
         // Add reset widgets action
         let reset_action = gio::ActionEntry::<ZLWindow>::builder("reset-widgets")
             .activate(clone!(@weak self as obj, @weak imp => move |_, _, _| {
@@ -281,7 +290,7 @@ impl ZLWindow {
             .build();
 
         // Add actions to window
-        self.add_action_entries([reset_action, prefs_action]);
+        self.add_action_entries([launch_action, reset_action, prefs_action]);
     }
 
     //-----------------------------------

@@ -73,11 +73,11 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkButton" id="launch_btn">
+                  <object class="GtkButton" id="launch_button">
                     <property name="label">_Launch Zandronum</property>
                     <property name="halign">center</property>
                     <property name="use_underline">True</property>
-                    <!-- <property name="action-name">win.launch-zandronum</property> -->
+                    <property name="action-name">win.launch-zandronum</property>
                     <style>
                       <class name="suggested-action"/>
                       <class name="pill"/>

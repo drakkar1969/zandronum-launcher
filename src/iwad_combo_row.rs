@@ -153,7 +153,7 @@ impl IWadComboRow {
                 .filter_map(|entry| {
                     iwads.clone().into_iter()
                         .find(|iwad| {
-                            if let Some(file) = entry.as_path().file_name() {
+                            if let Some(file) = entry.file_name() {
                                 if iwad.iwad() == file.to_string_lossy() {
                                     return true
                                 }

@@ -251,9 +251,7 @@ impl FileSelectRow {
             // Connect dialog response signal handler
             dialog.connect_response(clone!(@weak obj => move |dialog, response| {
                 if response == gtk::ResponseType::Accept {
-                    let files = dialog.files();
-
-                    let file_vec: Vec<String> = files.iter::<gio::File>()
+                    let file_vec: Vec<String> = dialog.files().iter::<gio::File>()
                         .map(|file| {
                             file.ok()
                                 .and_then(|file| file.path())

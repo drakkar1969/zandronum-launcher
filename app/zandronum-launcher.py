@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
-import gi, sys, os, json, subprocess, shlex
-gi.require_version("Gtk", "4.0")
-gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw, Gio, GObject, Pango
-from enum import IntEnum
+# import gi, sys, os, json, subprocess, shlex
+# gi.require_version("Gtk", "4.0")
+# gi.require_version("Adw", "1")
+# from gi.repository import Gtk, Adw, Gio, GObject, Pango
+# from enum import IntEnum
 
 # Global path variable
-app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
+# app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 # Global gresource file
-gresource = Gio.Resource.load(os.path.join(app_dir, "com.github.ZandronumLauncher.gresource"))
-gresource._register()
+# gresource = Gio.Resource.load(os.path.join(app_dir, "com.github.ZandronumLauncher.gresource"))
+# gresource._register()
 
 # Global SelectType enum for FileRow class
 # class SelectType(IntEnum):
@@ -23,13 +23,13 @@ gresource._register()
 #-- CLASS: IWADOBJECT
 #------------------------------------------------------------------------------
 class IWadObject(GObject.Object):
-	__gtype_name__ = "IWadObject"
+	# __gtype_name__ = "IWadObject"
 
 	#-----------------------------------
 	# Properties
 	#-----------------------------------
-	iwad = GObject.Property(type=str, default="")
-	name = GObject.Property(type=str, default="")
+	# iwad = GObject.Property(type=str, default="")
+	# name = GObject.Property(type=str, default="")
 	textures = GObject.Property(type=GObject.TYPE_STRV, default=[])
 	objects = GObject.Property(type=GObject.TYPE_STRV, default=[])
 	monsters = GObject.Property(type=GObject.TYPE_STRV, default=[])
@@ -39,8 +39,8 @@ class IWadObject(GObject.Object):
 	#-----------------------------------
 	# Init function
 	#-----------------------------------
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+	# def __init__(self, *args, **kwargs):
+	# 	super().__init__(*args, **kwargs)
 
 #------------------------------------------------------------------------------
 #-- CLASS: CHEATOBJECT
@@ -289,8 +289,8 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	# Class widget variables
 	#-----------------------------------
 	exec_filerow = Gtk.Template.Child()
-	iwaddir_filerow = Gtk.Template.Child()
-	pwaddir_filerow = Gtk.Template.Child()
+	# iwaddir_filerow = Gtk.Template.Child()
+	# pwaddir_filerow = Gtk.Template.Child()
 	moddir_filerow = Gtk.Template.Child()
 
 	texture_switch = Gtk.Template.Child()
@@ -312,15 +312,15 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		self.moddir_filerow.set_default_file(app.default_mods_folder)
 
 		# Bind widget properties to app properties
-		def str_to_list(binding, value):
-			return([value])
+		# def str_to_list(binding, value):
+		# 	return([value])
 
-		def list_to_str(binding, value):
-			return(value[0] if len(value) > 0 else "")
+		# def list_to_str(binding, value):
+		# 	return(value[0] if len(value) > 0 else "")
 
 		app.bind_property("exec_file", self.exec_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
-		app.bind_property("iwad_folder", self.iwaddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
-		app.bind_property("pwad_folder", self.pwaddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		# app.bind_property("iwad_folder", self.iwaddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		# app.bind_property("pwad_folder", self.pwaddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
 		app.bind_property("mods_folder", self.moddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
 
 		app.bind_property("mods_textures", self.texture_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
@@ -426,13 +426,13 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
-	iwad_comborow = Gtk.Template.Child()
-	iwad_model = Gtk.Template.Child()
-	pwad_filerow = Gtk.Template.Child()
-	params_entryrow = Gtk.Template.Child()
+	# iwad_comborow = Gtk.Template.Child()
+	# iwad_model = Gtk.Template.Child()
+	# pwad_filerow = Gtk.Template.Child()
+	# params_entryrow = Gtk.Template.Child()
 	launch_btn = Gtk.Template.Child()
 
-	prefs_window = Gtk.Template.Child()
+	# prefs_window = Gtk.Template.Child()
 	cheats_window = Gtk.Template.Child()
 
 	#-----------------------------------
@@ -444,7 +444,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# Actions
 		action_list = [
 			[ "reset-widgets", self.on_reset_widgets_action ],
-			[ "show-preferences", self.on_show_preferences_action ],
+			# [ "show-preferences", self.on_show_preferences_action ],
 			[ "show-cheats", self.on_show_cheats_action ],
 			# [ "show-about", self.on_show_about_action ],
 			# [ "quit-app", self.on_quit_app_action ],
@@ -455,10 +455,10 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Keyboard shortcuts
 		app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
-		app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])
+		# app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 		app.set_accels_for_action("win.show-cheats", ["F1"])
-		app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
+		# app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
 		app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
 		# Bind widget properties to app properties
@@ -512,7 +512,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.set_focus(self.iwad_comborow)
 
 		# Preferences initialization
-		self.prefs_window.set_transient_for(self)
+		# self.prefs_window.set_transient_for(self)
 
 		# Help initialization
 		self.cheats_window.set_transient_for(self)
@@ -525,8 +525,8 @@ class MainWindow(Adw.ApplicationWindow):
 		self.pwad_filerow.set_selected_files([])
 		self.params_entryrow.set_text("")
 
-	def on_show_preferences_action(self, action, param, user_data):
-		self.prefs_window.present()
+	# def on_show_preferences_action(self, action, param, user_data):
+	# 	self.prefs_window.present()
 
 	def on_show_cheats_action(self, action, param, user_data):
 		self.cheats_window.present()
@@ -691,8 +691,8 @@ class LauncherApp(Adw.Application):
 		self.gsettings.delay()
 
 		self.gsettings.bind("executable-file", self, "exec_file", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("iwad-folder", self, "iwad_folder", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("pwad-folder", self, "pwad_folder", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("iwad-folder", self, "iwad_folder", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("pwad-folder", self, "pwad_folder", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("mods-folder", self, "mods_folder", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("enable-texture-mods", self, "mods_textures", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("enable-object-mods", self, "mods_objects", Gio.SettingsBindFlags.DEFAULT)
@@ -700,7 +700,7 @@ class LauncherApp(Adw.Application):
 		self.gsettings.bind("enable-menu-mods", self, "mods_menus", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("enable-hud-mods", self, "mods_hud", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("selected-iwad", self, "iwad_selected", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("pwad-files", self, "pwad_files", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("pwad-files", self, "pwad_files", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("extra-parameters", self, "extra_params", Gio.SettingsBindFlags.DEFAULT)
 
 		# Initialize default values for settings

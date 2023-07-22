@@ -5,6 +5,8 @@ use adw::subclass::prelude::*;
 use adw::prelude::*;
 // use glib::clone;
 
+use crate::file_select_row::FileSelectRow;
+
 //------------------------------------------------------------------------------
 // MODULE: PreferencesWindow
 //------------------------------------------------------------------------------
@@ -18,13 +20,11 @@ mod imp {
     #[properties(wrapper_type = super::PreferencesWindow)]
     #[template(resource = "/com/github/ZandronumLauncher/ui/preferences_window.ui")]
     pub struct PreferencesWindow {
-        // #[template_child]
-        // pub aur_row: TemplateChild<adw::EntryRow>,
+        #[template_child]
+        pub iwad_filerow: TemplateChild<FileSelectRow>,
 
         #[property(get, set)]
-        aur_command: RefCell<String>,
-        #[property(get, set)]
-        default_monospace_font: RefCell<String>,
+        iwad_folders: RefCell<Vec<String>>,
     }
 
     //-----------------------------------
@@ -67,9 +67,9 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            // let obj = self.obj();
+            let obj = self.obj();
 
-            // obj.setup_widgets();
+            obj.setup_widgets();
             // obj.setup_actions();
             // obj.setup_signals();
         }
@@ -101,18 +101,18 @@ impl PreferencesWindow {
     //-----------------------------------
     // Setup widgets
     //-----------------------------------
-    // fn setup_widgets(&self) {
-    //     let imp = self.imp();
+    fn setup_widgets(&self) {
+        let imp = self.imp();
 
     //     // Bind widget states
     //     imp.font_expander.bind_property("expanded", &imp.font_switch.get(), "active")
     //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
     //         .build();
 
-    //     // Bind properties to widgets
-    //     self.bind_property("aur-command", &imp.aur_row.get(), "text")
-    //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
-    //         .build();
+        // Bind properties to widgets
+        self.bind_property("iwad-folders", &imp.iwad_filerow.get(), "files")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
 
     //     self.bind_property("remember-columns", &imp.column_switch.get(), "active")
     //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
@@ -136,7 +136,7 @@ impl PreferencesWindow {
     //         "The command must return a list of AUR updates in the format:\n\n\
     //         <tt>package_name current_version -> new_version</tt>"
     //     ));
-    // }
+    }
 
     //-----------------------------------
     // Setup actions

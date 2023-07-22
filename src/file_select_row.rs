@@ -60,8 +60,6 @@ mod imp {
         #[property(get, set, nullable, construct)]
         current_folder: RefCell<Option<String>>,
 
-        #[property(get = Self::file)]
-        _file: RefCell<Option<String>>,
         #[property(get, set = Self::set_files, construct)]
         files: RefCell<Vec<String>>,
     }
@@ -171,19 +169,6 @@ mod imp {
         }
 
         //-----------------------------------
-        // File property custom getter
-        //-----------------------------------
-        fn file(&self) -> Option<String> {
-            let files = self.files.borrow();
-
-            if files.len() > 0 {
-                Some(files[0].to_string())
-            } else {
-                None
-            }
-        }
-
-        //-----------------------------------
         // Can clear property custom setter
         //-----------------------------------
         fn set_can_clear(&self, can_clear: bool) {
@@ -212,7 +197,7 @@ impl FileSelectRow {
     }
 
     //-----------------------------------
-    // New function
+    // Setup signals
     //-----------------------------------
     #[allow(deprecated)]
     fn setup_signals(&self) {

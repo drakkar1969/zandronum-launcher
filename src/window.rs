@@ -2,7 +2,9 @@ use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use glib::clone;
+use glib::once_cell::sync::OnceCell;
 
+use crate::APP_ID;
 use crate::ZLApplication;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::file_select_row::FileSelectRow;
@@ -22,6 +24,8 @@ mod imp {
     pub struct ZLWindow {
         #[template_child]
         pub prefs_window: TemplateChild<PreferencesWindow>,
+
+        pub gsettings: OnceCell<gio::Settings>,
     }
 
     //-----------------------------------
@@ -55,6 +59,9 @@ mod imp {
 
             self.parent_constructed();
 
+            obj.init_gsettings();
+            obj.load_gsettings();
+
             obj.setup_widgets();
             obj.setup_actions();
             obj.setup_shortcuts();
@@ -69,7 +76,16 @@ mod imp {
     }
 
     impl WidgetImpl for ZLWindow {}
-    impl WindowImpl for ZLWindow {}
+    impl WindowImpl for ZLWindow {
+        //-----------------------------------
+        // Window close handler
+        //-----------------------------------
+        fn close_request(&self) -> glib::signal::Inhibit {
+            self.obj().save_gsettings();
+
+            glib::signal::Inhibit(false)
+        }
+    }
     impl ApplicationWindowImpl for ZLWindow {}
     impl AdwApplicationWindowImpl for ZLWindow {}
 }
@@ -90,6 +106,41 @@ impl ZLWindow {
     //-----------------------------------
     pub fn new(app: &ZLApplication) -> Self {
         glib::Object::builder().property("application", app).build()
+    }
+
+    //-----------------------------------
+    // Init gsettings
+    //-----------------------------------
+    fn init_gsettings(&self) {
+        let gsettings = gio::Settings::new(APP_ID);
+
+        gsettings.delay();
+
+        self.imp().gsettings.set(gsettings).unwrap();
+    }
+
+    //-----------------------------------
+    // Load gsettings
+    //-----------------------------------
+    fn load_gsettings(&self) {
+        let imp = self.imp();
+
+        if let Some(gsettings) = imp.gsettings.get() {
+            // Bind gsettings
+            gsettings.bind("iwad-folders", &imp.prefs_window.get(), "iwad-folders").build();
+        }
+    }
+
+    //-----------------------------------
+    // Save gsettings
+    //-----------------------------------
+    fn save_gsettings(&self) {
+        let imp = self.imp();
+
+        if let Some(gsettings) = imp.gsettings.get() {
+            // Save gsettings
+            gsettings.apply();
+        }
     }
 
     //-----------------------------------

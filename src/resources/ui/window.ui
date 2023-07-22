@@ -94,12 +94,12 @@
 
   <!--// MAIN MENU //-->
   <menu id="main_menu">
-    <!-- <section>
+    <section>
       <item>
         <attribute name="label">Reset to Defaults</attribute>
         <attribute name="action">win.reset-widgets</attribute>
       </item>
-    </section> -->
+    </section>
     <section>
       <item>
         <attribute name="label">Preferences</attribute>

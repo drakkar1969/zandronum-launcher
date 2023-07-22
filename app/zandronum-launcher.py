@@ -443,7 +443,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 		# Actions
 		action_list = [
-			[ "reset-widgets", self.on_reset_widgets_action ],
+			# [ "reset-widgets", self.on_reset_widgets_action ],
 			# [ "show-preferences", self.on_show_preferences_action ],
 			[ "show-cheats", self.on_show_cheats_action ],
 			# [ "show-about", self.on_show_about_action ],
@@ -454,7 +454,7 @@ class MainWindow(Adw.ApplicationWindow):
 		self.add_action_entries(action_list)
 
 		# Keyboard shortcuts
-		app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
+		# app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
 		# app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])
 		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 		app.set_accels_for_action("win.show-cheats", ["F1"])
@@ -520,10 +520,10 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	# Action handlers
 	#-----------------------------------
-	def on_reset_widgets_action(self, action, param, user_data):
-		self.iwad_comborow.set_selected(0)
-		self.pwad_filerow.set_selected_files([])
-		self.params_entryrow.set_text("")
+	# def on_reset_widgets_action(self, action, param, user_data):
+	# 	self.iwad_comborow.set_selected(0)
+	# 	self.pwad_filerow.set_selected_files([])
+	# 	self.params_entryrow.set_text("")
 
 	# def on_show_preferences_action(self, action, param, user_data):
 	# 	self.prefs_window.present()

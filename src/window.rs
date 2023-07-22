@@ -1,6 +1,6 @@
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
-use gtk::prelude::*;
+use adw::prelude::*;
 use glib::clone;
 use glib::once_cell::sync::OnceCell;
 
@@ -194,6 +194,33 @@ impl ZLWindow {
     fn setup_actions(&self) {
         let imp = self.imp();
 
+        // Add reset widgets action
+        let reset_action = gio::ActionEntry::<ZLWindow>::builder("reset-widgets")
+            .activate(clone!(@weak self as obj, @weak imp => move |_, _, _| {
+                let reset_dialog = adw::MessageDialog::new(
+                    Some(&obj),
+                    Some("Reset Parameters?"),
+                    Some("Reset all parameters to their default values.")
+                );
+    
+                reset_dialog.add_responses(&[("cancel", "_Cancel"), ("reset", "_Reset")]);
+                reset_dialog.set_default_response(Some("reset"));
+    
+                reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
+    
+                reset_dialog.choose(
+                    None::<&gio::Cancellable>,
+                    clone!(@weak imp => move |response| {
+                        if response == "reset" {
+                            imp.iwad_comborow.set_selected(0);
+                            imp.pwad_filerow.set_files(vec![]);
+                            imp.params_entryrow.set_text("");
+                        }
+                    })
+                );
+            }))
+            .build();
+
         // Add show preferences action
         let prefs_action = gio::ActionEntry::<ZLWindow>::builder("show-preferences")
             .activate(clone!(@weak imp => move |_, _, _| {
@@ -201,8 +228,8 @@ impl ZLWindow {
             }))
             .build();
 
-        // Add preference actions to window
-        self.add_action_entries([prefs_action]);
+        // Add actions to window
+        self.add_action_entries([reset_action, prefs_action]);
     }
 
     //-----------------------------------
@@ -211,6 +238,12 @@ impl ZLWindow {
     fn setup_shortcuts(&self) {
         // Create shortcut controller
         let controller = gtk::ShortcutController::new();
+
+        // Add reset widgets shortcut
+        controller.add_shortcut(gtk::Shortcut::new(
+            gtk::ShortcutTrigger::parse_string("<ctrl>R"),
+            Some(gtk::NamedAction::new("win.reset-widgets"))
+        ));
 
         // Add show preferences shortcut
         controller.add_shortcut(gtk::Shortcut::new(

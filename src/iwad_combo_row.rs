@@ -90,7 +90,7 @@ mod imp {
 //------------------------------------------------------------------------------
 glib::wrapper! {
     pub struct IWadComboRow(ObjectSubclass<imp::IWadComboRow>)
-        @extends adw::ActionRow, adw::PreferencesRow, gtk::ListBoxRow, gtk::Widget,
+        @extends adw::ComboRow, adw::ActionRow, adw::PreferencesRow, gtk::ListBoxRow, gtk::Widget,
         @implements gtk::Accessible, gtk::Actionable, gtk::Buildable, gtk::ConstraintTarget;
 }
 

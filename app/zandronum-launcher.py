@@ -283,15 +283,15 @@ class FileRow(Adw.ActionRow):
 #------------------------------------------------------------------------------
 @Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/preferences.ui")
 class PreferencesWindow(Adw.PreferencesWindow):
-	__gtype_name__ = "PreferencesWindow"
+	# __gtype_name__ = "PreferencesWindow"
 
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
-	exec_filerow = Gtk.Template.Child()
+	# exec_filerow = Gtk.Template.Child()
 	# iwaddir_filerow = Gtk.Template.Child()
 	# pwaddir_filerow = Gtk.Template.Child()
-	moddir_filerow = Gtk.Template.Child()
+	# moddir_filerow = Gtk.Template.Child()
 
 	texture_switch = Gtk.Template.Child()
 	object_switch = Gtk.Template.Child()
@@ -318,10 +318,10 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		# def list_to_str(binding, value):
 		# 	return(value[0] if len(value) > 0 else "")
 
-		app.bind_property("exec_file", self.exec_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		# app.bind_property("exec_file", self.exec_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
 		# app.bind_property("iwad_folder", self.iwaddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
 		# app.bind_property("pwad_folder", self.pwaddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
-		app.bind_property("mods_folder", self.moddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
+		# app.bind_property("mods_folder", self.moddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
 
 		app.bind_property("mods_textures", self.texture_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 		app.bind_property("mods_objects", self.object_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
@@ -430,7 +430,7 @@ class MainWindow(Adw.ApplicationWindow):
 	# iwad_model = Gtk.Template.Child()
 	# pwad_filerow = Gtk.Template.Child()
 	# params_entryrow = Gtk.Template.Child()
-	launch_btn = Gtk.Template.Child()
+	# launch_btn = Gtk.Template.Child()
 
 	# prefs_window = Gtk.Template.Child()
 	cheats_window = Gtk.Template.Child()
@@ -448,7 +448,7 @@ class MainWindow(Adw.ApplicationWindow):
 			[ "show-cheats", self.on_show_cheats_action ],
 			# [ "show-about", self.on_show_about_action ],
 			# [ "quit-app", self.on_quit_app_action ],
-			[ "launch-zandronum", self.on_launch_zandronum_action ]
+			# [ "launch-zandronum", self.on_launch_zandronum_action ]
 		]
 
 		self.add_action_entries(action_list)
@@ -456,7 +456,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# Keyboard shortcuts
 		# app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
 		# app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])
-		app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
+		# app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 		app.set_accels_for_action("win.show-cheats", ["F1"])
 		# app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
 		app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
@@ -548,11 +548,11 @@ class MainWindow(Adw.ApplicationWindow):
 	# def on_quit_app_action(self, action, param, user_data):
 	# 	self.close()
 
-	def on_launch_zandronum_action(self, action, param, user_data):
-		self.set_sensitive(False)
+	# def on_launch_zandronum_action(self, action, param, user_data):
+	# 	self.set_sensitive(False)
 
-		if self.launch_zandronum() == True: self.close()
-		else: self.set_sensitive(True)
+	# 	if self.launch_zandronum() == True: self.close()
+	# 	else: self.set_sensitive(True)
 
 	#-----------------------------------
 	# Launch Zandronum function
@@ -656,15 +656,15 @@ class LauncherApp(Adw.Application):
 	# def pwad_folder(self, value):
 	# 	self._pwad_folder = value
 
-	_mods_folder = ""
+	# _mods_folder = ""
 
-	@GObject.Property(type=str)
-	def mods_folder(self):
-		return(os.path.expandvars(self._mods_folder))
+	# @GObject.Property(type=str)
+	# def mods_folder(self):
+	# 	return(os.path.expandvars(self._mods_folder))
 
-	@mods_folder.setter
-	def mods_folder(self, value):
-		self._mods_folder = value
+	# @mods_folder.setter
+	# def mods_folder(self, value):
+	# 	self._mods_folder = value
 
 	mods_textures = GObject.Property(type=bool, default=True)
 	mods_objects = GObject.Property(type=bool, default=True)
@@ -693,7 +693,7 @@ class LauncherApp(Adw.Application):
 		# self.gsettings.bind("executable-file", self, "exec_file", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("iwad-folder", self, "iwad_folder", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("pwad-folder", self, "pwad_folder", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("mods-folder", self, "mods_folder", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("mods-folder", self, "mods_folder", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("enable-texture-mods", self, "mods_textures", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("enable-object-mods", self, "mods_objects", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("enable-monster-mods", self, "mods_monsters", Gio.SettingsBindFlags.DEFAULT)

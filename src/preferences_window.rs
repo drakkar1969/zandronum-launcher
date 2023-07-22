@@ -27,6 +27,8 @@ mod imp {
         pub iwad_filerow: TemplateChild<FileSelectRow>,
         #[template_child]
         pub pwad_filerow: TemplateChild<FileSelectRow>,
+        #[template_child]
+        pub mods_filerow: TemplateChild<FileSelectRow>,
 
         #[property(get, set = Self::set_exec_file)]
         exec_file: RefCell<String>,
@@ -34,6 +36,8 @@ mod imp {
         iwad_folder: RefCell<String>,
         #[property(get, set = Self::set_pwad_folder)]
         pwad_folder: RefCell<String>,
+        #[property(get, set = Self::set_mods_folder)]
+        mods_folder: RefCell<String>,
     }
 
     //-----------------------------------
@@ -109,6 +113,12 @@ mod imp {
                 self.pwad_folder.replace(folder.to_string());
             }
         }
+
+        fn set_mods_folder(&self, folder: String) {
+            if let Ok(folder) = shellexpand::env(&folder) {
+                self.mods_folder.replace(folder.to_string());
+            }
+        }
     }
 }
 
@@ -170,6 +180,11 @@ impl PreferencesWindow {
             .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
             .build();
         self.bind_property("pwad-folder", &imp.pwad_filerow.get(), "files")
+            .transform_to(|_, folder| Some(str_to_vec(folder)))
+            .transform_from(|_, files| Some(vec_to_str(files)))
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
+        self.bind_property("mods-folder", &imp.mods_filerow.get(), "files")
             .transform_to(|_, folder| Some(str_to_vec(folder)))
             .transform_from(|_, files| Some(vec_to_str(files)))
             .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)

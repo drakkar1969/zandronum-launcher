@@ -250,6 +250,7 @@ impl ZLWindow {
             gsettings.bind("executable-file", &imp.prefs_window.get(), "exec-file").build();
             gsettings.bind("iwad-folder", &imp.prefs_window.get(), "iwad-folder").build();
             gsettings.bind("pwad-folder", &imp.prefs_window.get(), "pwad-folder").build();
+            gsettings.bind("mods-folder", &imp.prefs_window.get(), "mods-folder").build();
         }
     }
 

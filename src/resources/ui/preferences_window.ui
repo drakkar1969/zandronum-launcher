@@ -42,15 +42,16 @@
                 <property name="dialog_title">Select PWAD Folder</property>
               </object>
             </child>
-            <!-- <child>
-              <object class="FileRow" id="moddir_filerow">
+            <child>
+              <object class="FileSelectRow" id="mods_filerow">
                 <property name="title">_Hi-Res Graphics Folder</property>
+                <property name="subtitle">Folder with high resolution graphics files</property>
                 <property name="use_underline">True</property>
-                <property name="select_type">2</property>
-                <property name="can_reset">True</property>
-                <property name="dialog_title">Select Mod Folder</property>
+                <property name="select">folder</property>
+                <!-- <property name="can_reset">True</property> -->
+                <property name="dialog_title">Select Mods Folder</property>
               </object>
-            </child> -->
+            </child>
           </object>
         </child>
         <!-- <child>

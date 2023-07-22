@@ -626,35 +626,35 @@ class LauncherApp(Adw.Application):
 	#-----------------------------------
 	# Properties
 	#-----------------------------------
-	_exec_file = ""
+	# _exec_file = ""
 
-	@GObject.Property(type=str)
-	def exec_file(self):
-		return(os.path.expandvars(self._exec_file))
+	# @GObject.Property(type=str)
+	# def exec_file(self):
+	# 	return(os.path.expandvars(self._exec_file))
 
-	@exec_file.setter
-	def exec_file(self, value):
-		self._exec_file = value
+	# @exec_file.setter
+	# def exec_file(self, value):
+	# 	self._exec_file = value
 
-	_iwad_folder = ""
+	# _iwad_folder = ""
 
-	@GObject.Property(type=str)
-	def iwad_folder(self):
-		return(os.path.expandvars(self._iwad_folder))
+	# @GObject.Property(type=str)
+	# def iwad_folder(self):
+	# 	return(os.path.expandvars(self._iwad_folder))
 
-	@iwad_folder.setter
-	def iwad_folder(self, value):
-		self._iwad_folder = value
+	# @iwad_folder.setter
+	# def iwad_folder(self, value):
+	# 	self._iwad_folder = value
 
-	_pwad_folder = ""
+	# _pwad_folder = ""
 
-	@GObject.Property(type=str)
-	def pwad_folder(self):
-		return(os.path.expandvars(self._pwad_folder))
+	# @GObject.Property(type=str)
+	# def pwad_folder(self):
+	# 	return(os.path.expandvars(self._pwad_folder))
 
-	@pwad_folder.setter
-	def pwad_folder(self, value):
-		self._pwad_folder = value
+	# @pwad_folder.setter
+	# def pwad_folder(self, value):
+	# 	self._pwad_folder = value
 
 	_mods_folder = ""
 

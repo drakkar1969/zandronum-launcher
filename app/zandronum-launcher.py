@@ -421,7 +421,7 @@ class CheatsWindow(Adw.PreferencesWindow):
 #------------------------------------------------------------------------------
 @Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/window.ui")
 class MainWindow(Adw.ApplicationWindow):
-	__gtype_name__ = "MainWindow"
+	# __gtype_name__ = "MainWindow"
 
 	#-----------------------------------
 	# Class widget variables
@@ -462,48 +462,48 @@ class MainWindow(Adw.ApplicationWindow):
 		app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
 		# Bind widget properties to app properties
-		def str_to_model(binding, value):
-			# Find iwad files in iwad folder and convert to lower case
-			iwad_files = list(map(str.lower, os.listdir(value))) if os.path.exists(value) else []
+		# def str_to_model(binding, value):
+		# 	# Find iwad files in iwad folder and convert to lower case
+		# 	iwad_files = list(map(str.lower, os.listdir(value))) if os.path.exists(value) else []
 
-			# Get sorted list of iwads from found iwad files
-			iwad_list = sorted([
-				IWadObject(
-					iwad=n,
-					name=app.doom_iwads[n].get("name", ""),
-					textures=app.doom_iwads[n].get("textures", []),
-					objects=app.doom_iwads[n].get("objects", []),
-					monsters=app.doom_iwads[n].get("monsters", []),
-					menus=app.doom_iwads[n].get("menus", []),
-					hud=app.doom_iwads[n].get("hud", []),
-				)
-				for n in app.doom_iwads.keys() if n in iwad_files
-			],
-			key=lambda obj: obj.iwad)
+		# 	# Get sorted list of iwads from found iwad files
+		# 	iwad_list = sorted([
+		# 		IWadObject(
+		# 			iwad=n,
+		# 			name=app.doom_iwads[n].get("name", ""),
+		# 			textures=app.doom_iwads[n].get("textures", []),
+		# 			objects=app.doom_iwads[n].get("objects", []),
+		# 			monsters=app.doom_iwads[n].get("monsters", []),
+		# 			menus=app.doom_iwads[n].get("menus", []),
+		# 			hud=app.doom_iwads[n].get("hud", []),
+		# 		)
+		# 		for n in app.doom_iwads.keys() if n in iwad_files
+		# 	],
+		# 	key=lambda obj: obj.iwad)
 
-			# Clear iwad model and add iwad names
-			self.iwad_model.splice(0, len(self.iwad_model), iwad_list)
+		# 	# Clear iwad model and add iwad names
+		# 	self.iwad_model.splice(0, len(self.iwad_model), iwad_list)
 
-			# Reset iwad selection
-			self.iwad_comborow.set_selected(0)
+		# 	# Reset iwad selection
+		# 	self.iwad_comborow.set_selected(0)
 
-			# Set launch button state
-			self.launch_btn.set_sensitive(len(self.iwad_model) > 0)
+		# 	# Set launch button state
+		# 	self.launch_btn.set_sensitive(len(self.iwad_model) > 0)
 
-			return(self.iwad_model)
+		# 	return(self.iwad_model)
 
-		def str_to_comboindex(binding, value):
-			iwads = [obj.iwad for obj in self.iwad_model]
-			return(iwads.index(value) if value in iwads else 0)
+		# def str_to_comboindex(binding, value):
+		# 	iwads = [obj.iwad for obj in self.iwad_model]
+		# 	return(iwads.index(value) if value in iwads else 0)
 
-		def comboindex_to_str(binding, value):
-			selected = self.iwad_model.get_item(value)
-			return(selected.iwad if selected is not None else "")
+		# def comboindex_to_str(binding, value):
+		# 	selected = self.iwad_model.get_item(value)
+		# 	return(selected.iwad if selected is not None else "")
 
-		app.bind_property("iwad_folder", self.iwad_comborow, "model", GObject.BindingFlags.SYNC_CREATE, str_to_model)
-		app.bind_property("iwad_selected", self.iwad_comborow, "selected", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_comboindex, comboindex_to_str)
+		# app.bind_property("iwad_folder", self.iwad_comborow, "model", GObject.BindingFlags.SYNC_CREATE, str_to_model)
+		# app.bind_property("iwad_selected", self.iwad_comborow, "selected", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_comboindex, comboindex_to_str)
 
-		app.bind_property("pwad_folder", self.pwad_filerow, "base_folder", GObject.BindingFlags.SYNC_CREATE)
+		# app.bind_property("pwad_folder", self.pwad_filerow, "base_folder", GObject.BindingFlags.SYNC_CREATE)
 		# app.bind_property("pwad_files", self.pwad_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
 		# app.bind_property("extra_params", self.params_entryrow, "text", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
@@ -672,7 +672,7 @@ class LauncherApp(Adw.Application):
 	mods_menus = GObject.Property(type=bool, default=True)
 	mods_hud = GObject.Property(type=bool, default=True)
 
-	iwad_selected = GObject.Property(type=str, default="")
+	# iwad_selected = GObject.Property(type=str, default="")
 	# pwad_files = GObject.Property(type=GObject.TYPE_STRV, default=[])
 	# extra_params = GObject.Property(type=str, default="")
 
@@ -680,17 +680,17 @@ class LauncherApp(Adw.Application):
 	# Init function
 	#-----------------------------------
 	def __init__(self, **kwargs):
-		super().__init__(**kwargs)
+		# super().__init__(**kwargs)
 
 		# Connect signal handlers
-		self.connect("startup", self.on_startup)
-		self.connect("shutdown", self.on_shutdown)
+		# self.connect("startup", self.on_startup)
+		# self.connect("shutdown", self.on_shutdown)
 
 		# Initialize gsettings
-		self.gsettings = Gio.Settings(schema_id="com.github.ZandronumLauncher")
-		self.gsettings.delay()
+		# self.gsettings = Gio.Settings(schema_id="com.github.ZandronumLauncher")
+		# self.gsettings.delay()
 
-		self.gsettings.bind("executable-file", self, "exec_file", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("executable-file", self, "exec_file", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("iwad-folder", self, "iwad_folder", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("pwad-folder", self, "pwad_folder", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("mods-folder", self, "mods_folder", Gio.SettingsBindFlags.DEFAULT)
@@ -699,7 +699,7 @@ class LauncherApp(Adw.Application):
 		self.gsettings.bind("enable-monster-mods", self, "mods_monsters", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("enable-menu-mods", self, "mods_menus", Gio.SettingsBindFlags.DEFAULT)
 		self.gsettings.bind("enable-hud-mods", self, "mods_hud", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("selected-iwad", self, "iwad_selected", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("selected-iwad", self, "iwad_selected", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("pwad-files", self, "pwad_files", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("extra-parameters", self, "extra_params", Gio.SettingsBindFlags.DEFAULT)
 
@@ -712,29 +712,29 @@ class LauncherApp(Adw.Application):
 	#-----------------------------------
 	# Activate function
 	#-----------------------------------
-	def do_activate(self):
-		active_window = self.get_active_window()
+	# def do_activate(self):
+	# 	active_window = self.get_active_window()
 
-		if active_window:
-			active_window.present()
-		else:
-			self.main_window = MainWindow(application=app)
-			self.main_window.present()
+	# 	if active_window:
+	# 		active_window.present()
+	# 	else:
+	# 		self.main_window = MainWindow(application=app)
+	# 		self.main_window.present()
 
 	#-----------------------------------
 	# Signal handlers
 	#-----------------------------------
-	def on_startup(self, app):
-		# Read IWAD json file
-		with open(os.path.join(app_dir, "iwads.json"), "r") as iwad_file:
-			self.doom_iwads = json.load(iwad_file)
+	# def on_startup(self, app):
+	# 	# Read IWAD json file
+	# 	with open(os.path.join(app_dir, "iwads.json"), "r") as iwad_file:
+	# 		self.doom_iwads = json.load(iwad_file)
 
-	def on_shutdown(self, app):
-		# Write gsettings
-		self.gsettings.apply()
+	# def on_shutdown(self, app):
+	# 	# Write gsettings
+	# 	self.gsettings.apply()
 
 #------------------------------------------------------------------------------
 #-- MAIN APP
 #------------------------------------------------------------------------------
-app = LauncherApp(application_id="com.github.ZandronumLauncher")
-app.run(sys.argv)
+# app = LauncherApp(application_id="com.github.ZandronumLauncher")
+# app.run(sys.argv)

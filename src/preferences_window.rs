@@ -22,9 +22,13 @@ mod imp {
     pub struct PreferencesWindow {
         #[template_child]
         pub iwad_filerow: TemplateChild<FileSelectRow>,
+        #[template_child]
+        pub pwad_filerow: TemplateChild<FileSelectRow>,
 
         #[property(get, set, construct)]
         iwad_folders: RefCell<Vec<String>>,
+        #[property(get, set, construct)]
+        pwad_folders: RefCell<Vec<String>>,
     }
 
     //-----------------------------------
@@ -113,29 +117,9 @@ impl PreferencesWindow {
         self.bind_property("iwad-folders", &imp.iwad_filerow.get(), "files")
             .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
             .build();
-
-    //     self.bind_property("remember-columns", &imp.column_switch.get(), "active")
-    //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
-    //         .build();
-    //     self.bind_property("remember-sort", &imp.sort_switch.get(), "active")
-    //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
-    //         .build();
-    //     self.bind_property("search-delay", &imp.delay_spin.get(), "value")
-    //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
-    //         .build();
-
-    //     self.bind_property("custom-font", &imp.font_switch.get(), "active")
-    //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
-    //         .build();
-    //     self.bind_property("monospace-font", &imp.font_row.get(), "title")
-    //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
-    //         .build();
-
-    //     // Set AUR row tooltip
-    //     imp.aur_row.set_tooltip_markup(Some(
-    //         "The command must return a list of AUR updates in the format:\n\n\
-    //         <tt>package_name current_version -> new_version</tt>"
-    //     ));
+        self.bind_property("pwad-folders", &imp.pwad_filerow.get(), "files")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
     }
 
     //-----------------------------------

@@ -13,6 +13,10 @@
       <default>'$HOME/.config/zandronum/iwads'</default>
       <summary>Folder to search for game (IWAD) files</summary>
     </key>
+    <key name="pwad-folders" type="as">
+      <default>['/home/drakkar/.config/zandronum/pwads']</default>
+      <summary>Folders to search for game (IWAD) files</summary>
+    </key>
     <key name="pwad-folder" type="s">
       <default>'$HOME/.config/zandronum/pwads'</default>
       <summary>Folder to search for additional files</summary>

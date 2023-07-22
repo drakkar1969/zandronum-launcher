@@ -159,6 +159,8 @@ impl ZLWindow {
 
         if let Some(gsettings) = imp.gsettings.get() {
             // Bind gsettings
+            gsettings.bind("pwad-files", &imp.pwad_filerow.get(), "files").build();
+
             gsettings.bind("iwad-folder", &imp.prefs_window.get(), "iwad-folder").build();
             gsettings.bind("pwad-folder", &imp.prefs_window.get(), "pwad-folder").build();
         }

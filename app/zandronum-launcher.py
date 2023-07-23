@@ -704,10 +704,10 @@ class LauncherApp(Adw.Application):
 		# self.gsettings.bind("extra-parameters", self, "extra_params", Gio.SettingsBindFlags.DEFAULT)
 
 		# Initialize default values for settings
-		self.default_exec_file = os.path.expandvars(self.gsettings.get_default_value("executable-file").get_string())
-		self.default_iwad_folder = os.path.expandvars(self.gsettings.get_default_value("iwad-folder").get_string())
-		self.default_pwad_folder = os.path.expandvars(self.gsettings.get_default_value("pwad-folder").get_string())
-		self.default_mods_folder = os.path.expandvars(self.gsettings.get_default_value("mods-folder").get_string())
+		# self.default_exec_file = os.path.expandvars(self.gsettings.get_default_value("executable-file").get_string())
+		# self.default_iwad_folder = os.path.expandvars(self.gsettings.get_default_value("iwad-folder").get_string())
+		# self.default_pwad_folder = os.path.expandvars(self.gsettings.get_default_value("pwad-folder").get_string())
+		# self.default_mods_folder = os.path.expandvars(self.gsettings.get_default_value("mods-folder").get_string())
 
 	#-----------------------------------
 	# Activate function

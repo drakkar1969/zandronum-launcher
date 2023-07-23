@@ -262,6 +262,11 @@ impl ZLWindow {
             imp.prefs_window.set_iwad_folder(self.strip_env(&gsettings.string("iwad-folder")));
             imp.prefs_window.set_pwad_folder(self.strip_env(&gsettings.string("pwad-folder")));
             imp.prefs_window.set_mods_folder(self.strip_env(&gsettings.string("mods-folder")));
+
+            imp.prefs_window.set_default_exec_file(self.strip_env(&gsettings.default_value("executable-file").unwrap().to_string().replace("'", "")));
+            imp.prefs_window.set_default_iwad_folder(self.strip_env(&gsettings.default_value("iwad-folder").unwrap().to_string().replace("'", "")));
+            imp.prefs_window.set_default_pwad_folder(self.strip_env(&gsettings.default_value("pwad-folder").unwrap().to_string().replace("'", "")));
+            imp.prefs_window.set_default_mods_folder(self.strip_env(&gsettings.default_value("mods-folder").unwrap().to_string().replace("'", "")));
         }
     }
 
@@ -277,12 +282,12 @@ impl ZLWindow {
                 self.set_selected_iwad(iwad);
             }
 
+            // Save gsettings
             gsettings.set_string("executable-file", &imp.prefs_window.exec_file()).unwrap();
             gsettings.set_string("iwad-folder", &imp.prefs_window.iwad_folder()).unwrap();
             gsettings.set_string("pwad-folder", &imp.prefs_window.pwad_folder()).unwrap();
             gsettings.set_string("mods-folder", &imp.prefs_window.mods_folder()).unwrap();
 
-            // Save gsettings
             gsettings.apply();
         }
     }

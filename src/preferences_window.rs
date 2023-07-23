@@ -36,6 +36,15 @@ mod imp {
         pwad_folder: RefCell<String>,
         #[property(get, set)]
         mods_folder: RefCell<String>,
+
+        #[property(get, set)]
+        default_exec_file: RefCell<String>,
+        #[property(get, set)]
+        default_iwad_folder: RefCell<String>,
+        #[property(get, set)]
+        default_pwad_folder: RefCell<String>,
+        #[property(get, set)]
+        default_mods_folder: RefCell<String>,
     }
 
     //-----------------------------------

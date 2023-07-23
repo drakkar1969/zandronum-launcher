@@ -3,6 +3,7 @@ use std::cell::RefCell;
 use gtk::glib;
 use adw::subclass::prelude::*;
 use adw::prelude::*;
+use glib::clone;
 
 use crate::file_select_row::FileSelectRow;
 
@@ -27,6 +28,9 @@ mod imp {
         pub pwad_filerow: TemplateChild<FileSelectRow>,
         #[template_child]
         pub mods_filerow: TemplateChild<FileSelectRow>,
+
+        #[template_child]
+        pub reset_button: TemplateChild<gtk::Button>,
 
         #[property(get, set)]
         exec_file: RefCell<String>,
@@ -91,7 +95,7 @@ mod imp {
 
             obj.setup_widgets();
             // obj.setup_actions();
-            // obj.setup_signals();
+            obj.setup_signals();
         }
     }
 
@@ -205,58 +209,33 @@ impl PreferencesWindow {
     //-----------------------------------
     // Setup signals
     //-----------------------------------
-    // fn setup_signals(&self) {
-    //     let imp = self.imp();
+    fn setup_signals(&self) {
+        let imp = self.imp();
 
-    //     // Font reset button clicked signal
-    //     imp.font_reset_button.connect_clicked(clone!(@weak self as obj => move |_| {
-    //         obj.set_monospace_font(obj.default_monospace_font());
-    //     }));
+        // Preferences reset button clicked signal
+        imp.reset_button.connect_clicked(clone!(@weak self as obj, @weak imp => move |_| {
+            let reset_dialog = adw::MessageDialog::new(
+                Some(&obj),
+                Some("Reset Preferences?"),
+                Some("Reset all preferences to their default values.")
+            );
 
-    //     // Font choose button clicked signal
-    //     imp.font_choose_button.connect_clicked(clone!(@weak self as obj => move |_| {
-    //         let font_dialog = gtk::FontDialog::new();
+            reset_dialog.add_responses(&[("cancel", "_Cancel"), ("reset", "_Reset")]);
+            reset_dialog.set_default_response(Some("reset"));
 
-    //         font_dialog.set_title("Select Font");
+            reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
 
-    //         font_dialog.choose_font(
-    //             Some(&obj),
-    //             Some(&pango::FontDescription::from_string(&obj.monospace_font())),
-    //             None::<&gio::Cancellable>,
-    //             clone!(@weak obj => move |result| {
-    //                 if let Ok(font_desc) = result {
-    //                     obj.set_monospace_font(font_desc.to_string());
-    //                 }
-    //             })
-    //         );
-    //     }));
-
-    //     // Preferences reset button clicked signal
-    //     imp.reset_button.connect_clicked(clone!(@weak self as obj, @weak imp => move |_| {
-    //         let reset_dialog = adw::MessageDialog::new(
-    //             Some(&obj),
-    //             Some("Reset Preferences?"),
-    //             Some("Reset all preferences to their default values.")
-    //         );
-
-    //         reset_dialog.add_responses(&[("cancel", "_Cancel"), ("reset", "_Reset")]);
-    //         reset_dialog.set_default_response(Some("reset"));
-
-    //         reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
-
-    //         reset_dialog.choose(
-    //             None::<&gio::Cancellable>,
-    //             clone!(@weak obj=> move |response| {
-    //                 if response == "reset" {
-    //                     obj.set_aur_command("");
-    //                     obj.set_remember_columns(true);
-    //                     obj.set_remember_sort(false);
-    //                     obj.set_search_delay(150.0);
-    //                     obj.set_custom_font(true);
-    //                     obj.set_monospace_font(obj.default_monospace_font());
-    //                 }
-    //             })
-    //         );
-    //     }));
-    // }
+            reset_dialog.choose(
+                None::<&gio::Cancellable>,
+                clone!(@weak obj=> move |response| {
+                    if response == "reset" {
+                        obj.set_exec_file(obj.default_exec_file());
+                        obj.set_iwad_folder(obj.default_iwad_folder());
+                        obj.set_pwad_folder(obj.default_pwad_folder());
+                        obj.set_mods_folder(obj.default_mods_folder());
+                    }
+                })
+            );
+        }));
+    }
 }

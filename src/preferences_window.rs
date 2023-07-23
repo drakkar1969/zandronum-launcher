@@ -1,4 +1,4 @@
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 
 use gtk::glib;
 use adw::subclass::prelude::*;
@@ -30,6 +30,17 @@ mod imp {
         pub mods_filerow: TemplateChild<FileSelectRow>,
 
         #[template_child]
+        pub texture_switch: TemplateChild<gtk::Switch>,
+        #[template_child]
+        pub object_switch: TemplateChild<gtk::Switch>,
+        #[template_child]
+        pub monster_switch: TemplateChild<gtk::Switch>,
+        #[template_child]
+        pub menu_switch: TemplateChild<gtk::Switch>,
+        #[template_child]
+        pub hud_switch: TemplateChild<gtk::Switch>,
+
+        #[template_child]
         pub reset_button: TemplateChild<gtk::Button>,
 
         #[property(get, set)]
@@ -40,6 +51,17 @@ mod imp {
         pwad_folder: RefCell<String>,
         #[property(get, set)]
         mods_folder: RefCell<String>,
+
+        #[property(get, set)]
+        mods_textures: Cell<bool>,
+        #[property(get, set)]
+        mods_objects: Cell<bool>,
+        #[property(get, set)]
+        mods_monsters: Cell<bool>,
+        #[property(get, set)]
+        mods_menus: Cell<bool>,
+        #[property(get, set)]
+        mods_hud: Cell<bool>,
 
         #[property(get, set)]
         default_exec_file: RefCell<String>,
@@ -167,6 +189,22 @@ impl PreferencesWindow {
             .transform_from(|_, files| Some(vec_to_str(files)))
             .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
             .build();
+
+        self.bind_property("mods-textures", &imp.texture_switch.get(), "active")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
+        self.bind_property("mods-objects", &imp.object_switch.get(), "active")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
+        self.bind_property("mods-monsters", &imp.monster_switch.get(), "active")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
+        self.bind_property("mods-menus", &imp.menu_switch.get(), "active")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
+        self.bind_property("mods-hud", &imp.hud_switch.get(), "active")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
     }
 
     //-----------------------------------
@@ -190,12 +228,18 @@ impl PreferencesWindow {
 
             reset_dialog.choose(
                 None::<&gio::Cancellable>,
-                clone!(@weak obj=> move |response| {
+                clone!(@weak obj => move |response| {
                     if response == "reset" {
                         obj.set_exec_file(obj.default_exec_file());
                         obj.set_iwad_folder(obj.default_iwad_folder());
                         obj.set_pwad_folder(obj.default_pwad_folder());
                         obj.set_mods_folder(obj.default_mods_folder());
+
+                        obj.set_mods_textures(true);
+                        obj.set_mods_objects(true);
+                        obj.set_mods_monsters(true);
+                        obj.set_mods_menus(true);
+                        obj.set_mods_hud(true);
                     }
                 })
             );

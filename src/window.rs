@@ -267,6 +267,12 @@ impl ZLWindow {
             imp.prefs_window.set_default_iwad_folder(self.strip_env(&gsettings.default_value("iwad-folder").unwrap().to_string().replace("'", "")));
             imp.prefs_window.set_default_pwad_folder(self.strip_env(&gsettings.default_value("pwad-folder").unwrap().to_string().replace("'", "")));
             imp.prefs_window.set_default_mods_folder(self.strip_env(&gsettings.default_value("mods-folder").unwrap().to_string().replace("'", "")));
+
+            gsettings.bind("enable-texture-mods", &imp.prefs_window.get(), "mods-textures").build();
+            gsettings.bind("enable-object-mods", &imp.prefs_window.get(), "mods-objects").build();
+            gsettings.bind("enable-monster-mods", &imp.prefs_window.get(), "mods-monsters").build();
+            gsettings.bind("enable-menu-mods", &imp.prefs_window.get(), "mods-menus").build();
+            gsettings.bind("enable-hud-mods", &imp.prefs_window.get(), "mods-hud").build();
         }
     }
 

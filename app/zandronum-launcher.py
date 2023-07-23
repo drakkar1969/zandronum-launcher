@@ -293,11 +293,11 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	# pwaddir_filerow = Gtk.Template.Child()
 	# moddir_filerow = Gtk.Template.Child()
 
-	texture_switch = Gtk.Template.Child()
-	object_switch = Gtk.Template.Child()
-	monster_switch = Gtk.Template.Child()
-	menu_switch = Gtk.Template.Child()
-	hud_switch = Gtk.Template.Child()
+	# texture_switch = Gtk.Template.Child()
+	# object_switch = Gtk.Template.Child()
+	# monster_switch = Gtk.Template.Child()
+	# menu_switch = Gtk.Template.Child()
+	# hud_switch = Gtk.Template.Child()
 
 	#-----------------------------------
 	# Init function
@@ -323,11 +323,11 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		# app.bind_property("pwad_folder", self.pwaddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
 		# app.bind_property("mods_folder", self.moddir_filerow, "selected_files", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL, str_to_list, list_to_str)
 
-		app.bind_property("mods_textures", self.texture_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
-		app.bind_property("mods_objects", self.object_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
-		app.bind_property("mods_monsters", self.monster_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
-		app.bind_property("mods_menus", self.menu_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
-		app.bind_property("mods_hud", self.hud_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		# app.bind_property("mods_textures", self.texture_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		# app.bind_property("mods_objects", self.object_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		# app.bind_property("mods_monsters", self.monster_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		# app.bind_property("mods_menus", self.menu_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
+		# app.bind_property("mods_hud", self.hud_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
 		# Set widget focus
 		self.set_focus(self.exec_filerow)
@@ -347,18 +347,18 @@ class PreferencesWindow(Adw.PreferencesWindow):
 
 	# 	self.reset_dialog.present()
 
-	def on_reset_dialog_response(self, dialog, response):
-		if response == "reset":
+	# def on_reset_dialog_response(self, dialog, response):
+	# 	if response == "reset":
 			# self.exec_filerow.set_selected_file(app.default_exec_file)
 			# self.iwaddir_filerow.set_selected_file(app.default_iwad_folder)
 			# self.pwaddir_filerow.set_selected_file(app.default_pwad_folder)
 			# self.moddir_filerow.set_selected_file(app.default_mods_folder)
 
-			self.texture_switch.set_active(True)
-			self.object_switch.set_active(True)
-			self.monster_switch.set_active(True)
-			self.menu_switch.set_active(True)
-			self.hud_switch.set_active(True)
+			# self.texture_switch.set_active(True)
+			# self.object_switch.set_active(True)
+			# self.monster_switch.set_active(True)
+			# self.menu_switch.set_active(True)
+			# self.hud_switch.set_active(True)
 
 		# self.reset_dialog = None
 
@@ -622,7 +622,7 @@ class MainWindow(Adw.ApplicationWindow):
 #------------------------------------------------------------------------------
 #-- CLASS: LAUNCHERAPP
 #------------------------------------------------------------------------------
-class LauncherApp(Adw.Application):
+# class LauncherApp(Adw.Application):
 	#-----------------------------------
 	# Properties
 	#-----------------------------------
@@ -666,11 +666,11 @@ class LauncherApp(Adw.Application):
 	# def mods_folder(self, value):
 	# 	self._mods_folder = value
 
-	mods_textures = GObject.Property(type=bool, default=True)
-	mods_objects = GObject.Property(type=bool, default=True)
-	mods_monsters = GObject.Property(type=bool, default=True)
-	mods_menus = GObject.Property(type=bool, default=True)
-	mods_hud = GObject.Property(type=bool, default=True)
+	# mods_textures = GObject.Property(type=bool, default=True)
+	# mods_objects = GObject.Property(type=bool, default=True)
+	# mods_monsters = GObject.Property(type=bool, default=True)
+	# mods_menus = GObject.Property(type=bool, default=True)
+	# mods_hud = GObject.Property(type=bool, default=True)
 
 	# iwad_selected = GObject.Property(type=str, default="")
 	# pwad_files = GObject.Property(type=GObject.TYPE_STRV, default=[])
@@ -679,7 +679,7 @@ class LauncherApp(Adw.Application):
 	#-----------------------------------
 	# Init function
 	#-----------------------------------
-	def __init__(self, **kwargs):
+	# def __init__(self, **kwargs):
 		# super().__init__(**kwargs)
 
 		# Connect signal handlers
@@ -694,11 +694,11 @@ class LauncherApp(Adw.Application):
 		# self.gsettings.bind("iwad-folder", self, "iwad_folder", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("pwad-folder", self, "pwad_folder", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("mods-folder", self, "mods_folder", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("enable-texture-mods", self, "mods_textures", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("enable-object-mods", self, "mods_objects", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("enable-monster-mods", self, "mods_monsters", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("enable-menu-mods", self, "mods_menus", Gio.SettingsBindFlags.DEFAULT)
-		self.gsettings.bind("enable-hud-mods", self, "mods_hud", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("enable-texture-mods", self, "mods_textures", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("enable-object-mods", self, "mods_objects", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("enable-monster-mods", self, "mods_monsters", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("enable-menu-mods", self, "mods_menus", Gio.SettingsBindFlags.DEFAULT)
+		# self.gsettings.bind("enable-hud-mods", self, "mods_hud", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("selected-iwad", self, "iwad_selected", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("pwad-files", self, "pwad_files", Gio.SettingsBindFlags.DEFAULT)
 		# self.gsettings.bind("extra-parameters", self, "extra_params", Gio.SettingsBindFlags.DEFAULT)

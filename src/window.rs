@@ -219,7 +219,7 @@ impl ZLWindow {
             imp.launch_button.set_sensitive(imp.iwad_comborow.selected_iwad().is_some());
         }));
 
-        // Preferences window IWAD folders property notify signal
+        // Preferences window PWAD folders property notify signal
         imp.prefs_window.connect_pwad_folder_notify(clone!(@weak imp => move |_| {
             let folder = imp.prefs_window.pwad_folder();
 

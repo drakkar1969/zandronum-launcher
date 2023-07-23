@@ -116,7 +116,6 @@ mod imp {
             let obj = self.obj();
 
             obj.setup_widgets();
-            // obj.setup_actions();
             obj.setup_signals();
         }
     }

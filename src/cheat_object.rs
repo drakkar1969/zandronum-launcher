@@ -61,7 +61,7 @@ impl CheatObject {
     // New function
     //-----------------------------------
     pub fn new(label: &str, value: &str) -> Self {
-        // Build PropObject
+        // Build CheatObject
         glib::Object::builder()
             .property("label", label)
             .property("value", value)

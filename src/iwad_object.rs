@@ -71,7 +71,7 @@ impl IWadObject {
     // New function
     //-----------------------------------
     pub fn new(name: &str, iwad: &str, textures: &[&str], objects: &[&str], monsters: &[&str], menus: &[&str], hud: &[&str]) -> Self {
-        // Build PropObject
+        // Build IWadObject
         glib::Object::builder()
             .property("name", name)
             .property("iwad", iwad)

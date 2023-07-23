@@ -2,7 +2,7 @@
 Name=Zandronum-Launcher
 GenericName=Zandronum-Launcher
 Comment=Custom Zandronum launcher with WAD selection
-Exec=/usr/share/zandronum-launcher/zandronum-launcher.py
+Exec=/usr/bin/zandronum-launcher
 Icon=zandronum
 StartupNotify=true
 Terminal=false

@@ -22,7 +22,7 @@
 #------------------------------------------------------------------------------
 #-- CLASS: IWADOBJECT
 #------------------------------------------------------------------------------
-class IWadObject(GObject.Object):
+# class IWadObject(GObject.Object):
 	# __gtype_name__ = "IWadObject"
 
 	#-----------------------------------
@@ -30,11 +30,11 @@ class IWadObject(GObject.Object):
 	#-----------------------------------
 	# iwad = GObject.Property(type=str, default="")
 	# name = GObject.Property(type=str, default="")
-	textures = GObject.Property(type=GObject.TYPE_STRV, default=[])
-	objects = GObject.Property(type=GObject.TYPE_STRV, default=[])
-	monsters = GObject.Property(type=GObject.TYPE_STRV, default=[])
-	menus = GObject.Property(type=GObject.TYPE_STRV, default=[])
-	hud = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	# textures = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	# objects = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	# monsters = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	# menus = GObject.Property(type=GObject.TYPE_STRV, default=[])
+	# hud = GObject.Property(type=GObject.TYPE_STRV, default=[])
 
 	#-----------------------------------
 	# Init function

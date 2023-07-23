@@ -20,6 +20,16 @@ mod imp {
         name: RefCell<String>,
         #[property(get, set)]
         iwad: RefCell<String>,
+        #[property(get, set)]
+        textures: RefCell<Vec<String>>,
+        #[property(get, set)]
+        objects: RefCell<Vec<String>>,
+        #[property(get, set)]
+        monsters: RefCell<Vec<String>>,
+        #[property(get, set)]
+        menus: RefCell<Vec<String>>,
+        #[property(get, set)]
+        hud: RefCell<Vec<String>>,
     }
 
     //-----------------------------------
@@ -60,11 +70,16 @@ impl IWadObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(name: &str, iwad: &str) -> Self {
+    pub fn new(name: &str, iwad: &str, textures: &[&str], objects: &[&str], monsters: &[&str], menus: &[&str], hud: &[&str]) -> Self {
         // Build PropObject
         glib::Object::builder()
             .property("name", name)
             .property("iwad", iwad)
+            .property("textures", textures)
+            .property("objects", objects)
+            .property("monsters", monsters)
+            .property("menus", menus)
+            .property("hud", hud)
             .build()
     }
 }

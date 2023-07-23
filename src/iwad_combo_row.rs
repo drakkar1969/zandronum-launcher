@@ -93,42 +93,82 @@ impl IWadComboRow {
 
         iwads.push(IWadObject::new(
             "The Ultimate Doom",
-            "doom.wad"
+            "doom.wad",
+            &["hires-doom-a.pk3", "hires-doom-b.pk3"],
+            &["objects.pk3"],
+            &["monsters.pk3"],
+            &["jfo-udoom.pk3"],
+            &["hud-stuff.pk3"]
         ));
 
         iwads.push(IWadObject::new(
             "Doom II: Hell on Earth",
-            "doom2.wad"
+            "doom2.wad",
+            &["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3"],
+            &["objects.pk3"],
+            &["monsters.pk3"],
+            &["jfo-doom2.pk3"],
+            &["hud-stuff.pk3"]
         ));
 
         iwads.push(IWadObject::new(
             "Final Doom - The Plutonia Experiment",
-            "plutonia.wad"
+            "plutonia.wad",
+            &["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-plut.pk3"],
+            &["objects.pk3"],
+            &["monsters.pk3"],
+            &["jfo-plut.pk3"],
+            &["hud-stuff.pk3"]
         ));
 
         iwads.push(IWadObject::new(
             "Final Doom - TNT: Evilution",
-            "tnt.wad"
+            "tnt.wad",
+            &["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-tnt.pk3"],
+            &["objects.pk3"],
+            &["monsters.pk3"],
+            &["jfo-tnt.pk3"],
+            &["hud-stuff.pk3"]
         ));
 
         iwads.push(IWadObject::new(
             "Freedoom Phase 1",
-            "freedoom1.wad"
+            "freedoom1.wad",
+            &[],
+            &[],
+            &[],
+            &[],
+            &[]
         ));
 
         iwads.push(IWadObject::new(
             "Freedoom Phase 2",
-            "freedoom2.wad"
+            "freedoom2.wad",
+            &[],
+            &[],
+            &[],
+            &[],
+            &[]
         ));
 
         iwads.push(IWadObject::new(
             "Heretic",
-            "heretic.wad"
+            "heretic.wad",
+            &["hires-heretic.pk3"],
+            &[],
+            &[],
+            &[],
+            &[]
         ));
 
         iwads.push(IWadObject::new(
             "Hexen",
-            "hexen.wad"
+            "hexen.wad",
+            &["hires-hexen.pk3"],
+            &[],
+            &[],
+            &[],
+            &[]
         ));
     }
 

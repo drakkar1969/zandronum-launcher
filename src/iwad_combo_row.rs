@@ -214,9 +214,8 @@ impl IWadComboRow {
     //-----------------------------------
     // Public selected iwad function
     //-----------------------------------
-    pub fn selected_iwad(&self) -> Option<String> {
+    pub fn selected_iwad(&self) -> Option<IWadObject> {
         self.selected_item()
             .and_downcast::<IWadObject>()
-            .and_then(|iwad_obj| Some(iwad_obj.iwad()))
     }
 }

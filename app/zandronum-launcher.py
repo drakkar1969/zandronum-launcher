@@ -557,7 +557,7 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	# Launch Zandronum function
 	#-----------------------------------
-	def launch_zandronum(self):
+	# def launch_zandronum(self):
 		# Return with error if Zandronum executable does not exist
 		# if os.path.exists(app.exec_file) == False:
 		# 	self.show_error_dialog("Zandronum executable file not found")
@@ -585,22 +585,22 @@ class MainWindow(Adw.ApplicationWindow):
 		# cmdline += f' -iwad "{iwad_file}"'
 
 		# Add hi-res graphics if options are true and files are present
-		mod_files = []
+		# mod_files = []
 
-		if app.mods_textures == True: mod_files.extend(iwad_obj.textures)
+		# if app.mods_textures == True: mod_files.extend(iwad_obj.textures)
 
-		if app.mods_objects == True: mod_files.extend(iwad_obj.objects)
+		# if app.mods_objects == True: mod_files.extend(iwad_obj.objects)
 
-		if app.mods_monsters == True: mod_files.extend(iwad_obj.monsters)
+		# if app.mods_monsters == True: mod_files.extend(iwad_obj.monsters)
 
-		if app.mods_menus == True: mod_files.extend(iwad_obj.menus)
+		# if app.mods_menus == True: mod_files.extend(iwad_obj.menus)
 
-		if app.mods_hud == True: mod_files.extend(iwad_obj.hud)
+		# if app.mods_hud == True: mod_files.extend(iwad_obj.hud)
 
-		for mod in mod_files:
-			mod_file = os.path.join(app.mods_folder, mod)
+		# for mod in mod_files:
+		# 	mod_file = os.path.join(app.mods_folder, mod)
 
-			if os.path.exists(mod_file): cmdline += f' -file "{mod_file}"'
+		# 	if os.path.exists(mod_file): cmdline += f' -file "{mod_file}"'
 
 		# Add PWAD files if present
 		# for pwad in app.pwad_files:

@@ -285,7 +285,7 @@ impl ZLWindow {
         if let Some(gsettings) = imp.gsettings.get() {
             // Get selected IWAD
             if let Some(iwad) = imp.iwad_comborow.selected_iwad() {
-                self.set_selected_iwad(iwad);
+                self.set_selected_iwad(iwad.iwad());
             }
 
             // Save gsettings
@@ -420,11 +420,11 @@ impl ZLWindow {
         // Get selected IWAD
         let iwad = iwad.unwrap();
 
-        let iwad_file = Path::new(&imp.prefs_window.iwad_folder()).join(&iwad);
+        let iwad_file = Path::new(&imp.prefs_window.iwad_folder()).join(&iwad.iwad());
 
         // Return with error if IWAD file does not exist
         if iwad_file.try_exists().is_err() {
-            return Err(LaunchError::new(&format!("IWAD file '{iwad}' not found")))
+            return Err(LaunchError::new(&format!("IWAD file '{}' not found", iwad.iwad())))
         }
 
         // Add IWAD file to command line
@@ -440,6 +440,37 @@ impl ZLWindow {
         // Add extra parameters to command line
         if self.extra_params() != "" {
             cmdline += &format!(" {}", self.extra_params());
+        }
+
+        // Add mod files (hi-res graphics) to command line
+        let mut mod_files: Vec<String> = vec![];
+
+        if imp.prefs_window.mods_textures() {
+            mod_files.extend(iwad.textures());
+        }
+
+        if imp.prefs_window.mods_objects() {
+            mod_files.extend(iwad.objects());
+        }
+
+        if imp.prefs_window.mods_monsters() {
+            mod_files.extend(iwad.monsters());
+        }
+
+        if imp.prefs_window.mods_menus() {
+            mod_files.extend(iwad.menus());
+        }
+
+        if imp.prefs_window.mods_hud() {
+            mod_files.extend(iwad.hud());
+        }
+
+        for modd in mod_files {
+            let mod_file = Path::new(&imp.prefs_window.mods_folder()).join(&modd);
+
+            if Path::new(&mod_file).try_exists().is_ok() {
+                cmdline += &format!(" -file \"{}\"", mod_file.display());
+            }
         }
 
         // Launch Zandronum

@@ -63,8 +63,8 @@ class CheatObject(GObject.Object):
 #------------------------------------------------------------------------------
 #-- CLASS: FILEROW
 #------------------------------------------------------------------------------
-@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/filerow.ui")
-class FileRow(Adw.ActionRow):
+# @Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/filerow.ui")
+# class FileRow(Adw.ActionRow):
 	# __gtype_name__ = "FileRow"
 
 	# Flags for properties
@@ -77,7 +77,7 @@ class FileRow(Adw.ActionRow):
 	# image = Gtk.Template.Child()
 	# file_btn = Gtk.Template.Child()
 	# clear_btn = Gtk.Template.Child()
-	reset_btn = Gtk.Template.Child()
+	# reset_btn = Gtk.Template.Child()
 
 	#-----------------------------------
 	# Button properties
@@ -126,17 +126,17 @@ class FileRow(Adw.ActionRow):
 	# 	self.clear_btn.set_visible(self._can_clear)
 
 	# can_reset property
-	_can_reset = False
+	# _can_reset = False
 
-	@GObject.Property(type=bool, default=False, flags=PROPS_CONSTRUCT)
-	def can_reset(self):
-		return(self._can_reset)
+	# @GObject.Property(type=bool, default=False, flags=PROPS_CONSTRUCT)
+	# def can_reset(self):
+	# 	return(self._can_reset)
 
-	@can_reset.setter
-	def can_reset(self, value):
-		self._can_reset = value
+	# @can_reset.setter
+	# def can_reset(self, value):
+	# 	self._can_reset = value
 
-		self.reset_btn.set_visible(self._can_reset)
+	# 	self.reset_btn.set_visible(self._can_reset)
 
 	#-----------------------------------
 	# File properties
@@ -148,20 +148,20 @@ class FileRow(Adw.ActionRow):
 	# 	self.base_folder = value
 
 	# default_file property
-	_default_file = ""
+	# _default_file = ""
 
-	@GObject.Property(type=str, default="", flags=PROPS_CONSTRUCT)
-	def default_file(self):
-		return(self._default_file)
+	# @GObject.Property(type=str, default="", flags=PROPS_CONSTRUCT)
+	# def default_file(self):
+	# 	return(self._default_file)
 
-	@default_file.setter
-	def default_file(self, value):
-		self._default_file = value
+	# @default_file.setter
+	# def default_file(self, value):
+	# 	self._default_file = value
 
-		self.set_reset_btn_state()
+	# 	self.set_reset_btn_state()
 
-	def set_default_file(self, value):
-		self.default_file = value
+	# def set_default_file(self, value):
+	# 	self.default_file = value
 
 	# selected_files property
 	# _selected_files = []
@@ -170,8 +170,8 @@ class FileRow(Adw.ActionRow):
 	# def selected_files(self):
 	# 	return(self._selected_files)
 
-	@selected_files.setter
-	def selected_files(self, value):
+	# @selected_files.setter
+	# def selected_files(self, value):
 		# self._selected_files = value
 
 		# n_files = len(self._selected_files)
@@ -185,7 +185,7 @@ class FileRow(Adw.ActionRow):
 		# 		self.label.set_text(f"({n_files} files)")
 
 		# self.set_clear_btn_state()
-		self.set_reset_btn_state()
+		# self.set_reset_btn_state()
 
 	# def get_selected_files(self):
 	# 	return(self.selected_files)
@@ -196,18 +196,18 @@ class FileRow(Adw.ActionRow):
 	# def set_selected_files(self, value):
 	# 	self.selected_files = value
 
-	def set_selected_file(self, value):
-		self.selected_files = [value]
+	# def set_selected_file(self, value):
+	# 	self.selected_files = [value]
 
 	# Helper functions
 	# def set_clear_btn_state(self):
 	# 	self.clear_btn.set_sensitive(len(self._selected_files) != 0)
 
-	def set_reset_btn_state(self):
-		if self._default_file == "" or len(self._selected_files) != 1:
-			self.reset_btn.set_sensitive(False)
-		else:
-			self.reset_btn.set_sensitive(self._default_file != self._selected_files[0])
+	# def set_reset_btn_state(self):
+	# 	if self._default_file == "" or len(self._selected_files) != 1:
+	# 		self.reset_btn.set_sensitive(False)
+	# 	else:
+	# 		self.reset_btn.set_sensitive(self._default_file != self._selected_files[0])
 
 	#-----------------------------------
 	# Dialog properties
@@ -224,8 +224,8 @@ class FileRow(Adw.ActionRow):
 	#-----------------------------------
 	# Signal handlers
 	#-----------------------------------
-	@Gtk.Template.Callback()
-	def on_file_btn_clicked(self, button):
+	# @Gtk.Template.Callback()
+	# def on_file_btn_clicked(self, button):
 		# Dialog constructor
 		# self.dialog = Gtk.FileChooserNative(
 		# 	title=self.dialog_title,
@@ -237,11 +237,11 @@ class FileRow(Adw.ActionRow):
 		# )
 
 		# File filters
-		if self._select_type == SelectType.SELECT_FOLDER:
-			folder_filter = Gtk.FileFilter(name="Folders")
-			folder_filter.add_mime_type("inode/directory")
+		# if self._select_type == SelectType.SELECT_FOLDER:
+		# 	folder_filter = Gtk.FileFilter(name="Folders")
+		# 	folder_filter.add_mime_type("inode/directory")
 
-			self.dialog.add_filter(folder_filter)
+		# 	self.dialog.add_filter(folder_filter)
 		# else:
 		# 	all_filter = Gtk.FileFilter(name="All Files")
 		# 	all_filter.add_pattern("*")
@@ -274,15 +274,15 @@ class FileRow(Adw.ActionRow):
 	# def on_clear_btn_clicked(self, button):
 	# 	self.selected_files = []
 
-	@Gtk.Template.Callback()
-	def on_reset_btn_clicked(self, button):
-		self.selected_files = [self._default_file]
+	# @Gtk.Template.Callback()
+	# def on_reset_btn_clicked(self, button):
+	# 	self.selected_files = [self._default_file]
 
 #------------------------------------------------------------------------------
 #-- CLASS: PREFERENCESWINDOW
 #------------------------------------------------------------------------------
-@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/preferences.ui")
-class PreferencesWindow(Adw.PreferencesWindow):
+# @Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/preferences.ui")
+# class PreferencesWindow(Adw.PreferencesWindow):
 	# __gtype_name__ = "PreferencesWindow"
 
 	#-----------------------------------
@@ -302,8 +302,8 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	#-----------------------------------
 	# Init function
 	#-----------------------------------
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+	# def __init__(self, *args, **kwargs):
+	# 	super().__init__(*args, **kwargs)
 
 		# Set default values for widget properties
 		# self.exec_filerow.set_default_file(app.default_exec_file)
@@ -330,7 +330,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		# app.bind_property("mods_hud", self.hud_switch, "active", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
 		# Set widget focus
-		self.set_focus(self.exec_filerow)
+		# self.set_focus(self.exec_filerow)
 
 	#-----------------------------------
 	# Reset signal handler

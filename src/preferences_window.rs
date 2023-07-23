@@ -4,8 +4,6 @@ use gtk::glib;
 use adw::subclass::prelude::*;
 use adw::prelude::*;
 
-use shellexpand;
-
 use crate::file_select_row::FileSelectRow;
 
 //------------------------------------------------------------------------------
@@ -30,13 +28,13 @@ mod imp {
         #[template_child]
         pub mods_filerow: TemplateChild<FileSelectRow>,
 
-        #[property(get, set = Self::set_exec_file)]
+        #[property(get, set)]
         exec_file: RefCell<String>,
-        #[property(get, set = Self::set_iwad_folder)]
+        #[property(get, set)]
         iwad_folder: RefCell<String>,
-        #[property(get, set = Self::set_pwad_folder)]
+        #[property(get, set)]
         pwad_folder: RefCell<String>,
-        #[property(get, set = Self::set_mods_folder)]
+        #[property(get, set)]
         mods_folder: RefCell<String>,
     }
 
@@ -92,34 +90,6 @@ mod imp {
     impl WindowImpl for PreferencesWindow {}
     impl AdwWindowImpl for PreferencesWindow {} 
     impl PreferencesWindowImpl for PreferencesWindow {}
-    impl PreferencesWindow {
-        //-----------------------------------
-        // Custom property setters
-        //-----------------------------------
-        fn set_exec_file(&self, file: String) {
-            if let Ok(file) = shellexpand::env(&file) {
-                self.exec_file.replace(file.to_string());
-            }
-        }
-
-        fn set_iwad_folder(&self, folder: String) {
-            if let Ok(folder) = shellexpand::env(&folder) {
-                self.iwad_folder.replace(folder.to_string());
-            }
-        }
-
-        fn set_pwad_folder(&self, folder: String) {
-            if let Ok(folder) = shellexpand::env(&folder) {
-                self.pwad_folder.replace(folder.to_string());
-            }
-        }
-
-        fn set_mods_folder(&self, folder: String) {
-            if let Ok(folder) = shellexpand::env(&folder) {
-                self.mods_folder.replace(folder.to_string());
-            }
-        }
-    }
 }
 
 //------------------------------------------------------------------------------

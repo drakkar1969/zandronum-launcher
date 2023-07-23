@@ -236,6 +236,17 @@ impl ZLWindow {
     }
 
     //-----------------------------------
+    // Strip env helper function
+    //-----------------------------------
+    fn strip_env(&self, path: &str) -> String {
+        if let Ok(file) = shellexpand::env(&path) {
+            file.to_string()
+        } else {
+            path.to_string()
+        }
+    }
+
+    //-----------------------------------
     // Load gsettings
     //-----------------------------------
     fn load_gsettings(&self) {
@@ -247,10 +258,10 @@ impl ZLWindow {
             gsettings.bind("pwad-files", self, "pwad-files").build();
             gsettings.bind("extra-parameters", self, "extra-params").build();
 
-            gsettings.bind("executable-file", &imp.prefs_window.get(), "exec-file").build();
-            gsettings.bind("iwad-folder", &imp.prefs_window.get(), "iwad-folder").build();
-            gsettings.bind("pwad-folder", &imp.prefs_window.get(), "pwad-folder").build();
-            gsettings.bind("mods-folder", &imp.prefs_window.get(), "mods-folder").build();
+            imp.prefs_window.set_exec_file(self.strip_env(&gsettings.string("executable-file")));
+            imp.prefs_window.set_iwad_folder(self.strip_env(&gsettings.string("iwad-folder")));
+            imp.prefs_window.set_pwad_folder(self.strip_env(&gsettings.string("pwad-folder")));
+            imp.prefs_window.set_mods_folder(self.strip_env(&gsettings.string("mods-folder")));
         }
     }
 
@@ -265,6 +276,11 @@ impl ZLWindow {
             if let Some(iwad) = imp.iwad_comborow.selected_iwad() {
                 self.set_selected_iwad(iwad);
             }
+
+            gsettings.set_string("executable-file", &imp.prefs_window.exec_file()).unwrap();
+            gsettings.set_string("iwad-folder", &imp.prefs_window.iwad_folder()).unwrap();
+            gsettings.set_string("pwad-folder", &imp.prefs_window.pwad_folder()).unwrap();
+            gsettings.set_string("mods-folder", &imp.prefs_window.mods_folder()).unwrap();
 
             // Save gsettings
             gsettings.apply();

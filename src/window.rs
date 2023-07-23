@@ -281,6 +281,9 @@ impl ZLWindow {
             gsettings.bind("enable-menu-mods", &imp.prefs_window.get(), "mods-menus").build();
             gsettings.bind("enable-hud-mods", &imp.prefs_window.get(), "mods-hud").build();
         }
+
+        // Set initial focus on IWAD combo row
+        imp.iwad_comborow.get().grab_focus();
     }
 
     //-----------------------------------

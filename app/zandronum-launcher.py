@@ -419,8 +419,8 @@
 #------------------------------------------------------------------------------
 #-- CLASS: MAINWINDOW
 #------------------------------------------------------------------------------
-@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/window.ui")
-class MainWindow(Adw.ApplicationWindow):
+# @Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/window.ui")
+# class MainWindow(Adw.ApplicationWindow):
 	# __gtype_name__ = "MainWindow"
 
 	#-----------------------------------
@@ -438,8 +438,8 @@ class MainWindow(Adw.ApplicationWindow):
 	#-----------------------------------
 	# Init function
 	#-----------------------------------
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+	# def __init__(self, *args, **kwargs):
+	# 	super().__init__(*args, **kwargs)
 
 		# Actions
 		# action_list = [
@@ -509,7 +509,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# app.bind_property("extra_params", self.params_entryrow, "text", GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
 		# Set widget focus
-		self.set_focus(self.iwad_comborow)
+		# self.set_focus(self.iwad_comborow)
 
 		# Preferences initialization
 		# self.prefs_window.set_transient_for(self)

@@ -158,7 +158,11 @@ mod imp {
             } else if n_files == 1 {
                 let path = Path::new(&files[0]);
 
-                self.label.set_label(&path.file_name().unwrap().to_string_lossy());
+                if let Some(filename) = path.file_name() {
+                    self.label.set_label(&filename.to_string_lossy());
+                } else {
+                    self.label.set_label(&path.display().to_string());
+                }
             } else {
                 self.label.set_label(&format!("({n_files} files)"))
             }
@@ -255,7 +259,7 @@ impl FileSelectRow {
                         .map(|file| {
                             file.ok()
                                 .and_then(|file| file.path())
-                                .map(|path| path.to_string_lossy().to_string())
+                                .map(|path| path.display().to_string())
                         })
                         .flatten()
                         .collect();

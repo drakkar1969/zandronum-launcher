@@ -45,20 +45,20 @@
 #------------------------------------------------------------------------------
 #-- CLASS: CHEATOBJECT
 #------------------------------------------------------------------------------
-class CheatObject(GObject.Object):
-	__gtype_name__ = "CheatObject"
+# class CheatObject(GObject.Object):
+# 	__gtype_name__ = "CheatObject"
 
-	#-----------------------------------
-	# Properties
-	#-----------------------------------
-	label = GObject.Property(type=str, default="")
-	value = GObject.Property(type=str, default="")
+# 	#-----------------------------------
+# 	# Properties
+# 	#-----------------------------------
+# 	label = GObject.Property(type=str, default="")
+# 	value = GObject.Property(type=str, default="")
 
-	#-----------------------------------
-	# Init function
-	#-----------------------------------
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+# 	#-----------------------------------
+# 	# Init function
+# 	#-----------------------------------
+# 	def __init__(self, *args, **kwargs):
+# 		super().__init__(*args, **kwargs)
 
 #------------------------------------------------------------------------------
 #-- CLASS: FILEROW

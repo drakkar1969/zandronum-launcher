@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <!--// CheatsWindow template //-->
   <template class="CheatsWindow" parent="AdwPreferencesWindow">
     <property name="default_width">-1</property>
     <property name="default_height">-1</property>

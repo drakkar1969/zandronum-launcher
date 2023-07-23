@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <!--// PreferencesWindow template //-->
   <template class="PreferencesWindow" parent="AdwPreferencesWindow">
     <property name="default_width">560</property>
     <property name="default_height">-1</property>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!--// MAIN WINDOW //-->
+  <!--// ZLWindow template //-->
   <template class="ZLWindow" parent="AdwApplicationWindow">
     <property name="default_width">580</property>
     <property name="default_height">-1</property>
@@ -20,8 +20,9 @@
           </object>
         </child>
         <child>
-          <!-- <object class="AdwClamp">
-            <child> -->
+          <object class="AdwClamp">
+            <property name="tightening-threshold">580</property>
+            <child>
               <object class="GtkBox" id="launch_box">
                 <property name="orientation">vertical</property>
                 <property name="margin_start">24</property>
@@ -85,14 +86,14 @@
                   </object>
                 </child>
               </object>
-            <!-- </child>
-          </object> -->
+            </child>
+          </object>
         </child>
       </object>
     </property>
   </template>
 
-  <!--// MAIN MENU //-->
+  <!--// Primary menu //-->
   <menu id="main_menu">
     <section>
       <item>
@@ -124,11 +125,11 @@
     </section>
   </menu>
 
-  <!--// PREFERENCES WINDOW //-->
+  <!--// Preferences window //-->
   <object class="PreferencesWindow" id="prefs_window">
   </object>
 
-  <!--// CHEATS WINDOW //-->
+  <!--// Cheats window //-->
   <object class="CheatsWindow" id="cheats_window">
   </object>
 </interface>

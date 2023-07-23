@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <!--// FileSelectRow template //-->
   <template class="FileSelectRow" parent="AdwActionRow">
     <property name="activatable_widget">select_button</property>
     <child>
@@ -34,17 +35,5 @@
         </style>
       </object>
     </child>
-    <!-- <child>
-      <object class="GtkButton" id="reset_btn">
-        <property name="visible">False</property>
-        <property name="sensitive">False</property>
-        <property name="icon-name">view-refresh-symbolic</property>
-        <property name="valign">center</property>
-        <style>
-          <class name="flat"/>
-        </style>
-        <signal name="clicked" handler="on_reset_btn_clicked" swapped="no"/>
-      </object>
-    </child> -->
   </template>
 </interface>

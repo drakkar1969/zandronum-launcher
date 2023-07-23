@@ -306,10 +306,10 @@ class PreferencesWindow(Adw.PreferencesWindow):
 		super().__init__(*args, **kwargs)
 
 		# Set default values for widget properties
-		self.exec_filerow.set_default_file(app.default_exec_file)
-		self.iwaddir_filerow.set_default_file(app.default_iwad_folder)
-		self.pwaddir_filerow.set_default_file(app.default_pwad_folder)
-		self.moddir_filerow.set_default_file(app.default_mods_folder)
+		# self.exec_filerow.set_default_file(app.default_exec_file)
+		# self.iwaddir_filerow.set_default_file(app.default_iwad_folder)
+		# self.pwaddir_filerow.set_default_file(app.default_pwad_folder)
+		# self.moddir_filerow.set_default_file(app.default_mods_folder)
 
 		# Bind widget properties to app properties
 		# def str_to_list(binding, value):
@@ -335,24 +335,24 @@ class PreferencesWindow(Adw.PreferencesWindow):
 	#-----------------------------------
 	# Reset signal handler
 	#-----------------------------------
-	@Gtk.Template.Callback()
-	def on_reset_button_clicked(self, button):
-		self.reset_dialog = Adw.MessageDialog.new(self, "Reset Preferences?", "Reset all preferences to their default values.")
+	# @Gtk.Template.Callback()
+	# def on_reset_button_clicked(self, button):
+	# 	self.reset_dialog = Adw.MessageDialog.new(self, "Reset Preferences?", "Reset all preferences to their default values.")
 
-		self.reset_dialog.add_response("cancel", "_Cancel")
-		self.reset_dialog.add_response("reset", "_Reset")
-		self.reset_dialog.set_response_appearance("reset", Adw.ResponseAppearance.DESTRUCTIVE)
+	# 	self.reset_dialog.add_response("cancel", "_Cancel")
+	# 	self.reset_dialog.add_response("reset", "_Reset")
+	# 	self.reset_dialog.set_response_appearance("reset", Adw.ResponseAppearance.DESTRUCTIVE)
 
-		self.reset_dialog.connect("response", self.on_reset_dialog_response)
+	# 	self.reset_dialog.connect("response", self.on_reset_dialog_response)
 
-		self.reset_dialog.present()
+	# 	self.reset_dialog.present()
 
 	def on_reset_dialog_response(self, dialog, response):
 		if response == "reset":
-			self.exec_filerow.set_selected_file(app.default_exec_file)
-			self.iwaddir_filerow.set_selected_file(app.default_iwad_folder)
-			self.pwaddir_filerow.set_selected_file(app.default_pwad_folder)
-			self.moddir_filerow.set_selected_file(app.default_mods_folder)
+			# self.exec_filerow.set_selected_file(app.default_exec_file)
+			# self.iwaddir_filerow.set_selected_file(app.default_iwad_folder)
+			# self.pwaddir_filerow.set_selected_file(app.default_pwad_folder)
+			# self.moddir_filerow.set_selected_file(app.default_mods_folder)
 
 			self.texture_switch.set_active(True)
 			self.object_switch.set_active(True)
@@ -360,7 +360,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
 			self.menu_switch.set_active(True)
 			self.hud_switch.set_active(True)
 
-		self.reset_dialog = None
+		# self.reset_dialog = None
 
 #------------------------------------------------------------------------------
 #-- CLASS: CHEATSWINDOW

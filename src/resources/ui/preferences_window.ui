@@ -18,7 +18,6 @@
                 <property name="subtitle">Path to Zandronum executable</property>
                 <property name="use_underline">True</property>
                 <property name="icon">application-x-executable-symbolic</property>
-                <!-- <property name="can_reset">True</property> -->
                 <property name="dialog_title">Select Zandronum Executable</property>
               </object>
             </child>
@@ -28,7 +27,6 @@
                 <property name="subtitle">Folder to search for IWAD files</property>
                 <property name="use_underline">True</property>
                 <property name="select">folder</property>
-                <!-- <property name="can_reset">True</property> -->
                 <property name="dialog_title">Select IWAD Folder</property>
               </object>
             </child>
@@ -38,7 +36,6 @@
                 <property name="subtitle">Folder to search for optional PWAD files</property>
                 <property name="use_underline">True</property>
                 <property name="select">folder</property>
-                <!-- <property name="can_reset">True</property> -->
                 <property name="dialog_title">Select PWAD Folder</property>
               </object>
             </child>
@@ -48,7 +45,6 @@
                 <property name="subtitle">Folder with high resolution graphics files</property>
                 <property name="use_underline">True</property>
                 <property name="select">folder</property>
-                <!-- <property name="can_reset">True</property> -->
                 <property name="dialog_title">Select Mods Folder</property>
               </object>
             </child>
@@ -119,28 +115,6 @@
                         <property name="valign">center</property>
                       </object>
                     </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child> -->
-        <!-- <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title">Preferences</property>
-            <child>
-              <object class="AdwActionRow">
-                <property name="title">_Reset Preferences</property>
-                <property name="use-underline">True</property>
-                <property name="activatable-widget">reset_button</property>
-                <child>
-                  <object class="GtkButton" id="reset_button">
-                    <property name="valign">center</property>
-                    <property name="label">Reset</property>
-                    <signal name="clicked" handler="on_reset_button_clicked" swapped="no"/>
-                    <style>
-                      <class name="destructive-action"/>
-                    </style>
                   </object>
                 </child>
               </object>

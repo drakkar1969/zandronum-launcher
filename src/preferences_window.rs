@@ -128,11 +128,6 @@ impl PreferencesWindow {
     fn setup_widgets(&self) {
         let imp = self.imp();
 
-    //     // Bind widget states
-    //     imp.font_expander.bind_property("expanded", &imp.font_switch.get(), "active")
-    //         .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
-    //         .build();
-
         // Binding helper functions
         fn str_to_vec(string: &str) -> Vec<String> {
             if string == "" {
@@ -173,38 +168,6 @@ impl PreferencesWindow {
             .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
             .build();
     }
-
-    //-----------------------------------
-    // Setup actions
-    //-----------------------------------
-    // fn setup_actions(&self) {
-    //     // Add AUR helper command action with parameter
-    //     let aur_action = gio::SimpleAction::new("aur-cmd", Some(&String::static_variant_type()));
-
-    //     aur_action.connect_activate(clone!(@weak self as obj => move |_, param| {
-    //         let param = param
-    //             .expect("Must be a 'Variant'")
-    //             .get::<String>()
-    //             .expect("Must be a 'String'");
-
-    //         let cmd = match param.as_str() {
-    //             "paru" => "/usr/bin/paru -Qua",
-    //             "pikaur" => "/usr/bin/pikaur -Qua 2>/dev/null",
-    //             "trizen" => "/usr/bin/trizen -Qua --devel",
-    //             "yay" => "/usr/bin/yay -Qua",
-    //             _ => unreachable!()
-    //         };
-
-    //         obj.set_aur_command(cmd);
-    //     }));
-
-    //     // Add action to prefs group
-    //     let prefs_group = gio::SimpleActionGroup::new();
-
-    //     self.insert_action_group("prefs", Some(&prefs_group));
-
-    //     prefs_group.add_action(&aur_action);
-    // }
 
     //-----------------------------------
     // Setup signals

@@ -365,56 +365,56 @@
 #------------------------------------------------------------------------------
 #-- CLASS: CHEATSWINDOW
 #------------------------------------------------------------------------------
-@Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/cheats.ui")
-class CheatsWindow(Adw.PreferencesWindow):
-	__gtype_name__ = "CheatsWindow"
+# @Gtk.Template(resource_path="/com/github/ZandronumLauncher/ui/cheats.ui")
+# class CheatsWindow(Adw.PreferencesWindow):
+# 	__gtype_name__ = "CheatsWindow"
 
 	#-----------------------------------
 	# Class widget variables
 	#-----------------------------------
-	switches_model = Gtk.Template.Child()
-	cheats_model = Gtk.Template.Child()
+	# switches_model = Gtk.Template.Child()
+	# cheats_model = Gtk.Template.Child()
 
 	#-----------------------------------
 	# Init function
 	#-----------------------------------
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+	# def __init__(self, *args, **kwargs):
+	# 	super().__init__(*args, **kwargs)
 
-		doom_switches = {
-			"-fast": "Increases the speed and attack rate of monsters. Requires the -warp parameter.",
-			"-nomonsters": "Disable spawning of monsters. Requires the -warp parameter.",
-			"-nomusic": "Disable background music",
-			"-nosfx": "Disable sound effects",
-			"-nosound": "Disable music and sound effects",
-			"-respawn": "Monsters return a few seconds after being killed. Requires the -warp parameter.",
-			"-skill <s>": "Select difficulty level <s> (1 to 5). This parameter will warp to the first level of the game (if no other -warp parameter is specified).",
-			"-warp <m>\n-warp <e> <m>": "Start the game on level <m> (1 to 32). For Ultimate Doom and Freedoom Phase 1, both episode <e> (1 to 4) and map <m> (1 to 9) must be specified, separated by a space.",
-			"-width x\n-height y": "Specify desired screen resolution."
-		}
+		# doom_switches = {
+		# 	"-fast": "Increases the speed and attack rate of monsters. Requires the -warp parameter.",
+		# 	"-nomonsters": "Disable spawning of monsters. Requires the -warp parameter.",
+		# 	"-nomusic": "Disable background music",
+		# 	"-nosfx": "Disable sound effects",
+		# 	"-nosound": "Disable music and sound effects",
+		# 	"-respawn": "Monsters return a few seconds after being killed. Requires the -warp parameter.",
+		# 	"-skill <s>": "Select difficulty level <s> (1 to 5). This parameter will warp to the first level of the game (if no other -warp parameter is specified).",
+		# 	"-warp <m>\n-warp <e> <m>": "Start the game on level <m> (1 to 32). For Ultimate Doom and Freedoom Phase 1, both episode <e> (1 to 4) and map <m> (1 to 9) must be specified, separated by a space.",
+		# 	"-width x\n-height y": "Specify desired screen resolution."
+		# }
 
-		doom_cheats = {
-			"IDBEHOLDA": "Automap",
-			"IDBEHOLDI": "Temporary invisibility",
-			"IDBEHOLDL": "Light amplification goggles",
-			"IDBEHOLDR": "Radiation suit",
-			"IDBEHOLDS": "Berserk pack",
-			"IDBEHOLDV": "Temporary invulnerability",
-			"IDCHOPPERS": "Chainsaw",
-			"IDCLEV##": "Warp to episode #, map #",
-			"IDCLIP": "No clipping (walk through objects)",
-			"IDDQD": "God mode (invincibility)",
-			"IDDT": "Display entire map and enemies (toggle)",
-			"IDFA": "All weapons and 200% armor",
-			"IDKFA": "All keys and weapons",
-			"IDMYPOS": "Display location"
-		}
+		# doom_cheats = {
+		# 	"IDBEHOLDA": "Automap",
+		# 	"IDBEHOLDI": "Temporary invisibility",
+		# 	"IDBEHOLDL": "Light amplification goggles",
+		# 	"IDBEHOLDR": "Radiation suit",
+		# 	"IDBEHOLDS": "Berserk pack",
+		# 	"IDBEHOLDV": "Temporary invulnerability",
+		# 	"IDCHOPPERS": "Chainsaw",
+		# 	"IDCLEV##": "Warp to episode #, map #",
+		# 	"IDCLIP": "No clipping (walk through objects)",
+		# 	"IDDQD": "God mode (invincibility)",
+		# 	"IDDT": "Display entire map and enemies (toggle)",
+		# 	"IDFA": "All weapons and 200% armor",
+		# 	"IDKFA": "All keys and weapons",
+		# 	"IDMYPOS": "Display location"
+		# }
 
-		for k,v in doom_switches.items():
-			self.switches_model.append(CheatObject(label=k, value=v))
+		# for k,v in doom_switches.items():
+		# 	self.switches_model.append(CheatObject(label=k, value=v))
 
-		for k,v in doom_cheats.items():
-			self.cheats_model.append(CheatObject(label=k, value=v))
+		# for k,v in doom_cheats.items():
+		# 	self.cheats_model.append(CheatObject(label=k, value=v))
 
 #------------------------------------------------------------------------------
 #-- CLASS: MAINWINDOW
@@ -433,7 +433,7 @@ class MainWindow(Adw.ApplicationWindow):
 	# launch_btn = Gtk.Template.Child()
 
 	# prefs_window = Gtk.Template.Child()
-	cheats_window = Gtk.Template.Child()
+	# cheats_window = Gtk.Template.Child()
 
 	#-----------------------------------
 	# Init function
@@ -442,22 +442,22 @@ class MainWindow(Adw.ApplicationWindow):
 		super().__init__(*args, **kwargs)
 
 		# Actions
-		action_list = [
+		# action_list = [
 			# [ "reset-widgets", self.on_reset_widgets_action ],
 			# [ "show-preferences", self.on_show_preferences_action ],
-			[ "show-cheats", self.on_show_cheats_action ],
+			# [ "show-cheats", self.on_show_cheats_action ],
 			# [ "show-about", self.on_show_about_action ],
 			# [ "quit-app", self.on_quit_app_action ],
 			# [ "launch-zandronum", self.on_launch_zandronum_action ]
 		]
 
-		self.add_action_entries(action_list)
+		# self.add_action_entries(action_list)
 
 		# Keyboard shortcuts
 		# app.set_accels_for_action("win.reset-widgets", ["<ctrl>r"])
 		# app.set_accels_for_action("win.show-preferences", ["<ctrl>comma"])
 		# app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
-		app.set_accels_for_action("win.show-cheats", ["F1"])
+		# app.set_accels_for_action("win.show-cheats", ["F1"])
 		# app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
 		# app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
@@ -515,7 +515,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# self.prefs_window.set_transient_for(self)
 
 		# Help initialization
-		self.cheats_window.set_transient_for(self)
+		# self.cheats_window.set_transient_for(self)
 
 	#-----------------------------------
 	# Action handlers
@@ -528,8 +528,8 @@ class MainWindow(Adw.ApplicationWindow):
 	# def on_show_preferences_action(self, action, param, user_data):
 	# 	self.prefs_window.present()
 
-	def on_show_cheats_action(self, action, param, user_data):
-		self.cheats_window.present()
+	# def on_show_cheats_action(self, action, param, user_data):
+	# 	self.cheats_window.present()
 
 	# def on_show_about_action(self, action, param, user_data):
 	# 	about_window = Adw.AboutWindow(

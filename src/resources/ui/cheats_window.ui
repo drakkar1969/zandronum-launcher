@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="CheatsWindow" parent="AdwPreferencesWindow">
+    <property name="default_width">-1</property>
+    <property name="default_height">-1</property>
+    <property name="title">Zandronum Help</property>
+    <property name="modal">True</property>
+    <property name="resizable">False</property>
+    <property name="hide_on_close">True</property>
+    <property name="search_enabled">False</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title">Switches</property>
+        <property name="icon_name">utilities-terminal-symbolic</property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="margin_start">30</property>
+            <property name="margin_end">30</property>
+            <property name="margin_top">24</property>
+            <property name="margin_bottom">28</property>
+            <style>
+              <class name="card"/>
+            </style>
+            <child>
+              <object class="GtkColumnView" id="switches_view">
+                <property name="margin_start">16</property>
+                <property name="margin_end">16</property>
+                <property name="margin_top">16</property>
+                <property name="margin_bottom">16</property>
+                <property name="reorderable">False</property>
+                <property name="model">
+                  <object class="GtkNoSelection" id="switches_selection">
+                    <property name="model">
+                      <object class="GListStore" id="switches_model">
+                        <property name="item-type">CheatObject</property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+                <child>
+                  <object class="GtkColumnViewColumn" id="switches_label_column">
+                    <property name="title">Switch</property>
+                    <property name="resizable">False</property>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="resource">/com/github/ZandronumLauncher/ui/cheats_window/label-item.ui</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkColumnViewColumn" id="switches_value_column">
+                    <property name="title">Description</property>
+                    <property name="resizable">False</property>
+                    <property name="expand">True</property>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="resource">/com/github/ZandronumLauncher/ui/cheats_window/value-item.ui</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title">Cheat Codes</property>
+        <property name="icon_name">view-reveal-symbolic</property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="margin_start">30</property>
+            <property name="margin_end">30</property>
+            <property name="margin_top">24</property>
+            <property name="margin_bottom">28</property>
+            <style>
+              <class name="card"/>
+            </style>
+            <child>
+              <object class="GtkColumnView" id="cheats_view">
+                <property name="margin_start">16</property>
+                <property name="margin_end">16</property>
+                <property name="margin_top">16</property>
+                <property name="margin_bottom">16</property>
+                <property name="reorderable">False</property>
+                <property name="model">
+                  <object class="GtkNoSelection" id="cheats_selection">
+                    <property name="model">
+                      <object class="GListStore" id="cheats_model">
+                        <property name="item-type">CheatObject</property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+                <child>
+                  <object class="GtkColumnViewColumn" id="cheats_label_column">
+                    <property name="title">Cheat Code</property>
+                    <property name="resizable">False</property>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="resource">/com/github/ZandronumLauncher/ui/cheats_window/label-item.ui</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkColumnViewColumn" id="cheats_value_column">
+                    <property name="title">Effect</property>
+                    <property name="resizable">False</property>
+                    <property name="expand">True</property>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="resource">/com/github/ZandronumLauncher/ui/cheats_window/value-item.ui</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

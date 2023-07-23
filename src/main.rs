@@ -4,6 +4,7 @@ mod iwad_combo_row;
 mod iwad_object;
 mod file_select_row;
 mod preferences_window;
+mod cheats_window;
 mod cheat_object;
 
 use gtk::{gio, glib};

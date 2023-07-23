@@ -2,15 +2,13 @@
 <gresources>
   <gresource prefix="/com/github/ZandronumLauncher">
     <file compressed="true">gtk/help-overlay.ui</file>
-    <!-- <file compressed="true">ui/cheat-label-item.ui</file> -->
-    <!-- <file compressed="true">ui/cheat-value-item.ui</file> -->
-    <!-- <file compressed="true">ui/cheats.ui</file> -->
+    <file compressed="true">ui/cheats_window/label-item.ui</file>
+    <file compressed="true">ui/cheats_window/value-item.ui</file>
     <file compressed="true">ui/iwad_combo/entry-item.ui</file>
     <file compressed="true">ui/iwad_combo/list-item.ui</file>
+    <file compressed="true">ui/cheats_window.ui</file>
     <file compressed="true">ui/file_select_row.ui</file>
     <file compressed="true">ui/iwad_combo_row.ui</file>
-    <!-- <file compressed="true">ui/iwad-item.ui</file> -->
-    <!-- <file compressed="true">ui/iwad-list-item.ui</file> -->
     <file compressed="true">ui/preferences_window.ui</file>
     <file compressed="true">ui/window.ui</file>
   </gresource>

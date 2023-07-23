@@ -110,12 +110,12 @@
         <attribute name="action">win.show-help-overlay</attribute>
       </item>
     </section>
-    <!-- <section>
+    <section>
       <item>
         <attribute name="label">Zandronum Help</attribute>
         <attribute name="action">win.show-cheats</attribute>
       </item>
-    </section> -->
+    </section>
     <section>
       <item>
         <attribute name="label">About Zandronum Launcher</attribute>
@@ -129,6 +129,6 @@
   </object>
 
   <!--// CHEATS WINDOW //-->
-  <!-- <object class="CheatsWindow" id="cheats_window">
-  </object> -->
+  <object class="CheatsWindow" id="cheats_window">
+  </object>
 </interface>

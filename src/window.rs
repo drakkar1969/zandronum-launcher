@@ -18,6 +18,7 @@ use crate::iwad_combo_row::IWadComboRow;
 use crate::iwad_object::IWadObject;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_window::PreferencesWindow;
+use crate::cheats_window::CheatsWindow;
 
 //------------------------------------------------------------------------------
 // ERROR: LaunchError
@@ -65,6 +66,8 @@ mod imp {
 
         #[template_child]
         pub prefs_window: TemplateChild<PreferencesWindow>,
+        #[template_child]
+        pub cheats_window: TemplateChild<CheatsWindow>,
 
         #[property(get, set)]
         selected_iwad: RefCell<String>,
@@ -89,6 +92,7 @@ mod imp {
             IWadComboRow::ensure_type();
             FileSelectRow::ensure_type();
             PreferencesWindow::ensure_type();
+            CheatsWindow::ensure_type();
 
             klass.bind_template();
         }
@@ -197,6 +201,9 @@ impl ZLWindow {
 
         // Set preferences window parent
         imp.prefs_window.set_transient_for(Some(self));
+
+        // Set cheats window parent
+        imp.cheats_window.set_transient_for(Some(self));
     }
 
     //-----------------------------------
@@ -361,8 +368,15 @@ impl ZLWindow {
             }))
             .build();
 
+        // Add show preferences action
+        let cheats_action = gio::ActionEntry::<ZLWindow>::builder("show-cheats")
+            .activate(clone!(@weak imp => move |_, _, _| {
+                imp.cheats_window.present();
+            }))
+            .build();
+
         // Add actions to window
-        self.add_action_entries([launch_action, reset_action, prefs_action]);
+        self.add_action_entries([launch_action, reset_action, prefs_action, cheats_action]);
     }
 
     //-----------------------------------
@@ -388,6 +402,12 @@ impl ZLWindow {
         controller.add_shortcut(gtk::Shortcut::new(
             gtk::ShortcutTrigger::parse_string("<ctrl>comma"),
             Some(gtk::NamedAction::new("win.show-preferences"))
+        ));
+
+        // Add show cheats shortcut
+        controller.add_shortcut(gtk::Shortcut::new(
+            gtk::ShortcutTrigger::parse_string("F1"),
+            Some(gtk::NamedAction::new("win.show-cheats"))
         ));
 
         // Add shortcut controller to window

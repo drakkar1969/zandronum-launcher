@@ -459,7 +459,7 @@ class MainWindow(Adw.ApplicationWindow):
 		# app.set_accels_for_action("win.show-help-overlay", ["<ctrl>question"])
 		app.set_accels_for_action("win.show-cheats", ["F1"])
 		# app.set_accels_for_action("win.quit-app", ["<ctrl>q"])
-		app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
+		# app.set_accels_for_action("win.launch-zandronum", ["<ctrl>Return", "<ctrl>KP_Enter"])
 
 		# Bind widget properties to app properties
 		# def str_to_model(binding, value):

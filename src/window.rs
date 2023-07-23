@@ -372,6 +372,12 @@ impl ZLWindow {
         // Create shortcut controller
         let controller = gtk::ShortcutController::new();
 
+        // Add launch Zandronum shortcut
+        controller.add_shortcut(gtk::Shortcut::new(
+            gtk::ShortcutTrigger::parse_string("<ctrl>Return|<ctrl>KP_Enter"),
+            Some(gtk::NamedAction::new("win.launch-zandronum"))
+        ));
+
         // Add reset widgets shortcut
         controller.add_shortcut(gtk::Shortcut::new(
             gtk::ShortcutTrigger::parse_string("<ctrl>R"),

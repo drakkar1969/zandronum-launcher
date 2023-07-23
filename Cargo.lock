@@ -929,7 +929,7 @@ dependencies = [
 
 [[package]]
 name = "zandronum-launcher"
-version = "0.1.0"
+version = "2.0.0"
 dependencies = [
  "gio",
  "glib-build-tools",

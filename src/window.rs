@@ -332,7 +332,7 @@ impl ZLWindow {
 
                     error_dialog.present();
                 } else {
-                obj.close();
+                    obj.close();
                 }
             }))
             .build();
@@ -433,19 +433,14 @@ impl ZLWindow {
         // Initialize Zandronum command line with executable
         let mut cmdline = exec_file;
 
-        // Return with error if no IWAD selected
-        let iwad = imp.iwad_comborow.selected_iwad();
-
-        if iwad.is_none() {
-            return Err(LaunchError::new("No IWAD file specified"))
-        }
-
-        // Get selected IWAD
-        let iwad = iwad.unwrap();
-
-        let iwad_file = Path::new(&imp.prefs_window.iwad_folder()).join(&iwad.iwad());
+        // Get selected IWAD - return with error if none
+        let Some(iwad) = imp.iwad_comborow.selected_iwad() else {
+            return Err(LaunchError::new("No IWAD file specified"));
+        };
 
         // Return with error if IWAD file does not exist
+        let iwad_file = Path::new(&imp.prefs_window.iwad_folder()).join(&iwad.iwad());
+
         if iwad_file.try_exists().is_err() {
             return Err(LaunchError::new(&format!("IWAD file '{}' not found", iwad.iwad())))
         }

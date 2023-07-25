@@ -188,7 +188,7 @@ impl IWadComboRow {
             // Get list of IWADs in folder
             let iwads = imp.iwads.borrow();
 
-            let mut iwads: Vec<IWadObject> = entries.into_iter()
+            let mut iwad_objects: Vec<IWadObject> = entries.into_iter()
                 .flatten()
                 .filter_map(|entry| {
                     iwads.clone().into_iter()
@@ -204,10 +204,10 @@ impl IWadComboRow {
                 })
                 .collect();
 
-            iwads.sort_unstable_by(|a, b| a.name().cmp(&b.name()));
+            iwad_objects.sort_unstable_by(|a, b| a.name().cmp(&b.name()));
 
             // Add IWADs to combo row
-            imp.model.splice(0, imp.model.n_items(), &iwads);
+            imp.model.splice(0, imp.model.n_items(), &iwad_objects);
         }
     }
 

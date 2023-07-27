@@ -110,7 +110,7 @@ impl ZLApplication {
             .application_name("Zandronum Launcher")
             .application_icon("zandronum")
             .developer_name("draKKar1969")
-            .version("2.0.1")
+            .version("2.0.2")
             .website("https://github.com/drakkar1969/zandronum-launcher/")
             .developers(vec!["draKKar1969"])
             .designers(vec!["draKKar1969"])

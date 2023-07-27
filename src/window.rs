@@ -380,7 +380,7 @@ impl ZLWindow {
         // Return with error if Zandronum executable does not exist
         let exec_file = prefs.exec_filerow.path();
 
-        if Path::new(&exec_file).try_exists().is_err() {
+        if Path::new(&exec_file).try_exists().unwrap_or_default() == false {
             return Err(LaunchError::new("Zandronum executable file not found"))
         }
 
@@ -395,7 +395,7 @@ impl ZLWindow {
         // Return with error if IWAD file does not exist
         let iwad_file = Path::new(&prefs.iwad_filerow.path()).join(&iwad.iwad());
 
-        if iwad_file.try_exists().is_err() {
+        if iwad_file.try_exists().unwrap_or_default() == false {
             return Err(LaunchError::new(&format!("IWAD file '{}' not found", iwad.iwad())))
         }
 
@@ -404,7 +404,7 @@ impl ZLWindow {
 
         // Add PWAD files to command line
         for pwad_file in imp.pwad_filerow.paths() {
-            if Path::new(&pwad_file).try_exists().is_ok() {
+            if Path::new(&pwad_file).try_exists().unwrap_or_default() == true {
                 cmdline += &format!(" -file \"{}\"", pwad_file);
             }
         }
@@ -440,7 +440,7 @@ impl ZLWindow {
         for modd in mod_files {
             let mod_file = Path::new(&prefs.mods_filerow.path()).join(&modd);
 
-            if Path::new(&mod_file).try_exists().is_ok() {
+            if Path::new(&mod_file).try_exists().unwrap_or_default() == true {
                 cmdline += &format!(" -file \"{}\"", mod_file.display());
             }
         }

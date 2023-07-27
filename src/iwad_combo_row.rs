@@ -212,6 +212,22 @@ impl IWadComboRow {
     }
 
     //-----------------------------------
+    // Public set selected iwad file function
+    //-----------------------------------
+    pub fn set_selected_iwad_file(&self, iwad_file: &str) {
+        let index = self.imp().model.find_with_equal_func(|iwad| {
+            let iwad = iwad.downcast_ref::<IWadObject>()
+                .expect("Must be a 'IWadObject'");
+
+            iwad.iwad() == iwad_file
+        });
+
+        if let Some(index) = index {
+            self.set_selected(index);
+        }
+    }
+
+    //-----------------------------------
     // Public selected iwad function
     //-----------------------------------
     pub fn selected_iwad(&self) -> Option<IWadObject> {

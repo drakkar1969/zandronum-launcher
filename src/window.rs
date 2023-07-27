@@ -1,4 +1,3 @@
-use std::cell::RefCell;
 use std::path::Path;
 use std::error::Error;
 use std::fmt;
@@ -7,7 +6,7 @@ use std::process::Command;
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
-use glib::clone;
+use glib::{clone, closure_local};
 use glib::once_cell::sync::OnceCell;
 
 use shlex;
@@ -15,7 +14,6 @@ use shlex;
 use crate::APP_ID;
 use crate::ZLApplication;
 use crate::iwad_combo_row::IWadComboRow;
-use crate::iwad_object::IWadObject;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_window::PreferencesWindow;
 use crate::cheats_window::CheatsWindow;
@@ -51,9 +49,8 @@ mod imp {
     //-----------------------------------
     // Private structure
     //-----------------------------------
-    #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
+    #[derive(Default, gtk::CompositeTemplate)]
     #[template(resource = "/com/github/ZandronumLauncher/ui/window.ui")]
-    #[properties(wrapper_type = super::ZLWindow)]
     pub struct ZLWindow {
         #[template_child]
         pub iwad_comborow: TemplateChild<IWadComboRow>,
@@ -68,13 +65,6 @@ mod imp {
         pub prefs_window: TemplateChild<PreferencesWindow>,
         #[template_child]
         pub cheats_window: TemplateChild<CheatsWindow>,
-
-        #[property(get, set)]
-        selected_iwad: RefCell<String>,
-        #[property(get, set)]
-        pwad_files: RefCell<Vec<String>>,
-        #[property(get, set)]
-        extra_params: RefCell<String>,
 
         pub gsettings: OnceCell<gio::Settings>,
     }
@@ -104,21 +94,6 @@ mod imp {
 
     impl ObjectImpl for ZLWindow {
         //-----------------------------------
-        // Default property functions
-        //-----------------------------------
-        fn properties() -> &'static [glib::ParamSpec] {
-            Self::derived_properties()
-        }
-
-        fn set_property(&self, id: usize, value: &glib::Value, pspec: &glib::ParamSpec) {
-            self.derived_set_property(id, value, pspec)
-        }
-
-        fn property(&self, id: usize, pspec: &glib::ParamSpec) -> glib::Value {
-            self.derived_property(id, pspec)
-        }
-
-        //-----------------------------------
         // Constructor
         //-----------------------------------
         fn constructed(&self) {
@@ -129,8 +104,7 @@ mod imp {
             obj.setup_widgets();
             obj.setup_signals();
 
-            obj.init_gsettings();
-            obj.load_gsettings();
+            obj.init_from_gsettings();
 
             obj.setup_actions();
             obj.setup_shortcuts();
@@ -176,29 +150,6 @@ impl ZLWindow {
     fn setup_widgets(&self) {
         let imp = self.imp();
 
-        // Bind properties to widgets
-        self.bind_property("selected-iwad", &imp.iwad_comborow.get(), "selected")
-            .transform_to(|binding, selected: String| {
-                let combo_row = binding.target()
-                    .and_downcast::<IWadComboRow>()
-                    .expect("Must be a 'IWadComboRow'");
-
-                combo_row.imp().model.find_with_equal_func(|iwad| {
-                    let iwad = iwad.downcast_ref::<IWadObject>()
-                        .expect("Must be a 'IWadObject'");
-
-                    iwad.iwad() == selected
-                })
-            })
-            .flags(glib::BindingFlags::SYNC_CREATE)
-            .build();
-        self.bind_property("pwad-files", &imp.pwad_filerow.get(), "files")
-            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
-            .build();
-        self.bind_property("extra-params", &imp.params_entryrow.get(), "text")
-            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
-            .build();
-
         // Set preferences window parent
         imp.prefs_window.set_transient_for(Some(self));
 
@@ -210,23 +161,25 @@ impl ZLWindow {
     // Setup signals
     //-----------------------------------
     fn setup_signals(&self) {
-        let imp = self.imp();
+        let prefs = self.imp().prefs_window.get();
 
         // Preferences window IWAD folders property notify signal
-        imp.prefs_window.connect_iwad_folder_notify(clone!(@weak self as obj, @weak imp => move |_| {
-            imp.iwad_comborow.populate(&imp.prefs_window.iwad_folder());
+        prefs.imp().iwad_filerow.connect_closure("changed", false, closure_local!(@watch self as obj => move |iwad_row: FileSelectRow| {
+            let imp = obj.imp();
+
+            imp.iwad_comborow.populate(&iwad_row.path());
 
             imp.launch_button.set_sensitive(imp.iwad_comborow.selected_iwad().is_some());
         }));
 
-        // Preferences window PWAD folders property notify signal
-        imp.prefs_window.connect_pwad_folder_notify(clone!(@weak imp => move |_| {
-            let folder = imp.prefs_window.pwad_folder();
+        // Preferences window PWAD folder changed signal
+        prefs.imp().pwad_filerow.connect_closure("changed", false, closure_local!(@watch self as obj => move |pwad_row: FileSelectRow| {
+            let imp = obj.imp();
 
-            if folder == "" {
-                imp.pwad_filerow.set_current_folder(None::<String>);
+            if pwad_row.path().is_empty() {
+                imp.pwad_filerow.set_base_folder(None);
             } else {
-                imp.pwad_filerow.set_current_folder(Some(folder));
+                imp.pwad_filerow.set_base_folder(Some(&pwad_row.path()));
             }
         }));
     }
@@ -234,53 +187,40 @@ impl ZLWindow {
     //-----------------------------------
     // Init gsettings
     //-----------------------------------
-    fn init_gsettings(&self) {
+    fn init_from_gsettings(&self) {
+        let imp = self.imp();
+
+        // Create gsettings
         let gsettings = gio::Settings::new(APP_ID);
 
         gsettings.delay();
 
-        self.imp().gsettings.set(gsettings).unwrap();
-    }
+        // Init preferences window
+        let prefs = imp.prefs_window.imp();
 
-    //-----------------------------------
-    // Strip env helper function
-    //-----------------------------------
-    fn strip_env(&self, path: &str) -> String {
-        if let Ok(file) = shellexpand::env(&path) {
-            file.to_string()
-        } else {
-            path.to_string()
-        }
-    }
+        prefs.exec_filerow.set_path(Some(&gsettings.string("executable-file")));
+        prefs.iwad_filerow.set_path(Some(&gsettings.string("iwad-folder")));
+        prefs.pwad_filerow.set_path(Some(&gsettings.string("pwad-folder")));
+        prefs.mods_filerow.set_path(Some(&gsettings.string("mods-folder")));
 
-    //-----------------------------------
-    // Load gsettings
-    //-----------------------------------
-    fn load_gsettings(&self) {
-        let imp = self.imp();
+        prefs.texture_switch.set_active(gsettings.boolean("enable-texture-mods"));
+        prefs.object_switch.set_active(gsettings.boolean("enable-object-mods"));
+        prefs.monster_switch.set_active(gsettings.boolean("enable-monster-mods"));
+        prefs.menu_switch.set_active(gsettings.boolean("enable-menu-mods"));
+        prefs.hud_switch.set_active(gsettings.boolean("enable-hud-mods"));
 
-        if let Some(gsettings) = imp.gsettings.get() {
-            // Bind gsettings
-            gsettings.bind("selected-iwad", self, "selected-iwad").build();
-            gsettings.bind("pwad-files", self, "pwad-files").build();
-            gsettings.bind("extra-parameters", self, "extra-params").build();
+        prefs.exec_filerow.set_default_path(Some(&gsettings.default_value("executable-file").unwrap().to_string().replace("'", "")));
+        prefs.iwad_filerow.set_default_path(Some(&gsettings.default_value("iwad-folder").unwrap().to_string().replace("'", "")));
+        prefs.pwad_filerow.set_default_path(Some(&gsettings.default_value("pwad-folder").unwrap().to_string().replace("'", "")));
+        prefs.mods_filerow.set_default_path(Some(&gsettings.default_value("mods-folder").unwrap().to_string().replace("'", "")));
 
-            imp.prefs_window.set_exec_file(self.strip_env(&gsettings.string("executable-file")));
-            imp.prefs_window.set_iwad_folder(self.strip_env(&gsettings.string("iwad-folder")));
-            imp.prefs_window.set_pwad_folder(self.strip_env(&gsettings.string("pwad-folder")));
-            imp.prefs_window.set_mods_folder(self.strip_env(&gsettings.string("mods-folder")));
+        // Init main window
+        imp.iwad_comborow.set_selected_iwad_file(&gsettings.string("selected-iwad"));
+        imp.pwad_filerow.set_paths(gsettings.strv("pwad-files"));
+        imp.params_entryrow.set_text(&gsettings.string("extra-parameters"));
 
-            imp.prefs_window.set_default_exec_file(self.strip_env(&gsettings.default_value("executable-file").unwrap().to_string().replace("'", "")));
-            imp.prefs_window.set_default_iwad_folder(self.strip_env(&gsettings.default_value("iwad-folder").unwrap().to_string().replace("'", "")));
-            imp.prefs_window.set_default_pwad_folder(self.strip_env(&gsettings.default_value("pwad-folder").unwrap().to_string().replace("'", "")));
-            imp.prefs_window.set_default_mods_folder(self.strip_env(&gsettings.default_value("mods-folder").unwrap().to_string().replace("'", "")));
-
-            gsettings.bind("enable-texture-mods", &imp.prefs_window.get(), "mods-textures").build();
-            gsettings.bind("enable-object-mods", &imp.prefs_window.get(), "mods-objects").build();
-            gsettings.bind("enable-monster-mods", &imp.prefs_window.get(), "mods-monsters").build();
-            gsettings.bind("enable-menu-mods", &imp.prefs_window.get(), "mods-menus").build();
-            gsettings.bind("enable-hud-mods", &imp.prefs_window.get(), "mods-hud").build();
-        }
+        // Store gsettings
+        imp.gsettings.set(gsettings).unwrap();
 
         // Set initial focus on IWAD combo row
         imp.iwad_comborow.get().grab_focus();
@@ -294,15 +234,27 @@ impl ZLWindow {
 
         if let Some(gsettings) = imp.gsettings.get() {
             // Get selected IWAD
-            if let Some(iwad) = imp.iwad_comborow.selected_iwad() {
-                self.set_selected_iwad(iwad.iwad());
-            }
+            let selected_iwad = imp.iwad_comborow.selected_iwad()
+                .map_or("".to_string(), |iwad| iwad.iwad());
 
-            // Save gsettings
-            gsettings.set_string("executable-file", &imp.prefs_window.exec_file()).unwrap();
-            gsettings.set_string("iwad-folder", &imp.prefs_window.iwad_folder()).unwrap();
-            gsettings.set_string("pwad-folder", &imp.prefs_window.pwad_folder()).unwrap();
-            gsettings.set_string("mods-folder", &imp.prefs_window.mods_folder()).unwrap();
+            // Save main window settings
+            gsettings.set_string("selected-iwad", &selected_iwad).unwrap();
+            gsettings.set_strv("pwad-files", imp.pwad_filerow.paths()).unwrap();
+            gsettings.set_string("extra-parameters", &imp.params_entryrow.text()).unwrap();
+
+            // Save preferences window settings
+            let prefs = imp.prefs_window.imp();
+
+            gsettings.set_string("executable-file", &prefs.exec_filerow.path()).unwrap();
+            gsettings.set_string("iwad-folder", &prefs.iwad_filerow.path()).unwrap();
+            gsettings.set_string("pwad-folder", &prefs.pwad_filerow.path()).unwrap();
+            gsettings.set_string("mods-folder", &prefs.mods_filerow.path()).unwrap();
+
+            gsettings.set_boolean("enable-texture-mods", prefs.texture_switch.is_active()).unwrap();
+            gsettings.set_boolean("enable-object-mods", prefs.object_switch.is_active()).unwrap();
+            gsettings.set_boolean("enable-monster-mods", prefs.monster_switch.is_active()).unwrap();
+            gsettings.set_boolean("enable-menu-mods", prefs.menu_switch.is_active()).unwrap();
+            gsettings.set_boolean("enable-hud-mods", prefs.hud_switch.is_active()).unwrap();
 
             gsettings.apply();
         }
@@ -356,7 +308,7 @@ impl ZLWindow {
                     clone!(@weak imp => move |response| {
                         if response == "reset" {
                             imp.iwad_comborow.set_selected(0);
-                            imp.pwad_filerow.set_files(vec![]);
+                            imp.pwad_filerow.set_paths(glib::StrV::new());
                             imp.params_entryrow.set_text("");
                         }
                     })
@@ -423,8 +375,10 @@ impl ZLWindow {
     fn launch_zandronum(&self) -> Result<bool, LaunchError> {
         let imp = self.imp();
 
+        let prefs = imp.prefs_window.imp();
+
         // Return with error if Zandronum executable does not exist
-        let exec_file = imp.prefs_window.exec_file();
+        let exec_file = prefs.exec_filerow.path();
 
         if Path::new(&exec_file).try_exists().is_err() {
             return Err(LaunchError::new("Zandronum executable file not found"))
@@ -439,7 +393,7 @@ impl ZLWindow {
         };
 
         // Return with error if IWAD file does not exist
-        let iwad_file = Path::new(&imp.prefs_window.iwad_folder()).join(&iwad.iwad());
+        let iwad_file = Path::new(&prefs.iwad_filerow.path()).join(&iwad.iwad());
 
         if iwad_file.try_exists().is_err() {
             return Err(LaunchError::new(&format!("IWAD file '{}' not found", iwad.iwad())))
@@ -449,42 +403,42 @@ impl ZLWindow {
         cmdline += &format!(" -iwad \"{}\"", iwad_file.to_string_lossy());
 
         // Add PWAD files to command line
-        for pwad_file in self.pwad_files() {
+        for pwad_file in imp.pwad_filerow.paths() {
             if Path::new(&pwad_file).try_exists().is_ok() {
                 cmdline += &format!(" -file \"{}\"", pwad_file);
             }
         }
 
         // Add extra parameters to command line
-        if self.extra_params() != "" {
-            cmdline += &format!(" {}", self.extra_params());
+        if imp.params_entryrow.text() != "" {
+            cmdline += &format!(" {}", imp.params_entryrow.text());
         }
 
         // Add mod files (hi-res graphics) to command line
         let mut mod_files: Vec<String> = vec![];
 
-        if imp.prefs_window.mods_textures() {
+        if prefs.texture_switch.is_active() {
             mod_files.extend(iwad.textures());
         }
 
-        if imp.prefs_window.mods_objects() {
+        if prefs.object_switch.is_active() {
             mod_files.extend(iwad.objects());
         }
 
-        if imp.prefs_window.mods_monsters() {
+        if prefs.monster_switch.is_active() {
             mod_files.extend(iwad.monsters());
         }
 
-        if imp.prefs_window.mods_menus() {
+        if prefs.menu_switch.is_active() {
             mod_files.extend(iwad.menus());
         }
 
-        if imp.prefs_window.mods_hud() {
+        if prefs.hud_switch.is_active() {
             mod_files.extend(iwad.hud());
         }
 
         for modd in mod_files {
-            let mod_file = Path::new(&imp.prefs_window.mods_folder()).join(&modd);
+            let mod_file = Path::new(&prefs.mods_filerow.path()).join(&modd);
 
             if Path::new(&mod_file).try_exists().is_ok() {
                 cmdline += &format!(" -file \"{}\"", mod_file.display());

@@ -311,13 +311,13 @@ impl FileSelectRow {
     }
 
     //-----------------------------------
-    // Strip env helper function
+    // Path to file helper function
     //-----------------------------------
-    fn strip_env(&self, path: &str) -> String {
+    fn path_to_file(&self, path: &str) -> gio::File {
         if let Ok(file) = shellexpand::env(&path) {
-            file.to_string()
+            gio::File::for_path(file.to_string())
         } else {
-            path.to_string()
+            gio::File::for_path(path.to_string())
         }
     }
 
@@ -325,7 +325,7 @@ impl FileSelectRow {
     // Public base folder functions
     //-----------------------------------
     pub fn set_base_folder(&self, path: Option<&str>) {
-        let folder = path.map(|path| gio::File::for_path(self.strip_env(&path)));
+        let folder = path.map(|path| self.path_to_file(path));
 
         self.imp().base_folder.replace(folder);
     }
@@ -350,8 +350,9 @@ impl FileSelectRow {
     pub fn set_paths(&self, paths: glib::StrV) {
         let files = self.imp().files.borrow();
 
-        files.splice(0, files.n_items(), &paths.iter().map(|path| 
-            gio::File::for_path(self.strip_env(path.to_str()))).collect::<Vec<gio::File>>()
+        files.splice(0, files.n_items(), &paths.iter()
+            .map(|path| self.path_to_file(path.to_str()))
+            .collect::<Vec<gio::File>>()
         );
 
         self.set_state();
@@ -378,9 +379,7 @@ impl FileSelectRow {
         let files = self.imp().files.borrow();
 
         if let Some(path) = path {
-            let file = gio::File::for_path(self.strip_env(&path));
-
-            files.splice(0, files.n_items(), &[file])
+            files.splice(0, files.n_items(), &[self.path_to_file(path)])
         } else {
             files.remove_all();
         }
@@ -392,7 +391,7 @@ impl FileSelectRow {
     // Public default path functions
     //-----------------------------------
     pub fn set_default_path(&self, path: Option<&str>) {
-        let file = path.map(|path| gio::File::for_path(self.strip_env(&path)));
+        let file = path.map(|path| self.path_to_file(path));
 
         self.imp().default_file.replace(file);
     }

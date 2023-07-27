@@ -133,7 +133,7 @@ mod imp {
         // Select property custom setter
         //-----------------------------------
         fn set_select(&self, select: SelectType) {
-            if self.obj().icon().is_none() {
+            if self.icon.borrow().is_none() {
                 if select == SelectType::Folder {
                     self.image.set_icon_name(Some("folder-symbolic"));
                 } else {
@@ -151,7 +151,7 @@ mod imp {
             if icon.is_some() {
                 self.image.set_icon_name(icon);
             } else {
-                if self.obj().select() == SelectType::Folder {
+                if self.select.get() == SelectType::Folder {
                     self.image.set_icon_name(Some("folder-symbolic"));
                 } else {
                     self.image.set_icon_name(Some("document-open-symbolic"));

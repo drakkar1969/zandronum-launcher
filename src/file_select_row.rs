@@ -316,11 +316,19 @@ impl FileSelectRow {
     //-----------------------------------
     // Path to file helper function
     //-----------------------------------
-    fn path_to_file(&self, path: &str) -> gio::File {
-        if let Ok(file) = shellexpand::env(&path) {
-            gio::File::for_path(file.to_string())
+    fn path_to_file(&self, path: &str) -> Option<gio::File> {
+        let file: gio::File;
+
+        if let Ok(path_exp) = shellexpand::env(&path) {
+            file = gio::File::for_path(path_exp.to_string());
         } else {
-            gio::File::for_path(path.to_string())
+            file = gio::File::for_path(path.to_string());
+        }
+
+        if file.query_exists(None::<&gio::Cancellable>) {
+            Some(file)
+        } else {
+            None
         }
     }
 
@@ -328,7 +336,7 @@ impl FileSelectRow {
     // Public base folder functions
     //-----------------------------------
     pub fn set_base_folder(&self, path: Option<&str>) {
-        let folder = path.map(|path| self.path_to_file(path));
+        let folder = path.and_then(|path| self.path_to_file(path));
 
         self.imp().base_folder.replace(folder);
     }
@@ -354,7 +362,7 @@ impl FileSelectRow {
         let files = self.imp().files.borrow();
 
         files.splice(0, files.n_items(), &paths.iter()
-            .map(|path| self.path_to_file(path.to_str()))
+            .filter_map(|path| self.path_to_file(path.to_str()))
             .collect::<Vec<gio::File>>()
         );
 
@@ -381,8 +389,8 @@ impl FileSelectRow {
     pub fn set_path(&self, path: Option<&str>) {
         let files = self.imp().files.borrow();
 
-        if let Some(path) = path {
-            files.splice(0, files.n_items(), &[self.path_to_file(path)])
+        if let Some(path) = path.and_then(|path| self.path_to_file(path)) {
+            files.splice(0, files.n_items(), &[path])
         } else {
             files.remove_all();
         }
@@ -394,7 +402,7 @@ impl FileSelectRow {
     // Public default path functions
     //-----------------------------------
     pub fn set_default_path(&self, path: Option<&str>) {
-        let file = path.map(|path| self.path_to_file(path));
+        let file = path.and_then(|path| self.path_to_file(path));
 
         self.imp().default_file.replace(file);
     }

@@ -1,8 +1,7 @@
-use std::cell::RefCell;
-
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
+use glib::once_cell::sync::OnceCell;
 
 use glob::{glob_with, MatchOptions};
 
@@ -23,7 +22,7 @@ mod imp {
         #[template_child]
         pub model: TemplateChild<gio::ListStore>,
 
-        pub iwads: RefCell<Vec<IWadObject>>,
+        pub iwads: OnceCell<Vec<IWadObject>>,
     }
 
     //-----------------------------------
@@ -89,7 +88,7 @@ impl IWadComboRow {
     fn setup_data(&self) {
         let imp = self.imp();
 
-        let mut iwads = imp.iwads.borrow_mut();
+        let mut iwads: Vec<IWadObject> = vec![];
 
         iwads.push(IWadObject::new(
             "The Ultimate Doom",
@@ -170,6 +169,8 @@ impl IWadComboRow {
             &[],
             &[]
         ));
+
+        imp.iwads.set(iwads).unwrap();
     }
 
     //-----------------------------------
@@ -186,28 +187,28 @@ impl IWadComboRow {
 
         if let Ok(entries) = glob_with(&format!("{folder}/*.wad"), options) {
             // Get list of IWADs in folder
-            let iwads = imp.iwads.borrow();
-
-            let mut iwad_objects: Vec<IWadObject> = entries.into_iter()
-                .flatten()
-                .filter_map(|entry| {
-                    iwads.clone().into_iter()
-                        .find(|iwad| {
-                            if let Some(file) = entry.file_name() {
-                                if iwad.iwad() == file.to_string_lossy() {
-                                    return true
+            if let Some(iwads) = imp.iwads.get() {
+                let mut iwad_objects: Vec<IWadObject> = entries.into_iter()
+                    .flatten()
+                    .filter_map(|entry| {
+                        iwads.clone().into_iter()
+                            .find(|iwad| {
+                                if let Some(file) = entry.file_name() {
+                                    if iwad.iwad() == file.to_string_lossy() {
+                                        return true
+                                    }
                                 }
-                            }
 
-                            false
-                        })
-                })
-                .collect();
+                                false
+                            })
+                    })
+                    .collect();
 
-            iwad_objects.sort_unstable_by(|a, b| a.name().cmp(&b.name()));
+                iwad_objects.sort_unstable_by(|a, b| a.name().cmp(&b.name()));
 
-            // Add IWADs to combo row
-            imp.model.splice(0, imp.model.n_items(), &iwad_objects);
+                // Add IWADs to combo row
+                imp.model.splice(0, imp.model.n_items(), &iwad_objects);
+            }
         }
     }
 

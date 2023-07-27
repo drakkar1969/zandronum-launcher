@@ -190,6 +190,9 @@ impl ZLWindow {
     fn init_from_gsettings(&self) {
         let imp = self.imp();
 
+        // Set config folder
+        let config_folder = Some("$HOME/.config/zandronum");
+
         // Create gsettings
         let gsettings = gio::Settings::new(APP_ID);
 
@@ -203,16 +206,21 @@ impl ZLWindow {
         prefs.pwad_filerow.set_path(Some(&gsettings.string("pwad-folder")));
         prefs.mods_filerow.set_path(Some(&gsettings.string("mods-folder")));
 
+        prefs.exec_filerow.set_default_path(Some(&gsettings.default_value("executable-file").unwrap().to_string().replace("'", "")));
+        prefs.iwad_filerow.set_default_path(Some(&gsettings.default_value("iwad-folder").unwrap().to_string().replace("'", "")));
+        prefs.pwad_filerow.set_default_path(Some(&gsettings.default_value("pwad-folder").unwrap().to_string().replace("'", "")));
+        prefs.mods_filerow.set_default_path(Some(&gsettings.default_value("mods-folder").unwrap().to_string().replace("'", "")));
+
+        prefs.exec_filerow.set_base_folder(config_folder);
+        prefs.iwad_filerow.set_base_folder(config_folder);
+        prefs.pwad_filerow.set_base_folder(config_folder);
+        prefs.mods_filerow.set_base_folder(config_folder);
+
         prefs.texture_switch.set_active(gsettings.boolean("enable-texture-mods"));
         prefs.object_switch.set_active(gsettings.boolean("enable-object-mods"));
         prefs.monster_switch.set_active(gsettings.boolean("enable-monster-mods"));
         prefs.menu_switch.set_active(gsettings.boolean("enable-menu-mods"));
         prefs.hud_switch.set_active(gsettings.boolean("enable-hud-mods"));
-
-        prefs.exec_filerow.set_default_path(Some(&gsettings.default_value("executable-file").unwrap().to_string().replace("'", "")));
-        prefs.iwad_filerow.set_default_path(Some(&gsettings.default_value("iwad-folder").unwrap().to_string().replace("'", "")));
-        prefs.pwad_filerow.set_default_path(Some(&gsettings.default_value("pwad-folder").unwrap().to_string().replace("'", "")));
-        prefs.mods_filerow.set_default_path(Some(&gsettings.default_value("mods-folder").unwrap().to_string().replace("'", "")));
 
         // Init main window
         imp.iwad_comborow.set_selected_iwad_file(&gsettings.string("selected-iwad"));

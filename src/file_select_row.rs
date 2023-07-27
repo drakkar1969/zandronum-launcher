@@ -379,8 +379,8 @@ impl FileSelectRow {
             files.item(0)
                 .and_downcast::<gio::File>()
                 .and_then(|file| file.path())
+                .map(|path| path.display().to_string())
                 .unwrap()
-                .display().to_string()
         } else {
             "".to_string()
         }
@@ -410,11 +410,10 @@ impl FileSelectRow {
     pub fn reset_paths(&self) {
         let imp = self.imp();
 
-        let default_file = imp.default_file.borrow();
         let files = imp.files.borrow();
 
-        if default_file.is_some() {
-            files.splice(0, files.n_items(), &[default_file.clone().unwrap()]);
+        if let Some(default_file) = imp.default_file.borrow().clone() {
+            files.splice(0, files.n_items(), &[default_file]);
         } else {
             files.remove_all();
         }

@@ -400,7 +400,7 @@ impl ZLWindow {
         }
 
         // Add IWAD file to command line
-        cmdline += &format!(" -iwad \"{}\"", iwad_file.to_string_lossy());
+        cmdline += &format!(" -iwad \"{}\"", iwad_file.display());
 
         // Add PWAD files to command line
         for pwad_file in imp.pwad_filerow.paths() {

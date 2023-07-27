@@ -243,14 +243,17 @@ impl FileSelectRow {
 
             // Set initial location for dialog
             let files = imp.files.borrow();
-            let base_folder = imp.base_folder.borrow();
 
             if files.n_items() > 0 {
                 dialog.set_file(&files.item(0).and_downcast::<gio::File>().unwrap())
                     .expect("Could not set current file for dialog");
-            } else if base_folder.is_some() {
-                dialog.set_current_folder(base_folder.as_ref())
-                    .expect("Could not set current folder for dialog");
+            } else {
+                let base_folder = imp.base_folder.borrow();
+
+                if base_folder.is_some() {
+                    dialog.set_current_folder(base_folder.as_ref())
+                        .expect("Could not set current folder for dialog");
+                }
             }
 
             // Connect dialog response signal handler

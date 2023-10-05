@@ -216,11 +216,11 @@ impl ZLWindow {
         prefs.pwad_filerow.set_base_folder(config_folder);
         prefs.mods_filerow.set_base_folder(config_folder);
 
-        prefs.texture_switch.set_active(gsettings.boolean("enable-texture-mods"));
-        prefs.object_switch.set_active(gsettings.boolean("enable-object-mods"));
-        prefs.monster_switch.set_active(gsettings.boolean("enable-monster-mods"));
-        prefs.menu_switch.set_active(gsettings.boolean("enable-menu-mods"));
-        prefs.hud_switch.set_active(gsettings.boolean("enable-hud-mods"));
+        prefs.texture_switchrow.set_active(gsettings.boolean("enable-texture-mods"));
+        prefs.object_switchrow.set_active(gsettings.boolean("enable-object-mods"));
+        prefs.monster_switchrow.set_active(gsettings.boolean("enable-monster-mods"));
+        prefs.menu_switchrow.set_active(gsettings.boolean("enable-menu-mods"));
+        prefs.hud_switchrow.set_active(gsettings.boolean("enable-hud-mods"));
 
         // Init main window
         imp.iwad_comborow.set_selected_iwad_file(&gsettings.string("selected-iwad"));
@@ -258,11 +258,11 @@ impl ZLWindow {
             gsettings.set_string("pwad-folder", &prefs.pwad_filerow.path()).unwrap();
             gsettings.set_string("mods-folder", &prefs.mods_filerow.path()).unwrap();
 
-            gsettings.set_boolean("enable-texture-mods", prefs.texture_switch.is_active()).unwrap();
-            gsettings.set_boolean("enable-object-mods", prefs.object_switch.is_active()).unwrap();
-            gsettings.set_boolean("enable-monster-mods", prefs.monster_switch.is_active()).unwrap();
-            gsettings.set_boolean("enable-menu-mods", prefs.menu_switch.is_active()).unwrap();
-            gsettings.set_boolean("enable-hud-mods", prefs.hud_switch.is_active()).unwrap();
+            gsettings.set_boolean("enable-texture-mods", prefs.texture_switchrow.is_active()).unwrap();
+            gsettings.set_boolean("enable-object-mods", prefs.object_switchrow.is_active()).unwrap();
+            gsettings.set_boolean("enable-monster-mods", prefs.monster_switchrow.is_active()).unwrap();
+            gsettings.set_boolean("enable-menu-mods", prefs.menu_switchrow.is_active()).unwrap();
+            gsettings.set_boolean("enable-hud-mods", prefs.hud_switchrow.is_active()).unwrap();
 
             gsettings.apply();
         }
@@ -425,23 +425,23 @@ impl ZLWindow {
         // Add mod files (hi-res graphics) to command line
         let mut mod_files: Vec<String> = vec![];
 
-        if prefs.texture_switch.is_active() {
+        if prefs.texture_switchrow.is_active() {
             mod_files.extend(iwad.textures());
         }
 
-        if prefs.object_switch.is_active() {
+        if prefs.object_switchrow.is_active() {
             mod_files.extend(iwad.objects());
         }
 
-        if prefs.monster_switch.is_active() {
+        if prefs.monster_switchrow.is_active() {
             mod_files.extend(iwad.monsters());
         }
 
-        if prefs.menu_switch.is_active() {
+        if prefs.menu_switchrow.is_active() {
             mod_files.extend(iwad.menus());
         }
 
-        if prefs.hud_switch.is_active() {
+        if prefs.hud_switchrow.is_active() {
             mod_files.extend(iwad.hud());
         }
 

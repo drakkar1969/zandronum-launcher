@@ -59,63 +59,33 @@
                 <property name="title">_Enable High Resolution Graphics</property>
                 <property name="use_underline">True</property>
                 <child>
-                  <object class="AdwActionRow">
+                  <object class="AdwSwitchRow" id="texture_switchrow">
                     <property name="title">_Textures</property>
                     <property name="use_underline">True</property>
-                    <property name="activatable_widget">texture_switch</property>
-                    <child>
-                      <object class="GtkSwitch" id="texture_switch">
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="AdwActionRow">
+                  <object class="AdwSwitchRow" id="object_switchrow">
                     <property name="title">_Objects and Weapons</property>
                     <property name="use_underline">True</property>
-                    <property name="activatable_widget">object_switch</property>
-                    <child>
-                      <object class="GtkSwitch" id="object_switch">
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="AdwActionRow">
+                  <object class="AdwSwitchRow" id="monster_switchrow">
                     <property name="title">_Monsters</property>
                     <property name="use_underline">True</property>
-                    <property name="activatable_widget">monster_switch</property>
-                    <child>
-                      <object class="GtkSwitch" id="monster_switch">
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="AdwActionRow">
+                  <object class="AdwSwitchRow" id="menu_switchrow">
                     <property name="title">_Screens and Menus</property>
                     <property name="use_underline">True</property>
-                    <property name="activatable_widget">menu_switch</property>
-                    <child>
-                      <object class="GtkSwitch" id="menu_switch">
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="AdwActionRow">
+                  <object class="AdwSwitchRow" id="hud_switchrow">
                     <property name="title">H_UD</property>
                     <property name="use_underline">True</property>
-                    <property name="activatable_widget">hud_switch</property>
-                    <child>
-                      <object class="GtkSwitch" id="hud_switch">
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
               </object>

@@ -27,15 +27,15 @@ mod imp {
         pub mods_filerow: TemplateChild<FileSelectRow>,
 
         #[template_child]
-        pub texture_switch: TemplateChild<gtk::Switch>,
+        pub texture_switchrow: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub object_switch: TemplateChild<gtk::Switch>,
+        pub object_switchrow: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub monster_switch: TemplateChild<gtk::Switch>,
+        pub monster_switchrow: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub menu_switch: TemplateChild<gtk::Switch>,
+        pub menu_switchrow: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub hud_switch: TemplateChild<gtk::Switch>,
+        pub hud_switchrow: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub reset_button: TemplateChild<gtk::Button>,
@@ -121,11 +121,11 @@ impl PreferencesWindow {
                         imp.pwad_filerow.reset_paths();
                         imp.mods_filerow.reset_paths();
 
-                        imp.texture_switch.set_active(true);
-                        imp.object_switch.set_active(true);
-                        imp.monster_switch.set_active(true);
-                        imp.menu_switch.set_active(true);
-                        imp.hud_switch.set_active(true);
+                        imp.texture_switchrow.set_active(true);
+                        imp.object_switchrow.set_active(true);
+                        imp.monster_switchrow.set_active(true);
+                        imp.menu_switchrow.set_active(true);
+                        imp.hud_switchrow.set_active(true);
                     }
                 })
             );

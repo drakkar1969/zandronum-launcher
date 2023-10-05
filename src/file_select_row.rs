@@ -5,7 +5,7 @@ use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use glib::clone;
 use glib::subclass::Signal;
-use glib::once_cell::sync::Lazy;
+use glib::once_cell::sync::{Lazy, OnceCell};
 
 //------------------------------------------------------------------------------
 // ENUM: SelectType
@@ -60,7 +60,7 @@ mod imp {
         filter: RefCell<Option<gtk::FileFilter>>,
 
         pub base_folder: RefCell<Option<gio::File>>,
-        pub files: RefCell<gio::ListStore>,
+        pub files: OnceCell<gio::ListStore>,
         pub default_file: RefCell<Option<gio::File>>,
     }
 
@@ -193,9 +193,9 @@ impl FileSelectRow {
     // Setup widgets
     //-----------------------------------
     fn setup_widgets(&self) {
-        let model = gio::ListStore::new(gio::File::static_type());
+        let model = gio::ListStore::new::<gio::File>();
 
-        self.imp().files.replace(model);
+        self.imp().files.set(model).unwrap();
     }
 
     //-----------------------------------
@@ -242,7 +242,7 @@ impl FileSelectRow {
             }
 
             // Set initial location for dialog
-            let files = imp.files.borrow();
+            let files = imp.files.get().unwrap();
 
             if files.n_items() > 0 {
                 dialog.set_file(&files.item(0).and_downcast::<gio::File>().unwrap())
@@ -259,7 +259,7 @@ impl FileSelectRow {
             // Connect dialog response signal handler
             dialog.connect_response(clone!(@weak obj, @weak imp => move |dialog, response| {
                 if response == gtk::ResponseType::Accept {
-                    let files = imp.files.borrow();
+                    let files = imp.files.get().unwrap();
 
                     files.splice(0, files.n_items(), &dialog.files().iter::<gio::File>().flatten().collect::<Vec<gio::File>>());
 
@@ -274,7 +274,7 @@ impl FileSelectRow {
 
         // Clear button clicked signal
         imp.clear_button.connect_clicked(clone!(@weak self as obj, @weak imp => move |_| {
-            let files = imp.files.borrow();
+            let files = imp.files.get().unwrap();
 
             files.remove_all();
 
@@ -288,7 +288,7 @@ impl FileSelectRow {
     fn set_state(&self) {
         let imp = self.imp();
 
-        let files = imp.files.borrow();
+        let files = imp.files.get().unwrap();
 
         let n_files = files.n_items();
 
@@ -345,7 +345,7 @@ impl FileSelectRow {
     // Public paths functions
     //-----------------------------------
     pub fn paths(&self) -> glib::StrV {
-        let files = self.imp().files.borrow();
+        let files = self.imp().files.get().unwrap();
 
         files.iter::<gio::File>()
             .map(|file| {
@@ -359,7 +359,7 @@ impl FileSelectRow {
     }
 
     pub fn set_paths(&self, paths: glib::StrV) {
-        let files = self.imp().files.borrow();
+        let files = self.imp().files.get().unwrap();
 
         files.splice(0, files.n_items(), &paths.iter()
             .filter_map(|path| self.path_to_file(path.to_str()))
@@ -373,7 +373,7 @@ impl FileSelectRow {
     // Public path functions
     //-----------------------------------
     pub fn path(&self) -> String {
-        let files = self.imp().files.borrow();
+        let files = self.imp().files.get().unwrap();
 
         if files.n_items() > 0 {
             files.item(0)
@@ -387,7 +387,7 @@ impl FileSelectRow {
     }
 
     pub fn set_path(&self, path: Option<&str>) {
-        let files = self.imp().files.borrow();
+        let files = self.imp().files.get().unwrap();
 
         if let Some(path) = path.and_then(|path| self.path_to_file(path)) {
             files.splice(0, files.n_items(), &[path])
@@ -410,7 +410,7 @@ impl FileSelectRow {
     pub fn reset_paths(&self) {
         let imp = self.imp();
 
-        let files = imp.files.borrow();
+        let files = imp.files.get().unwrap();
 
         if let Some(default_file) = imp.default_file.borrow().clone() {
             files.splice(0, files.n_items(), &[default_file]);

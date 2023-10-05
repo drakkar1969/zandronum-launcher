@@ -116,10 +116,10 @@ mod imp {
         //-----------------------------------
         // Window close handler
         //-----------------------------------
-        fn close_request(&self) -> glib::signal::Inhibit {
+        fn close_request(&self) -> glib::Propagation {
             self.obj().save_gsettings();
 
-            glib::signal::Inhibit(false)
+            glib::Propagation::Proceed
         }
     }
     impl ApplicationWindowImpl for ZLWindow {}

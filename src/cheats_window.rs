@@ -1,4 +1,4 @@
-use gtk::glib;
+use gtk::{glib, gio};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
 

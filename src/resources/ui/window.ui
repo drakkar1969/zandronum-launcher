@@ -6,9 +6,8 @@
     <property name="default_height">-1</property>
     <property name="title">Zandronum Launcher</property>
     <property name="content">
-      <object class="GtkBox" id="window_box">
-        <property name="orientation">vertical</property>
-        <child>
+      <object class="AdwToolbarView" id="toolbar_view">
+        <child type="top">
           <object class="GtkHeaderBar">
             <child type="end">
               <object class="GtkMenuButton">
@@ -19,7 +18,7 @@
             </child>
           </object>
         </child>
-        <child>
+        <property name="content">
           <object class="AdwClamp">
             <property name="tightening-threshold">580</property>
             <child>
@@ -88,7 +87,7 @@
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </property>
   </template>

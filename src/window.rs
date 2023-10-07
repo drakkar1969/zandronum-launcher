@@ -63,8 +63,6 @@ mod imp {
 
         #[template_child]
         pub prefs_window: TemplateChild<PreferencesWindow>,
-        #[template_child]
-        pub cheats_window: TemplateChild<CheatsWindow>,
 
         pub gsettings: OnceCell<gio::Settings>,
     }
@@ -152,9 +150,6 @@ impl ZLWindow {
 
         // Set preferences window parent
         imp.prefs_window.set_transient_for(Some(self));
-
-        // Set cheats window parent
-        imp.cheats_window.set_transient_for(Some(self));
     }
 
     //-----------------------------------
@@ -331,10 +326,12 @@ impl ZLWindow {
             }))
             .build();
 
-        // Add show preferences action
+        // Add show cheats action
         let cheats_action = gio::ActionEntry::<ZLWindow>::builder("show-cheats")
-            .activate(clone!(@weak imp => move |_, _, _| {
-                imp.cheats_window.present();
+            .activate(clone!(@weak self as obj => move |_, _, _| {
+                let cheats_window = CheatsWindow::new();
+                cheats_window.set_transient_for(Some(&obj));
+                cheats_window.present();
             }))
             .build();
 

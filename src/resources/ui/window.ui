@@ -127,8 +127,4 @@
   <!--// Preferences window //-->
   <object class="PreferencesWindow" id="prefs_window">
   </object>
-
-  <!--// Cheats window //-->
-  <object class="CheatsWindow" id="cheats_window">
-  </object>
 </interface>

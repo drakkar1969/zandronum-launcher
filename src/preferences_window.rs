@@ -100,7 +100,7 @@ impl PreferencesWindow {
         let imp = self.imp();
 
         // Preferences reset button clicked signal
-        imp.reset_button.connect_clicked(clone!(@weak self as obj, @weak imp => move |_| {
+        imp.reset_button.connect_clicked(clone!(@weak self as window, @weak imp => move |_| {
             let reset_dialog = adw::AlertDialog::new(
                 Some("Reset Preferences?"),
                 Some("Reset all preferences to their default values.")
@@ -112,7 +112,7 @@ impl PreferencesWindow {
             reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
 
             reset_dialog.choose(
-                &obj,
+                &window,
                 None::<&gio::Cancellable>,
                 clone!(@weak imp => move |response| {
                     if response == "reset" {

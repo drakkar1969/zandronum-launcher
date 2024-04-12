@@ -271,11 +271,11 @@ impl ZLWindow {
 
         // Add launch Zandronum action
         let launch_action = gio::ActionEntry::<ZLWindow>::builder("launch-zandronum")
-            .activate(clone!(@weak self as obj => move |_, _, _| {
-                obj.set_sensitive(false);
+            .activate(clone!(@weak self as window => move |_, _, _| {
+                window.set_sensitive(false);
 
-                if let Err(launch_error) = obj.launch_zandronum() {
-                    obj.set_sensitive(true);
+                if let Err(launch_error) = window.launch_zandronum() {
+                    window.set_sensitive(true);
 
                     let error_dialog = adw::AlertDialog::new(
                         Some("Error"),
@@ -284,16 +284,16 @@ impl ZLWindow {
 
                     error_dialog.add_responses(&[("close", "_Close")]);
 
-                    error_dialog.present(&obj);
+                    error_dialog.present(&window);
                 } else {
-                    obj.close();
+                    window.close();
                 }
             }))
             .build();
 
         // Add reset widgets action
         let reset_action = gio::ActionEntry::<ZLWindow>::builder("reset-widgets")
-            .activate(clone!(@weak self as obj, @weak imp => move |_, _, _| {
+            .activate(clone!(@weak self as window, @weak imp => move |_, _, _| {
                 let reset_dialog = adw::AlertDialog::new(
                     Some("Reset Parameters?"),
                     Some("Reset all parameters to their default values.")
@@ -305,7 +305,7 @@ impl ZLWindow {
                 reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
     
                 reset_dialog.choose(
-                    &obj,
+                    &window,
                     None::<&gio::Cancellable>,
                     clone!(@weak imp => move |response| {
                         if response == "reset" {
@@ -327,9 +327,9 @@ impl ZLWindow {
 
         // Add show cheats action
         let cheats_action = gio::ActionEntry::<ZLWindow>::builder("show-cheats")
-            .activate(clone!(@weak self as obj => move |_, _, _| {
+            .activate(clone!(@weak self as window => move |_, _, _| {
                 let cheats_window = CheatsWindow::new();
-                cheats_window.set_transient_for(Some(&obj));
+                cheats_window.set_transient_for(Some(&window));
                 cheats_window.present();
             }))
             .build();

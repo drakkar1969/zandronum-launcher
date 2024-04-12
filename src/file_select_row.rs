@@ -192,36 +192,36 @@ impl FileSelectRow {
         let imp = self.imp();
 
         // Select button clicked signal
-        imp.select_button.connect_clicked(clone!(@weak self as obj. @weak imp => move |_| {
+        imp.select_button.connect_clicked(clone!(@weak self as row, @weak imp => move |_| {
             // Get root window
-            let root = obj.root()
+            let root = row.root()
                 .and_downcast::<gtk::Window>()
                 .expect("Must be a 'Window'");
 
             // Create file dialog
             let dialog = gtk::FileChooserDialog::builder()
-                .title(obj.dialog_title())
+                .title(row.dialog_title())
                 .modal(true)
                 .transient_for(&root)
-                .action(if obj.select() == SelectType::Folder {
+                .action(if row.select() == SelectType::Folder {
                         gtk::FileChooserAction::SelectFolder
                     } else {
                         gtk::FileChooserAction::Open
                     })
-                .select_multiple(obj.select() == SelectType::Multiple)
+                .select_multiple(row.select() == SelectType::Multiple)
                 .build();
 
             dialog.add_buttons(&[("Select", gtk::ResponseType::Accept), ("Cancel", gtk::ResponseType::Cancel)]);
 
             // Set filters for dialog
-            if obj.select() != SelectType::Folder {
+            if row.select() != SelectType::Folder {
                 let filter = gtk::FileFilter::new();
                 filter.set_name(Some("All Files"));
                 filter.add_pattern("*");
 
                 dialog.add_filter(&filter);
 
-                if let Some(filter) = obj.filter() {
+                if let Some(filter) = row.filter() {
                     dialog.add_filter(&filter);
                     dialog.set_filter(&filter);
                 }
@@ -243,13 +243,13 @@ impl FileSelectRow {
             }
 
             // Connect dialog response signal handler
-            dialog.connect_response(clone!(@weak obj, @weak imp => move |dialog, response| {
+            dialog.connect_response(clone!(@weak row, @weak imp => move |dialog, response| {
                 if response == gtk::ResponseType::Accept {
                     let files = imp.files.get().unwrap();
 
                     files.splice(0, files.n_items(), &dialog.files().iter::<gio::File>().flatten().collect::<Vec<gio::File>>());
 
-                    obj.set_state();
+                    row.set_state();
                 }
 
                 dialog.close();
@@ -259,12 +259,12 @@ impl FileSelectRow {
         }));
 
         // Clear button clicked signal
-        imp.clear_button.connect_clicked(clone!(@weak self as obj, @weak imp => move |_| {
+        imp.clear_button.connect_clicked(clone!(@weak self as row, @weak imp => move |_| {
             let files = imp.files.get().unwrap();
 
             files.remove_all();
 
-            obj.set_state();
+            row.set_state();
         }));
     }
 

@@ -277,15 +277,14 @@ impl ZLWindow {
                 if let Err(launch_error) = obj.launch_zandronum() {
                     obj.set_sensitive(true);
 
-                    let error_dialog = adw::MessageDialog::new(
-                        Some(&obj),
+                    let error_dialog = adw::AlertDialog::new(
                         Some("Error"),
                         Some(&launch_error.to_string())
                     );
 
                     error_dialog.add_responses(&[("close", "_Close")]);
 
-                    error_dialog.present();
+                    error_dialog.present(&obj);
                 } else {
                     obj.close();
                 }
@@ -295,8 +294,7 @@ impl ZLWindow {
         // Add reset widgets action
         let reset_action = gio::ActionEntry::<ZLWindow>::builder("reset-widgets")
             .activate(clone!(@weak self as obj, @weak imp => move |_, _, _| {
-                let reset_dialog = adw::MessageDialog::new(
-                    Some(&obj),
+                let reset_dialog = adw::AlertDialog::new(
                     Some("Reset Parameters?"),
                     Some("Reset all parameters to their default values.")
                 );
@@ -307,6 +305,7 @@ impl ZLWindow {
                 reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
     
                 reset_dialog.choose(
+                    &obj,
                     None::<&gio::Cancellable>,
                     clone!(@weak imp => move |response| {
                         if response == "reset" {

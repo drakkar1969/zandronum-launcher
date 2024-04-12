@@ -1,11 +1,11 @@
-use std::cell::{Cell, RefCell};
+use std::cell::{Cell, RefCell, OnceCell};
+use std::sync::OnceLock;
 
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use glib::clone;
 use glib::subclass::Signal;
-use glib::once_cell::sync::{Lazy, OnceCell};
 
 //------------------------------------------------------------------------------
 // ENUM: SelectType
@@ -88,13 +88,13 @@ mod imp {
         // Custom signals
         //-----------------------------------
         fn signals() -> &'static [Signal] {
-            static SIGNALS: Lazy<Vec<Signal>> = Lazy::new(|| {
+            static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
+            SIGNALS.get_or_init(|| {
                 vec![
                     Signal::builder("changed")
                         .build(),
                 ]
-            });
-            SIGNALS.as_ref()
+            })
         }
 
         //-----------------------------------
@@ -348,7 +348,7 @@ impl FileSelectRow {
         let files = self.imp().files.get().unwrap();
 
         files.splice(0, files.n_items(), &paths.iter()
-            .filter_map(|path| self.path_to_file(path.to_str()))
+            .filter_map(|path| self.path_to_file(path.as_str()))
             .collect::<Vec<gio::File>>()
         );
 

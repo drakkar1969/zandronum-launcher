@@ -1,3 +1,4 @@
+use std::cell::OnceCell;
 use std::path::Path;
 use std::error::Error;
 use std::fmt;
@@ -7,7 +8,6 @@ use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
 use glib::{clone, closure_local};
-use glib::once_cell::sync::OnceCell;
 
 use shlex;
 

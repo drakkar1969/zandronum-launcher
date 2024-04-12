@@ -1,7 +1,8 @@
+use std::cell::OnceCell;
+
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
-use glib::once_cell::sync::OnceCell;
 
 use glob::{glob_with, MatchOptions};
 

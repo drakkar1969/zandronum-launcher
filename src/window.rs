@@ -75,11 +75,6 @@ mod imp {
         type ParentType = adw::ApplicationWindow;
 
         fn class_init(klass: &mut Self::Class) {
-            IWadComboRow::ensure_type();
-            FileSelectRow::ensure_type();
-            PreferencesWindow::ensure_type();
-            CheatsWindow::ensure_type();
-
             klass.bind_template();
         }
 

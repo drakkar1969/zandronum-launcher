@@ -33,8 +33,6 @@ mod imp {
         type ParentType = adw::Window;
 
         fn class_init(klass: &mut Self::Class) {
-            CheatObject::ensure_type();
-
             klass.bind_template();
         }
 

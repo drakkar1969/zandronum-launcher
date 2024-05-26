@@ -8,12 +8,12 @@ use glib::clone;
 use glib::subclass::Signal;
 
 //------------------------------------------------------------------------------
-// ENUM: SelectType
+// ENUM: SelectMode
 //------------------------------------------------------------------------------
 #[derive(Default, Debug, Eq, PartialEq, Clone, Copy, glib::Enum)]
 #[repr(u32)]
-#[enum_type(name = "SelectType")]
-pub enum SelectType {
+#[enum_type(name = "SelectMode")]
+pub enum SelectMode {
     #[default]
     File = 0,
     Multiple = 1,
@@ -42,8 +42,8 @@ mod imp {
         #[template_child]
         pub clear_button: TemplateChild<gtk::Button>,
 
-        #[property(get, set = Self::set_select, construct, builder(SelectType::default()))]
-        select: Cell<SelectType>,
+        #[property(get, set = Self::set_select, construct, builder(SelectMode::default()))]
+        select_mode: Cell<SelectMode>,
         #[property(get, set = Self::set_icon, nullable, construct)]
         icon: RefCell<Option<String>>,
         #[property(get, set = Self::set_can_clear, construct)]
@@ -113,16 +113,16 @@ mod imp {
         //-----------------------------------
         // Select property custom setter
         //-----------------------------------
-        fn set_select(&self, select: SelectType) {
+        fn set_select(&self, select: SelectMode) {
             if self.icon.borrow().is_none() {
-                if select == SelectType::Folder {
+                if select == SelectMode::Folder {
                     self.image.set_icon_name(Some("folder-symbolic"));
                 } else {
                     self.image.set_icon_name(Some("document-open-symbolic"));
                 }
             }
 
-            self.select.replace(select);
+            self.select_mode.replace(select);
         }
 
         //-----------------------------------
@@ -131,7 +131,7 @@ mod imp {
         fn set_icon(&self, icon: Option<&str>) {
             if icon.is_some() {
                 self.image.set_icon_name(icon);
-            } else if self.select.get() == SelectType::Folder {
+            } else if self.select_mode.get() == SelectMode::Folder {
                 self.image.set_icon_name(Some("folder-symbolic"));
             } else {
                 self.image.set_icon_name(Some("document-open-symbolic"));
@@ -193,7 +193,7 @@ impl FileSelectRow {
                 .build();
 
             // Set filters for dialog
-            if row.select() != SelectType::Folder {
+            if row.select_mode() != SelectMode::Folder {
                 let all_filter = gtk::FileFilter::new();
                 all_filter.set_name(Some("All Files"));
                 all_filter.add_pattern("*");
@@ -227,8 +227,8 @@ impl FileSelectRow {
                 .expect("Must be a 'Window'");
 
             // Show dialog
-            match row.select() {
-                SelectType::File => {
+            match row.select_mode() {
+                SelectMode::File => {
                     dialog.open(Some(&root), None::<&gio::Cancellable>, clone!(@weak imp => move |result| {
                         if let Ok(file) = result {
                             let files = imp.files.get().unwrap();
@@ -239,7 +239,7 @@ impl FileSelectRow {
                         }
                     }));
                 },
-                SelectType::Multiple => {
+                SelectMode::Multiple => {
                     dialog.open_multiple(Some(&root), None::<&gio::Cancellable>, clone!(@weak imp => move |result| {
                         if let Ok(file) = result {
                             let files = imp.files.get().unwrap();
@@ -250,7 +250,7 @@ impl FileSelectRow {
                         }
                     }));
                 },
-                SelectType::Folder => {
+                SelectMode::Folder => {
                     dialog.select_folder(Some(&root), None::<&gio::Cancellable>, clone!(@weak imp => move |result| {
                         if let Ok(file) = result {
                             let files = imp.files.get().unwrap();

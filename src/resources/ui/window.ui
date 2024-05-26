@@ -49,7 +49,7 @@
                         <property name="subtitle_lines">1</property>
                         <property name="use_underline">True</property>
                         <property name="can_clear">True</property>
-                        <property name="select">multiple</property>
+                        <property name="select-mode">multiple</property>
                         <property name="dialog_title">Select WAD Files</property>
                         <property name="filter">
                           <object class="GtkFileFilter">

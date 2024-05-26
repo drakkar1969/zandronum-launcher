@@ -27,7 +27,7 @@
                 <property name="title">_IWAD Folder</property>
                 <property name="subtitle">Folder to search for IWAD files</property>
                 <property name="use_underline">True</property>
-                <property name="select">folder</property>
+                <property name="select-mode">folder</property>
                 <property name="dialog_title">Select IWAD Folder</property>
               </object>
             </child>
@@ -36,7 +36,7 @@
                 <property name="title">_PWAD Folder</property>
                 <property name="subtitle">Folder to search for optional PWAD files</property>
                 <property name="use_underline">True</property>
-                <property name="select">folder</property>
+                <property name="select-mode">folder</property>
                 <property name="dialog_title">Select PWAD Folder</property>
               </object>
             </child>
@@ -45,7 +45,7 @@
                 <property name="title">_Hi-Res Graphics Folder</property>
                 <property name="subtitle">Folder with high resolution graphics files</property>
                 <property name="use_underline">True</property>
-                <property name="select">folder</property>
+                <property name="select-mode">folder</property>
                 <property name="dialog_title">Select Mods Folder</property>
               </object>
             </child>

@@ -126,5 +126,6 @@
 
   <!--// Preferences window //-->
   <object class="PreferencesWindow" id="prefs_window">
+    <property name="transient-for">LauncherWindow</property>
   </object>
 </interface>

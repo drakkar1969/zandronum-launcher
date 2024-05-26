@@ -92,7 +92,6 @@ mod imp {
 
             self.parent_constructed();
 
-            obj.setup_widgets();
             obj.setup_signals();
 
             obj.init_from_gsettings();
@@ -133,16 +132,6 @@ impl LauncherWindow {
     //-----------------------------------
     pub fn new(app: &LauncherApplication) -> Self {
         glib::Object::builder().property("application", app).build()
-    }
-
-    //-----------------------------------
-    // Setup widgets
-    //-----------------------------------
-    fn setup_widgets(&self) {
-        let imp = self.imp();
-
-        // Set preferences window parent
-        imp.prefs_window.set_transient_for(Some(self));
     }
 
     //-----------------------------------

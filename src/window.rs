@@ -259,7 +259,7 @@ impl LauncherWindow {
         let imp = self.imp();
 
         // Add launch Zandronum action
-        let launch_action = gio::ActionEntry::<LauncherWindow>::builder("launch-zandronum")
+        let launch_action = gio::ActionEntry::builder("launch-zandronum")
             .activate(clone!(@weak self as window => move |_, _, _| {
                 window.set_sensitive(false);
 
@@ -281,7 +281,7 @@ impl LauncherWindow {
             .build();
 
         // Add reset widgets action
-        let reset_action = gio::ActionEntry::<LauncherWindow>::builder("reset-widgets")
+        let reset_action = gio::ActionEntry::builder("reset-widgets")
             .activate(clone!(@weak self as window, @weak imp => move |_, _, _| {
                 let reset_dialog = adw::AlertDialog::new(
                     Some("Reset Parameters?"),
@@ -308,14 +308,14 @@ impl LauncherWindow {
             .build();
 
         // Add show preferences action
-        let prefs_action = gio::ActionEntry::<LauncherWindow>::builder("show-preferences")
+        let prefs_action = gio::ActionEntry::builder("show-preferences")
             .activate(clone!(@weak imp => move |_, _, _| {
                 imp.prefs_window.present();
             }))
             .build();
 
         // Add show cheats action
-        let cheats_action = gio::ActionEntry::<LauncherWindow>::builder("show-cheats")
+        let cheats_action = gio::ActionEntry::builder("show-cheats")
             .activate(clone!(@weak self as window => move |_, _, _| {
                 let cheats_window = CheatsWindow::new();
                 cheats_window.set_transient_for(Some(&window));

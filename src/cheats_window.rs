@@ -3,8 +3,6 @@ use adw::subclass::prelude::*;
 use adw::prelude::*;
 use glib::clone;
 
-use crate::cheat_object::CheatObject;
-
 //------------------------------------------------------------------------------
 // MODULE: CheatsWindow
 //------------------------------------------------------------------------------

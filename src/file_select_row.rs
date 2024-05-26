@@ -10,19 +10,14 @@ use glib::subclass::Signal;
 //------------------------------------------------------------------------------
 // ENUM: SelectType
 //------------------------------------------------------------------------------
-#[derive(Debug, Eq, PartialEq, Clone, Copy, glib::Enum)]
+#[derive(Default, Debug, Eq, PartialEq, Clone, Copy, glib::Enum)]
 #[repr(u32)]
 #[enum_type(name = "SelectType")]
 pub enum SelectType {
+    #[default]
     File = 0,
     Multiple = 1,
     Folder = 2,
-}
-
-impl Default for SelectType {
-    fn default() -> Self {
-        SelectType::File
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -136,12 +131,10 @@ mod imp {
         fn set_icon(&self, icon: Option<&str>) {
             if icon.is_some() {
                 self.image.set_icon_name(icon);
+            } else if self.select.get() == SelectType::Folder {
+                self.image.set_icon_name(Some("folder-symbolic"));
             } else {
-                if self.select.get() == SelectType::Folder {
-                    self.image.set_icon_name(Some("folder-symbolic"));
-                } else {
-                    self.image.set_icon_name(Some("document-open-symbolic"));
-                }
+                self.image.set_icon_name(Some("document-open-symbolic"));
             }
 
             self.icon.replace(icon.map(|icon| icon.to_string()));
@@ -321,7 +314,7 @@ impl FileSelectRow {
         if let Ok(path_exp) = shellexpand::env(&path) {
             file = gio::File::for_path(path_exp.to_string());
         } else {
-            file = gio::File::for_path(path.to_string());
+            file = gio::File::for_path(path);
         }
 
         if file.query_exists(None::<&gio::Cancellable>) {
@@ -347,12 +340,11 @@ impl FileSelectRow {
         let files = self.imp().files.get().unwrap();
 
         files.iter::<gio::File>()
-            .map(|file| {
+            .filter_map(|file| {
                 file.ok()
                     .and_then(|file| file.path())
                     .map(|path| path.display().to_string())
             })
-            .flatten()
             .collect::<Vec<String>>()
             .into()
     }
@@ -418,5 +410,11 @@ impl FileSelectRow {
         }
 
         self.set_state();
+    }
+}
+
+impl Default for FileSelectRow {
+    fn default() -> Self {
+        Self::new()
     }
 }

@@ -9,8 +9,6 @@ use adw::subclass::prelude::*;
 use adw::prelude::*;
 use glib::{clone, closure_local};
 
-use shlex;
-
 use crate::APP_ID;
 use crate::ZLApplication;
 use crate::iwad_combo_row::IWadComboRow;
@@ -201,10 +199,10 @@ impl ZLWindow {
         prefs.pwad_filerow.set_path(Some(&gsettings.string("pwad-folder")));
         prefs.mods_filerow.set_path(Some(&gsettings.string("mods-folder")));
 
-        prefs.exec_filerow.set_default_path(Some(&gsettings.default_value("executable-file").unwrap().to_string().replace("'", "")));
-        prefs.iwad_filerow.set_default_path(Some(&gsettings.default_value("iwad-folder").unwrap().to_string().replace("'", "")));
-        prefs.pwad_filerow.set_default_path(Some(&gsettings.default_value("pwad-folder").unwrap().to_string().replace("'", "")));
-        prefs.mods_filerow.set_default_path(Some(&gsettings.default_value("mods-folder").unwrap().to_string().replace("'", "")));
+        prefs.exec_filerow.set_default_path(Some(&gsettings.default_value("executable-file").unwrap().to_string().replace('\'', "")));
+        prefs.iwad_filerow.set_default_path(Some(&gsettings.default_value("iwad-folder").unwrap().to_string().replace('\'', "")));
+        prefs.pwad_filerow.set_default_path(Some(&gsettings.default_value("pwad-folder").unwrap().to_string().replace('\'', "")));
+        prefs.mods_filerow.set_default_path(Some(&gsettings.default_value("mods-folder").unwrap().to_string().replace('\'', "")));
 
         prefs.exec_filerow.set_base_folder(config_folder);
         prefs.iwad_filerow.set_base_folder(config_folder);
@@ -384,7 +382,7 @@ impl ZLWindow {
         // Return with error if Zandronum executable does not exist
         let exec_file = prefs.exec_filerow.path();
 
-        if Path::new(&exec_file).try_exists().unwrap_or_default() == false {
+        if !Path::new(&exec_file).try_exists().unwrap_or_default() {
             return Err(LaunchError::new("Zandronum executable file not found"))
         }
 
@@ -397,9 +395,9 @@ impl ZLWindow {
         };
 
         // Return with error if IWAD file does not exist
-        let iwad_file = Path::new(&prefs.iwad_filerow.path()).join(&iwad.iwad());
+        let iwad_file = Path::new(&prefs.iwad_filerow.path()).join(iwad.iwad());
 
-        if iwad_file.try_exists().unwrap_or_default() == false {
+        if !iwad_file.try_exists().unwrap_or_default() {
             return Err(LaunchError::new(&format!("IWAD file '{}' not found", iwad.iwad())))
         }
 
@@ -408,7 +406,7 @@ impl ZLWindow {
 
         // Add PWAD files to command line
         for pwad_file in imp.pwad_filerow.paths() {
-            if Path::new(&pwad_file).try_exists().unwrap_or_default() == true {
+            if Path::new(&pwad_file).try_exists().unwrap_or_default() {
                 cmdline += &format!(" -file \"{}\"", pwad_file);
             }
         }
@@ -444,7 +442,7 @@ impl ZLWindow {
         for modd in mod_files {
             let mod_file = Path::new(&prefs.mods_filerow.path()).join(&modd);
 
-            if Path::new(&mod_file).try_exists().unwrap_or_default() == true {
+            if Path::new(&mod_file).try_exists().unwrap_or_default() {
                 cmdline += &format!(" -file \"{}\"", mod_file.display());
             }
         }

@@ -179,3 +179,9 @@ impl CheatsWindow {
         self.add_controller(controller);
     }
 }
+
+impl Default for CheatsWindow {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -89,87 +89,80 @@ impl IWadComboRow {
     fn setup_data(&self) {
         let imp = self.imp();
 
-        let mut iwads: Vec<IWadObject> = vec![];
-
-        iwads.push(IWadObject::new(
-            "The Ultimate Doom",
-            "doom.wad",
-            &["hires-doom-a.pk3", "hires-doom-b.pk3"],
-            &["objects.pk3"],
-            &["monsters.pk3"],
-            &["jfo-udoom.pk3"],
-            &["hud-stuff.pk3"]
-        ));
-
-        iwads.push(IWadObject::new(
-            "Doom II: Hell on Earth",
-            "doom2.wad",
-            &["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3"],
-            &["objects.pk3"],
-            &["monsters.pk3"],
-            &["jfo-doom2.pk3"],
-            &["hud-stuff.pk3"]
-        ));
-
-        iwads.push(IWadObject::new(
-            "Final Doom - The Plutonia Experiment",
-            "plutonia.wad",
-            &["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-plut.pk3"],
-            &["objects.pk3"],
-            &["monsters.pk3"],
-            &["jfo-plut.pk3"],
-            &["hud-stuff.pk3"]
-        ));
-
-        iwads.push(IWadObject::new(
-            "Final Doom - TNT: Evilution",
-            "tnt.wad",
-            &["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-tnt.pk3"],
-            &["objects.pk3"],
-            &["monsters.pk3"],
-            &["jfo-tnt.pk3"],
-            &["hud-stuff.pk3"]
-        ));
-
-        iwads.push(IWadObject::new(
-            "Freedoom Phase 1",
-            "freedoom1.wad",
-            &[],
-            &[],
-            &[],
-            &[],
-            &[]
-        ));
-
-        iwads.push(IWadObject::new(
-            "Freedoom Phase 2",
-            "freedoom2.wad",
-            &[],
-            &[],
-            &[],
-            &[],
-            &[]
-        ));
-
-        iwads.push(IWadObject::new(
-            "Heretic",
-            "heretic.wad",
-            &["hires-heretic.pk3"],
-            &[],
-            &[],
-            &[],
-            &[]
-        ));
-
-        iwads.push(IWadObject::new(
-            "Hexen",
-            "hexen.wad",
-            &["hires-hexen.pk3"],
-            &[],
-            &[],
-            &[],
-            &[]
-        ));
+        let iwads: Vec<IWadObject> = vec![
+            IWadObject::new(
+                "The Ultimate Doom",
+                "doom.wad",
+                &["hires-doom-a.pk3", "hires-doom-b.pk3"],
+                &["objects.pk3"],
+                &["monsters.pk3"],
+                &["jfo-udoom.pk3"],
+                &["hud-stuff.pk3"]
+            ),
+            IWadObject::new(
+                "Doom II: Hell on Earth",
+                "doom2.wad",
+                &["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3"],
+                &["objects.pk3"],
+                &["monsters.pk3"],
+                &["jfo-doom2.pk3"],
+                &["hud-stuff.pk3"]
+            ),
+            IWadObject::new(
+                "Final Doom - The Plutonia Experiment",
+                "plutonia.wad",
+                &["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-plut.pk3"],
+                &["objects.pk3"],
+                &["monsters.pk3"],
+                &["jfo-plut.pk3"],
+                &["hud-stuff.pk3"]
+            ),
+            IWadObject::new(
+                "Final Doom - TNT: Evilution",
+                "tnt.wad",
+                &["hires-doom-a.pk3", "hires-doom-b.pk3", "hires-doom2.pk3", "hires-tnt.pk3"],
+                &["objects.pk3"],
+                &["monsters.pk3"],
+                &["jfo-tnt.pk3"],
+                &["hud-stuff.pk3"]
+            ),
+            IWadObject::new(
+                "Freedoom Phase 1",
+                "freedoom1.wad",
+                &[],
+                &[],
+                &[],
+                &[],
+                &[]
+            ),
+            IWadObject::new(
+                "Freedoom Phase 2",
+                "freedoom2.wad",
+                &[],
+                &[],
+                &[],
+                &[],
+                &[]
+            ),
+            IWadObject::new(
+                "Heretic",
+                "heretic.wad",
+                &["hires-heretic.pk3"],
+                &[],
+                &[],
+                &[],
+                &[]
+            ),
+            IWadObject::new(
+                "Hexen",
+                "hexen.wad",
+                &["hires-hexen.pk3"],
+                &[],
+                &[],
+                &[],
+                &[]
+            )
+        ];
 
         imp.iwads.set(iwads).unwrap();
     }
@@ -205,7 +198,7 @@ impl IWadComboRow {
                     })
                     .collect();
 
-                iwad_objects.sort_unstable_by(|a, b| a.name().cmp(&b.name()));
+                iwad_objects.sort_unstable_by_key(|iwad| iwad.name());
 
                 // Add IWADs to combo row
                 imp.model.splice(0, imp.model.n_items(), &iwad_objects);
@@ -235,5 +228,11 @@ impl IWadComboRow {
     pub fn selected_iwad(&self) -> Option<IWadObject> {
         self.selected_item()
             .and_downcast::<IWadObject>()
+    }
+}
+
+impl Default for IWadComboRow {
+    fn default() -> Self {
+        Self::new()
     }
 }

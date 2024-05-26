@@ -48,7 +48,7 @@ mod imp {
             let window = if let Some(window) = application.active_window() {
                 window
             } else {
-                let window = ZLWindow::new(&*application);
+                let window = ZLWindow::new(&application);
                 window.upcast()
             };
 

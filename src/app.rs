@@ -1,5 +1,5 @@
 use gtk::{gio, glib};
-use gtk::prelude::*;
+use adw::prelude::*;
 use adw::subclass::prelude::*;
 
 use crate::window::ZLWindow;
@@ -105,8 +105,7 @@ impl ZLApplication {
     fn show_about(&self) {
         let window = self.active_window().unwrap();
 
-        let about_window = adw::AboutWindow::builder()
-            .transient_for(&window)
+        let about_dialog = adw::AboutDialog::builder()
             .application_name("Zandronum Launcher")
             .application_icon("zandronum")
             .developer_name("draKKar1969")
@@ -118,6 +117,6 @@ impl ZLApplication {
             .license_type(gtk::License::Gpl30)
             .build();
 
-        about_window.present();
+        about_dialog.present(&window);
     }
 }

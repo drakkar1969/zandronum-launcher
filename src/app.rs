@@ -5,7 +5,7 @@ use adw::subclass::prelude::*;
 use crate::window::ZLWindow;
 
 //------------------------------------------------------------------------------
-// MODULE: ZLApplication
+// MODULE: LauncherApplication
 //------------------------------------------------------------------------------
 mod imp {
     use super::*;
@@ -14,19 +14,19 @@ mod imp {
     // Private structure
     //-----------------------------------
     #[derive(Default)]
-    pub struct ZLApplication {}
+    pub struct LauncherApplication {}
 
     //-----------------------------------
     // Subclass
     //-----------------------------------
     #[glib::object_subclass]
-    impl ObjectSubclass for ZLApplication {
-        const NAME: &'static str = "ZLApplication";
-        type Type = super::ZLApplication;
+    impl ObjectSubclass for LauncherApplication {
+        const NAME: &'static str = "LauncherApplication";
+        type Type = super::LauncherApplication;
         type ParentType = adw::Application;
     }
 
-    impl ObjectImpl for ZLApplication {
+    impl ObjectImpl for LauncherApplication {
         //-----------------------------------
         // Constructor
         //-----------------------------------
@@ -37,7 +37,7 @@ mod imp {
         }
     }
 
-    impl ApplicationImpl for ZLApplication {
+    impl ApplicationImpl for LauncherApplication {
         //-----------------------------------
         // Activate handler
         //-----------------------------------
@@ -56,22 +56,22 @@ mod imp {
         }
     }
 
-    impl GtkApplicationImpl for ZLApplication {}
-    impl AdwApplicationImpl for ZLApplication {}
+    impl GtkApplicationImpl for LauncherApplication {}
+    impl AdwApplicationImpl for LauncherApplication {}
 
-    impl ZLApplication {}
+    impl LauncherApplication {}
 }
 
 //------------------------------------------------------------------------------
-// IMPLEMENTATION: ZLApplication
+// IMPLEMENTATION: LauncherApplication
 //------------------------------------------------------------------------------
 glib::wrapper! {
-    pub struct ZLApplication(ObjectSubclass<imp::ZLApplication>)
+    pub struct LauncherApplication(ObjectSubclass<imp::LauncherApplication>)
         @extends gio::Application, gtk::Application, adw::Application,
         @implements gio::ActionGroup, gio::ActionMap;
 }
 
-impl ZLApplication {
+impl LauncherApplication {
     //-----------------------------------
     // New function
     //-----------------------------------

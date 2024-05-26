@@ -10,7 +10,7 @@ use adw::prelude::*;
 use glib::{clone, closure_local};
 
 use crate::APP_ID;
-use crate::ZLApplication;
+use crate::LauncherApplication;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_window::PreferencesWindow;
@@ -131,7 +131,7 @@ impl ZLWindow {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(app: &ZLApplication) -> Self {
+    pub fn new(app: &LauncherApplication) -> Self {
         glib::Object::builder().property("application", app).build()
     }
 

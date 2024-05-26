@@ -9,7 +9,7 @@ mod cheats_window;
 use gtk::{gio, glib};
 use gtk::prelude::*;
 
-use app::ZLApplication;
+use app::LauncherApplication;
 
 const APP_ID: &str = "com.github.ZandronumLauncher";
 
@@ -19,7 +19,7 @@ fn main() -> glib::ExitCode {
         .expect("Failed to register resources");
 
     // Run app
-    let app = ZLApplication::new(APP_ID, &gio::ApplicationFlags::empty());
+    let app = LauncherApplication::new(APP_ID, &gio::ApplicationFlags::empty());
 
     app.run()
 }

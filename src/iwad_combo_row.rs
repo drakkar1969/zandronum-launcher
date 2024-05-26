@@ -232,6 +232,9 @@ impl IWadComboRow {
 }
 
 impl Default for IWadComboRow {
+    //-----------------------------------
+    // Default constructor
+    //-----------------------------------
     fn default() -> Self {
         Self::new()
     }

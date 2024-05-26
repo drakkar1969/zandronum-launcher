@@ -134,6 +134,9 @@ impl PreferencesWindow {
 }
 
 impl Default for PreferencesWindow {
+    //-----------------------------------
+    // Default constructor
+    //-----------------------------------
     fn default() -> Self {
         Self::new()
     }

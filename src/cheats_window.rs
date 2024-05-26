@@ -181,6 +181,9 @@ impl CheatsWindow {
 }
 
 impl Default for CheatsWindow {
+    //-----------------------------------
+    // Default constructor
+    //-----------------------------------
     fn default() -> Self {
         Self::new()
     }

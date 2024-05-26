@@ -414,6 +414,9 @@ impl FileSelectRow {
 }
 
 impl Default for FileSelectRow {
+    //-----------------------------------
+    // Default constructor
+    //-----------------------------------
     fn default() -> Self {
         Self::new()
     }

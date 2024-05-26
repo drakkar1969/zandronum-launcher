@@ -184,8 +184,6 @@ impl ZLWindow {
         // Create gsettings
         let gsettings = gio::Settings::new(APP_ID);
 
-        gsettings.delay();
-
         // Init preferences window
         let prefs = imp.prefs_window.imp();
 
@@ -251,8 +249,6 @@ impl ZLWindow {
             gsettings.set_boolean("enable-monster-mods", prefs.monster_switchrow.is_active()).unwrap();
             gsettings.set_boolean("enable-menu-mods", prefs.menu_switchrow.is_active()).unwrap();
             gsettings.set_boolean("enable-hud-mods", prefs.hud_switchrow.is_active()).unwrap();
-
-            gsettings.apply();
         }
     }
 

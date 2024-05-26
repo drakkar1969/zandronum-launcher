@@ -187,75 +187,88 @@ impl FileSelectRow {
     //-----------------------------------
     // Setup signals
     //-----------------------------------
-    #[allow(deprecated)]
     fn setup_signals(&self) {
         let imp = self.imp();
 
         // Select button clicked signal
         imp.select_button.connect_clicked(clone!(@weak self as row, @weak imp => move |_| {
-            // Get root window
-            let root = row.root()
-                .and_downcast::<gtk::Window>()
-                .expect("Must be a 'Window'");
-
-            // Create file dialog
-            let dialog = gtk::FileChooserDialog::builder()
+            // Create dialog
+            let dialog = gtk::FileDialog::builder()
                 .title(row.dialog_title())
                 .modal(true)
-                .transient_for(&root)
-                .action(if row.select() == SelectType::Folder {
-                        gtk::FileChooserAction::SelectFolder
-                    } else {
-                        gtk::FileChooserAction::Open
-                    })
-                .select_multiple(row.select() == SelectType::Multiple)
+                .accept_label("Select")
                 .build();
-
-            dialog.add_buttons(&[("Select", gtk::ResponseType::Accept), ("Cancel", gtk::ResponseType::Cancel)]);
 
             // Set filters for dialog
             if row.select() != SelectType::Folder {
-                let filter = gtk::FileFilter::new();
-                filter.set_name(Some("All Files"));
-                filter.add_pattern("*");
+                let all_filter = gtk::FileFilter::new();
+                all_filter.set_name(Some("All Files"));
+                all_filter.add_pattern("*");
 
-                dialog.add_filter(&filter);
+                let dialog_filters = gio::ListStore::from_iter([all_filter]);
 
                 if let Some(filter) = row.filter() {
-                    dialog.add_filter(&filter);
-                    dialog.set_filter(&filter);
+                    dialog_filters.append(&filter);
                 }
+
+                dialog.set_filters(Some(&dialog_filters));
+                dialog.set_default_filter(row.filter().as_ref());
             }
 
             // Set initial location for dialog
             let files = imp.files.get().unwrap();
 
             if files.n_items() > 0 {
-                dialog.set_file(&files.item(0).and_downcast::<gio::File>().unwrap())
-                    .expect("Could not set current file for dialog");
+                dialog.set_initial_file(files.item(0).and_downcast::<gio::File>().as_ref());
             } else {
                 let base_folder = imp.base_folder.borrow();
 
                 if base_folder.is_some() {
-                    dialog.set_current_folder(base_folder.as_ref())
-                        .expect("Could not set current folder for dialog");
+                    dialog.set_initial_folder(base_folder.as_ref());
                 }
             }
 
-            // Connect dialog response signal handler
-            dialog.connect_response(clone!(@weak row, @weak imp => move |dialog, response| {
-                if response == gtk::ResponseType::Accept {
-                    let files = imp.files.get().unwrap();
+            // Get root window
+            let root = row.root()
+                .and_downcast::<gtk::Window>()
+                .expect("Must be a 'Window'");
 
-                    files.splice(0, files.n_items(), &dialog.files().iter::<gio::File>().flatten().collect::<Vec<gio::File>>());
+            // Show dialog
+            match row.select() {
+                SelectType::File => {
+                    dialog.open(Some(&root), None::<&gio::Cancellable>, clone!(@weak imp => move |result| {
+                        if let Ok(file) = result {
+                            let files = imp.files.get().unwrap();
 
-                    row.set_state();
+                            files.splice(0, files.n_items(), &[file]);
+
+                            row.set_state();
+                        }
+                    }));
+                },
+                SelectType::Multiple => {
+                    dialog.open_multiple(Some(&root), None::<&gio::Cancellable>, clone!(@weak imp => move |result| {
+                        if let Ok(file) = result {
+                            let files = imp.files.get().unwrap();
+
+                            files.splice(0, files.n_items(), &file.iter::<gio::File>().flatten().collect::<Vec<gio::File>>());
+
+                            row.set_state();
+                        }
+                    }));
+                },
+                SelectType::Folder => {
+                    dialog.select_folder(Some(&root), None::<&gio::Cancellable>, clone!(@weak imp => move |result| {
+                        if let Ok(file) = result {
+                            let files = imp.files.get().unwrap();
+
+                            files.splice(0, files.n_items(), &[file]);
+
+                            row.set_state();
+                        }
+                    }));
                 }
-
-                dialog.close();
-            }));
-
-            dialog.show();
+            }
         }));
 
         // Clear button clicked signal

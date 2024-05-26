@@ -977,7 +977,7 @@ dependencies = [
 
 [[package]]
 name = "zandronum-launcher"
-version = "2.0.5"
+version = "2.0.6"
 dependencies = [
  "gio",
  "glib-build-tools",

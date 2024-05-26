@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!--// ZLWindow template //-->
-  <template class="ZLWindow" parent="AdwApplicationWindow">
+  <!--// LauncherWindow template //-->
+  <template class="LauncherWindow" parent="AdwApplicationWindow">
     <property name="default_width">580</property>
     <property name="default_height">-1</property>
     <property name="title">Zandronum Launcher</property>

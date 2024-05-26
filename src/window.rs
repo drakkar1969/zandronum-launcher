@@ -39,7 +39,7 @@ impl fmt::Display for LaunchError {
 impl Error for LaunchError {}
 
 //------------------------------------------------------------------------------
-// MODULE: ZLWindow
+// MODULE: LauncherWindow
 //------------------------------------------------------------------------------
 mod imp {
     use super::*;
@@ -49,7 +49,7 @@ mod imp {
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate)]
     #[template(resource = "/com/github/ZandronumLauncher/ui/window.ui")]
-    pub struct ZLWindow {
+    pub struct LauncherWindow {
         #[template_child]
         pub iwad_comborow: TemplateChild<IWadComboRow>,
         #[template_child]
@@ -69,9 +69,9 @@ mod imp {
     // Subclass
     //-----------------------------------
     #[glib::object_subclass]
-    impl ObjectSubclass for ZLWindow {
-        const NAME: &'static str = "ZLWindow";
-        type Type = super::ZLWindow;
+    impl ObjectSubclass for LauncherWindow {
+        const NAME: &'static str = "LauncherWindow";
+        type Type = super::LauncherWindow;
         type ParentType = adw::ApplicationWindow;
 
         fn class_init(klass: &mut Self::Class) {
@@ -83,7 +83,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for ZLWindow {
+    impl ObjectImpl for LauncherWindow {
         //-----------------------------------
         // Constructor
         //-----------------------------------
@@ -102,8 +102,8 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for ZLWindow {}
-    impl WindowImpl for ZLWindow {
+    impl WidgetImpl for LauncherWindow {}
+    impl WindowImpl for LauncherWindow {
         //-----------------------------------
         // Window close handler
         //-----------------------------------
@@ -113,21 +113,21 @@ mod imp {
             glib::Propagation::Proceed
         }
     }
-    impl ApplicationWindowImpl for ZLWindow {}
-    impl AdwApplicationWindowImpl for ZLWindow {}
+    impl ApplicationWindowImpl for LauncherWindow {}
+    impl AdwApplicationWindowImpl for LauncherWindow {}
 }
 
 //------------------------------------------------------------------------------
-// IMPLEMENTATION: ZLWindow
+// IMPLEMENTATION: LauncherWindow
 //------------------------------------------------------------------------------
 glib::wrapper! {
-    pub struct ZLWindow(ObjectSubclass<imp::ZLWindow>)
+    pub struct LauncherWindow(ObjectSubclass<imp::LauncherWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
-impl ZLWindow {
+impl LauncherWindow {
     //-----------------------------------
     // New function
     //-----------------------------------
@@ -259,7 +259,7 @@ impl ZLWindow {
         let imp = self.imp();
 
         // Add launch Zandronum action
-        let launch_action = gio::ActionEntry::<ZLWindow>::builder("launch-zandronum")
+        let launch_action = gio::ActionEntry::<LauncherWindow>::builder("launch-zandronum")
             .activate(clone!(@weak self as window => move |_, _, _| {
                 window.set_sensitive(false);
 
@@ -281,7 +281,7 @@ impl ZLWindow {
             .build();
 
         // Add reset widgets action
-        let reset_action = gio::ActionEntry::<ZLWindow>::builder("reset-widgets")
+        let reset_action = gio::ActionEntry::<LauncherWindow>::builder("reset-widgets")
             .activate(clone!(@weak self as window, @weak imp => move |_, _, _| {
                 let reset_dialog = adw::AlertDialog::new(
                     Some("Reset Parameters?"),
@@ -308,14 +308,14 @@ impl ZLWindow {
             .build();
 
         // Add show preferences action
-        let prefs_action = gio::ActionEntry::<ZLWindow>::builder("show-preferences")
+        let prefs_action = gio::ActionEntry::<LauncherWindow>::builder("show-preferences")
             .activate(clone!(@weak imp => move |_, _, _| {
                 imp.prefs_window.present();
             }))
             .build();
 
         // Add show cheats action
-        let cheats_action = gio::ActionEntry::<ZLWindow>::builder("show-cheats")
+        let cheats_action = gio::ActionEntry::<LauncherWindow>::builder("show-cheats")
             .activate(clone!(@weak self as window => move |_, _, _| {
                 let cheats_window = CheatsWindow::new();
                 cheats_window.set_transient_for(Some(&window));

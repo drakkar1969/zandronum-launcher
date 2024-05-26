@@ -2,7 +2,7 @@ use gtk::{gio, glib};
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 
-use crate::window::ZLWindow;
+use crate::window::LauncherWindow;
 
 //------------------------------------------------------------------------------
 // MODULE: LauncherApplication
@@ -48,7 +48,7 @@ mod imp {
             let window = if let Some(window) = application.active_window() {
                 window
             } else {
-                let window = ZLWindow::new(&application);
+                let window = LauncherWindow::new(&application);
                 window.upcast()
             };
 

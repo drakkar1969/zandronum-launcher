@@ -1,7 +1,6 @@
-use gtk::{glib, gdk, pango};
+use gtk::{glib, pango};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
-use glib::clone;
 
 //------------------------------------------------------------------------------
 // MODULE: CheatsWindow
@@ -32,6 +31,19 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+
+            klass.add_shortcut(&gtk::Shortcut::new(
+                gtk::ShortcutTrigger::parse_string("Escape"),
+                Some(gtk::CallbackAction::new(|widget, _| {
+                    let window = widget
+                        .downcast_ref::<crate::cheats_window::CheatsWindow>()
+                        .expect("Could not downcast to 'CheatsWindow'");
+
+                    window.close();
+
+                    glib::Propagation::Proceed
+                }))
+            ))
         }
 
         fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -49,7 +61,6 @@ mod imp {
             let obj = self.obj();
 
             obj.setup_widgets();
-            obj.setup_controllers();
         }
     }
 
@@ -152,27 +163,6 @@ impl CheatsWindow {
             imp.cheats_grid.attach(&self.key_label(key), 0, i as i32, 1, 1);
             imp.cheats_grid.attach(&self.value_label(value), 1, i as i32, 1, 1);
         });
-    }
-
-    //-----------------------------------
-    // Setup controllers
-    //-----------------------------------
-    fn setup_controllers(&self) {
-        // Key controller (close window on ESC)
-        let controller = gtk::EventControllerKey::new();
-
-        controller.connect_key_pressed(clone!(@weak self as window => @default-return glib::Propagation::Proceed, move |_, key, _, state| {
-            if key == gdk::Key::Escape && state.is_empty() {
-                window.close();
-
-                glib::Propagation::Stop
-            } else {
-                glib::Propagation::Proceed
-            }
-
-        }));
-
-        self.add_controller(controller);
     }
 }
 

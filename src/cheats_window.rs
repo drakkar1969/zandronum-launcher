@@ -94,7 +94,7 @@ impl CheatsWindow {
         let label = gtk::Label::new(Some(key));
         label.set_vexpand(true);
         label.set_xalign(0.0);
-        label.set_yalign(0.5);
+        label.set_yalign(0.0);
         label.set_can_focus(false);
         label.set_selectable(true);
 
@@ -105,7 +105,7 @@ impl CheatsWindow {
         let label = gtk::Label::new(Some(value));
         label.set_vexpand(true);
         label.set_xalign(0.0);
-        label.set_yalign(0.5);
+        label.set_yalign(0.0);
         label.set_can_focus(false);
         label.set_wrap_mode(pango::WrapMode::Word);
         label.set_wrap(true);
